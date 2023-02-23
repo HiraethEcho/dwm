@@ -9,7 +9,6 @@ feh --randomize --bg-fill --no-fehbg -z ~/pictures/*
 picom -b
 
 dwmblocks &
-./chkVol & # Ensure show vol
 
 fcitx5 &
 
