@@ -117,6 +117,8 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "st", NULL };
 static const char *rofirun[] = {"rofi","-show","run"};
 static const char *rofidrun[] = {"rofi","-show","drun"};
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
 
 #include "exitdwm.c"
 static Key keys[] = {
@@ -125,6 +127,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = rofidrun } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+	{ Mod4Mask,                     XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
