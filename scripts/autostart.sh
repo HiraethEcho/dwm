@@ -12,3 +12,7 @@ dwmblocks &
 
 fcitx5 &
 
+nm-applet &
+
+pnmixer &
+
