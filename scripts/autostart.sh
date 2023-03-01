@@ -3,6 +3,7 @@
 #
 
 # /bin/bash ~/suckless/dwm/scripts/dwm_refresh.sh &
+killall nm-applet
 
 feh --randomize --bg-fill --no-fehbg -z ~/pictures/*
 
@@ -14,5 +15,5 @@ fcitx5 &
 
 nm-applet &
 
-pnmixer &
+# pnmixer &
 
