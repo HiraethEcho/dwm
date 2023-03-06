@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/XF86keysym.h>
 
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
@@ -17,7 +18,7 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const double defaultopacity  = 0.9;
 static const char *fonts[]          = { "FiraCode Nerd Font Mono:size=14" };
-static const char dmenufont[]       = "monospace:size=14";
+static const char dmenufont[]       = "FiraCode Nerd Font Mono:size=14";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -120,9 +121,22 @@ static const char *rofidrun[] = {"rofi","-show","drun"};
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
 
+static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
+static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
+static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
+static const char *light_up[] = {"/usr/bin/light", "-A", "5", NULL};
+static const char *light_down[] = {"/usr/bin/light", "-U", "5", NULL};
+
 #include "exitdwm.c"
 static Key keys[] = {
 	/* modifier                     key        function        argument */
+    // brightness and audio 
+  {0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol}},
+	{0,                       XF86XK_AudioMute, spawn, {.v = mutevol }},
+	{0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol}},
+	{0,				XF86XK_MonBrightnessUp,		spawn,	{.v = light_up}},
+	{0,				XF86XK_MonBrightnessDown,	spawn,	{.v = light_down}},
+
 	{ MODKEY,                       XK_r,      spawn,          {.v = rofirun } },
 	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = rofidrun } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
