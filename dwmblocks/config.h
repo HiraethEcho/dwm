@@ -44,9 +44,9 @@ static const char delimiter[] = { '|', DELIMITERENDCHAR };
 static Block blocks[] = {
 /*      pathu                           pathc                           interval        signal */
       { PATH("calendar.sh"),            NULL,                           30,             1},
-      { PATH("alsa.sh"),                PATH("alsa_button.sh"),          1,             2},
+      { PATH("pamixer.sh"),                PATH("pamixer_button.sh"),          1,             2},
       { PATH("battery.sh"),             PATH("battery_button.sh"),      30,             3},
-      { PATH("xbacklight.sh"),          PATH("xbacklight.sh"),          10,             4},
-        /* { PATH("cpu_temp.sh"),          PATH("cpu_temp_button.sh"),     1,              4}, */
+      { PATH("xbacklight.sh"),          PATH("xbacklight.sh"),          1,              4},
+      { PATH("cpu_temp.sh"),            PATH("cpu_temp_button.sh"),     1,              5},
       { NULL } /* just to mark the end of the array */
 };
