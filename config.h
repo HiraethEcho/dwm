@@ -24,10 +24,10 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
-static const char col1[]            = "#ffffff";
+static const char col1[]            = "#666666";
 static const char col2[]            = "#005577";
 static const char col3[]            = "#ffffff";
-static const char col4[]            = "#ffffff";
+static const char col4[]            = "#FFFFFF";
 static const char col5[]            = "#ffffff";
 static const char col6[]            = "#ffffff";
 
@@ -50,6 +50,11 @@ static const char *colors[][3]      = {
 /*   󰈦 󰇩               ﬐    */
 static const char *tags[] = { "", "󰇩", "", "","","","﬏","" };
 /* static const char *tags[] = { "", "", "", "", "", "", "", "﬏", "", "" }; */
+
+static const unsigned int ulinepad	= 5;	/* horizontal padding between the underline and tag */
+static const unsigned int ulinestroke	= 2;	/* thickness / height of the underline */
+static const unsigned int ulinevoffset	= 0;	/* how far above the bottom of the bar the line should appear */
+static const int ulineall 		= 0;	/* 1 to show underline on all tags, 0 for just the active ones */
 
 static const Rule rules[] = {
 	/* xprop(1):
