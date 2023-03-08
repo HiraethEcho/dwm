@@ -2,7 +2,7 @@
 #include <X11/XF86keysym.h>
 
 /* appearance */
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
+static const unsigned int borderpx  = 4;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 /* static const unsigned int systrayonleft = 0;    /1* 0: systray in the right corner, >0: systray on left of status text *1/ */
@@ -12,8 +12,8 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const double defaultopacity  = 0.9;
-static const char *fonts[]          = { "FiraCode Nerd Font Mono:size=14" };
-static const char dmenufont[]       = "FiraCode Nerd Font Mono:size=14";
+static const char *fonts[]          = { "Code New Roman Nerd Font:size=14" };
+static const char dmenufont[]       = "Code New Roman Nerd Font:size=14";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -148,8 +148,8 @@ static Key keys[] = {
 	/* { MODKEY,                       XK_period, focusmon,       {.i = +1 } }, */
 	/* { MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } }, */
 	/* { MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } }, */
-	{ MODKEY|ShiftMask,		XK_o, changeopacity,	{.f = +0.1}},
-	{ MODKEY|ShiftMask,		XK_p, changeopacity,  {.f = -0.1}},
+	{ MODKEY|ShiftMask,		XK_o, changeopacity,	{.f = +0.05}},
+	{ MODKEY|ShiftMask,		XK_p, changeopacity,  {.f = -0.05}},
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -172,7 +172,7 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
-	{ ClkWinTitle,          0,              Button1,        zoom,           {0} },
+	{ ClkWinTitle,          0,              Button3,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} },
 	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} },
 	{ ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 3} },
