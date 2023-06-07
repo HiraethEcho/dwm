@@ -7,6 +7,8 @@ static const unsigned int gappx     = 1;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+static const int extrabar           = 1;        /* 0 means no extra bar */
+static const char statussep         = ';';      /* separator between statuses */
 static const double activeopacity   = 0.9f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
 static const double inactiveopacity = 0.8f;     /* Window opacity when it's inactive (0 <= opacity <= 1) */
 
@@ -174,6 +176,7 @@ static const Key keys[] = {
   /* { MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } }, */
 
   { MODKEY|ControlMask,           XK_b,      togglebar,      {0} },
+	{ MODKEY,             XK_e,      toggleextrabar, {0} },
   { MODKEY,                       XK_j,      focusstackvis,  {.i = +1 } },
   { MODKEY,                       XK_k,      focusstackvis,  {.i = -1 } },
   { MODKEY|ShiftMask,             XK_j,      focusstackhid,  {.i = +1 } },
@@ -250,6 +253,11 @@ static const Button buttons[] = {
   { ClkStatusText,        0,              Button3,        sigdwmblocks,       {.i = 3} },
   { ClkStatusText,        0,              Button4,        sigdwmblocks,       {.i = 4} },
   { ClkStatusText,        0,              Button5,        sigdwmblocks,       {.i = 5} },
+
+	{ ClkExBarLeftStatus,   0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkExBarLeftStatus,   0,              Button1,        spawn,          {.v = rofirun } },
+	{ ClkExBarMiddle,       0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkExBarRightStatus,  0,              Button2,        spawn,          {.v = termcmd } },
 
   { ClkClientWin,         MODKEY,         Button1,        movemouse,          {0} },
   { ClkClientWin,         MODKEY,         Button2,        togglefloating,     {0} },
