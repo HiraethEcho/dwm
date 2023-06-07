@@ -20,4 +20,5 @@ if ps -C mpd > /dev/null; then
         fi
 printf "\x10"
     printf " %s %s-%s %s/%s %s "  "$STATUS" "$ARTIST" "$TRACK" "$POSITION" "$DURATION" "$SHUFFLE"
+    # printf " %s %s "  "$STATUS"  "$TRACK" 
 fi

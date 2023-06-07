@@ -20,7 +20,7 @@ printf "\x13 "
 	            printf "🔊 %s" "$VOL"
 	        fi
       fi
-
+printf " "
 
 # if [ "$MUTED" = true ]; then
 #     printf "🔇%s%%" "$VOL"

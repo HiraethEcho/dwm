@@ -13,30 +13,30 @@ MEMTOT=$(echo $free_output | awk '{print $2}')
 # STOPER=$(echo $df_output | awk '{print $5}')
 
 printf "\x0c"
-printf "󰍛 %s/%s|" "$MEMUSED" "$MEMTOT" 
+printf " 󰍛 %s/%s|" "$MEMUSED" "$MEMTOT" 
 # printf "󰍛 %s/%s|󰻠 %s|󰋊 %s/%s" "$MEMUSED" "$MEMTOT" "$CPU" "$STOUSED" "$STOTOT" 
 #
 printf "󰘚 %s "  "$CPU" 
-echo "$stats" | while read -r row; do
-id=${row%% *}
-rest=${row#* }
-total=${rest%% *}
-idle=${rest##* }
+# echo "$stats" | while read -r row; do
+# id=${row%% *}
+# rest=${row#* }
+# total=${rest%% *}
+# idle=${rest##* }
 
-case "$(echo "$old" | awk '{if ($1 == id)
-  printf "%d\n", (1 - (idle - $3)  / (total - $2))*100 /12.5}' \
-    id="$id" total="$total" idle="$idle")" in
+# case "$(echo "$old" | awk '{if ($1 == id)
+#   printf "%d\n", (1 - (idle - $3)  / (total - $2))*100 /12.5}' \
+#     id="$id" total="$total" idle="$idle")" in
 
-  "0") printf "▁";;
-  "1") printf "▂";;
-  "2") printf "▃";;
-  "3") printf "▄";;
-  "4") printf "▅";;
-  "5") printf "▆";;
-  "6") printf "▇";;
-  "7") printf "█";;
-  "8") printf "█";;
-esac
-done;
+#   "0") printf "▁";;
+#   "1") printf "▂";;
+#   "2") printf "▃";;
+#   "3") printf "▄";;
+#   "4") printf "▅";;
+#   "5") printf "▆";;
+#   "6") printf "▇";;
+#   "7") printf "█";;
+#   "8") printf "█";;
+# esac
+# done;
+# echo "$stats" > "$cache"
 
-echo "$stats" > "$cache"

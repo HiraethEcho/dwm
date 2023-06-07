@@ -39,21 +39,23 @@ static const char delimiter[] = { DELIMITERENDCHAR };
  * pathc - path of the program used for handling clicks on the block */
 
 /* 1 interval = INTERVALs seconds, INTERVALn nanoseconds */
-#define INTERVALs                       1
-#define INTERVALn                       0
+#define INTERVALs                       0
+#define INTERVALn                       100000000
 
 static Block blocks[] = {
-  /*      pathu                           pathc                           interval        signal */
+  /*      pathu                           pathc          interval        signal */
   /* { PATH("test.sh")           , PATH("test_button.sh")       , 1  , 7} , */
-  { PATH("resource.sh")   , PATH("resource_button.sh")   , 1  , 1} ,
-  { PATH("storage.sh")    , PATH("storage_button.sh")    , 1  , 9} ,
-  { PATH("battery.sh")    , PATH("battery_button.sh")    , 30 , 8} ,
-  { PATH("internet.sh")   , PATH("internet_button.sh")   , 1  , 7} ,
+  /* { PATH("resource.sh")   , PATH("resource_button.sh")   , 1  , 1} , */
+  /* { PATH("storage.sh")    , PATH("storage_button.sh")    , 1  , 9} , */
+  /* { PATH("battery.sh")    , PATH("battery_button.sh")    , 30 , 8} , */
+  /* { PATH("internet.sh")   , PATH("internet_button.sh")   , 1  , 7} , */
   { PATH("mpc.sh")        , PATH("mpc_button.sh")        , 1  , 6} ,
   { PATH("pamixer.sh")    , PATH("pamixer_button.sh")    , 1  , 5} ,
-  { PATH("bluetooth.sh")  , PATH("bluetooth_button.sh")  , 1  , 4} ,
+  /* { PATH("bluetooth.sh")  , PATH("bluetooth_button.sh")  , 1  , 4} , */
   { PATH("xbacklight.sh") , PATH("xbacklight_button.sh") , 1  , 3} ,
   { PATH("calendar.sh")   , PATH("calendar_button.sh")   , 30 , 2} ,
-  { PATH("time.sh")       , NULL                         , 30 , 1} ,
+  { PATH("time.sh")       , NULL                         , 1 , 1} ,
+  { PATH("left.sh")       , NULL                         , 1 , NULL} ,
+  { PATH("right.sh")      , NULL                         , 1 , 1} ,
   { NULL } /* just to mark the end of the array */
 };

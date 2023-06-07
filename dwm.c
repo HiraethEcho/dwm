@@ -60,7 +60,7 @@
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 #define TTEXTW(X)               (drw_fontset_getwidth(drw, (X)))
 
-#define STATUSLENGTH            1024
+#define STATUSLENGTH            256 
 #define DWMBLOCKSLOCKFILE       "/var/local/dwmblocks/dwmblocks.pid"
 #define DELIMITERENDCHAR        10
 #define LSPAD                   (lrpad / 2) /* padding on left side of status text */
@@ -514,7 +514,7 @@ buttonpress(XEvent *e)
 				arg.v = c;
 			}
                 }
-                else if ((x = selmon->ww - RSPAD - ev->x) > 0 && (x -= wstext - LSPAD - RSPAD) <= 0) {
+                else if ((x = selmon->ww - ev->x) > 0 && (x -= wstext ) <= 0) {
                         updatedwmblockssig(x);
                         click = ClkStatusText;
                 } else
@@ -939,9 +939,10 @@ drawbar(Monitor *m)
                 char *stp = stextc;
                 char tmp;
 
-                drw_setscheme(drw, scheme[SchemeStatus]);
+                /* drw_setscheme(drw, scheme[SchemeStatus]); */
                 x = m->ww - wstext;
-                drw_rect(drw, x, 0, LSPAD, bh, 1, 1); x += LSPAD; /* to keep left padding clean */
+                /* drw_rect(drw, x, 0, LSPAD, bh, 1, 1); */
+                /* x += LSPAD; /1* to keep left padding clean *1/ */
                 for (;;) {
                         if ((unsigned char)*stc >= ' ') {
                                 stc++;
@@ -959,8 +960,8 @@ drawbar(Monitor *m)
                         *stc = tmp;
                         stp = ++stc;
                 }
-                drw_setscheme(drw, scheme[Scheme12]);
-                drw_rect(drw, x, 0, m->ww - x, bh, 1, 1); /* to keep right padding clean */
+                /* drw_setscheme(drw, scheme[Scheme12]); */
+                /* drw_rect(drw, x, 0, m->ww - x, bh, 1, 1); /1* to keep right padding clean *1/ */
 	}
 
 	for (c = m->clients; c; c = c->next) {
@@ -1027,13 +1028,15 @@ drawbar(Monitor *m)
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 
 	if (m == selmon) { /* extra status is only drawn on selected monitor */
-		drw_setscheme(drw, scheme[SchemeNorm]);
 		/* clear default bar draw buffer by drawing a blank rectangle */
+		drw_setscheme(drw, scheme[SchemeSel]);
 		drw_rect(drw, 0, 0, m->ww, bh, 1, 1);
-		etwr = TEXTW(estextr) - lrpad + 2; /* 2px right padding */
-		drw_text(drw, m->ww - etwr, 0, etwr, bh, 0, estextr, 0);
-		etwl = TEXTW(estextl);
+		etwr = TTEXTW(estextr);
+		etwl = TTEXTW(estextl);
+		drw_setscheme(drw, scheme[SchemeEl]);
 		drw_text(drw, 0, 0, etwl, bh, 0, estextl, 0);
+		drw_setscheme(drw, scheme[SchemeEr]);
+		drw_text(drw, m->ww - etwr, 0, etwr, bh, 0, estextr, 0);
 		drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
 	}
 }
@@ -1505,8 +1508,8 @@ motionnotify(XEvent *e)
                         focus(NULL);
                 }
                 mon = m;
-        } else if (ev->window == selmon->barwin && (x = selmon->ww - RSPAD - ev->x) > 0
-                                                && (x -= wstext - LSPAD - RSPAD) <= 0)
+        } else if (ev->window == selmon->barwin && (x = selmon->ww - ev->x) > 0
+                                                && (x -= wstext) <= 0)
                 updatedwmblockssig(x);
         else if (selmon->statushandcursor) {
                 selmon->statushandcursor = 0;
@@ -2618,9 +2621,9 @@ updatesizehints(Client *c)
 void
 updatestatus(void)
 {
-  char rawstext[STATUSLENGTH];
+  /* char rawstext[STATUSLENGTH]; */
 
-	char text[768];
+	char text[2048];
 	if (gettextprop(root, XA_WM_NAME, text, sizeof(text))) {
 		char *l = strchr(text, statussep);
     char stextp[STATUSLENGTH];
@@ -2647,13 +2650,14 @@ updatestatus(void)
       else
         *(sts++) = *rst;
     *stp = *stc = *sts = '\0';
-    wstext = TTEXTW(stextp) + LSPAD + RSPAD;
+    /* wstext = TTEXTW(stextp) + LSPAD + RSPAD; */
+    wstext = TTEXTW(stextp);
   } else {
     strcpy(stextc, "dwm");
 		estextl[0] = '\0';
 		estextr[0] = '\0';
     strcpy(stexts, stextc);
-    wstext = TTEXTW(stextc) + LSPAD + RSPAD;
+    wstext = TTEXTW(stextc);
   }
   drawbar(selmon);
 }

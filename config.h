@@ -8,7 +8,7 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int extrabar           = 1;        /* 0 means no extra bar */
-static const char statussep         = ';';      /* separator between statuses */
+static const char statussep         = ']';      /* separator between statuses */
 static const double activeopacity   = 0.9f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
 static const double inactiveopacity = 0.8f;     /* Window opacity when it's inactive (0 <= opacity <= 1) */
 
@@ -79,12 +79,15 @@ enum {
   SchemeHid,
   SchemeSymbol,
   SchemeStatus,
+  SchemeEl,
+  SchemeEm,
+  SchemeEr,
 }; /* color schemes */
 
 static const char *colors[][3]      = {
   /*               fg         bg         border   */
-  [SchemeNorm] = { col_slateblue, nord1, col_gray2 },
-  [SchemeSel]  = { col_AliceBlue, nord11,  col_PaleGreen  },
+  [SchemeNorm] = { col_slateblue, nord1, col_BabyBlue },
+  [SchemeSel]  = { col_AliceBlue, nord11,  col_awesome  },
   [SchemeTagNorm] = { nord3, nord6, col_gray2 },
   [SchemeTagSel]  = { col1, nord11,  col_awesome},
   [SchemeHid]  = { col_cyan,  col_gray1, col_cyan  },
@@ -96,7 +99,7 @@ static const char *colors[][3]      = {
   [Scheme0e] = { col4,      col2, col_gray2 },
   [Scheme0f] = { nord1,      nord2, col_gray2 },
   [Scheme10] = { nord4,      nord5, col_gray2 },
-  [Scheme11] = { nord6,      col_BabyBlue, col_gray2 },
+  [Scheme11] = { nord13,      nord2, col_gray2 },
   [Scheme12] = { col_gray1,      nord8, col_gray2 },
   [Scheme13] = { nord12,      nord1, col_gray2 },
   [Scheme14] = { col3,      col_BabyBlue, col_gray2 },
@@ -108,6 +111,9 @@ static const char *colors[][3]      = {
   [Scheme1a] = { col4,      col3, col_gray2 },
   [Scheme1b] = { col5,      col2, col_gray2 },
   [Scheme1c] = { col6,      col3, col_gray2 },
+  [SchemeEl] = { nord12,    nord10, col_gray2 },
+  [SchemeEm] = { nord12,    nord8, col_gray2 },
+  [SchemeEr] = { nord6,      nord3, col_gray2 },
 };
 
 /* tagging */
@@ -121,9 +127,9 @@ static const Rule rules[] = {
    *	WM_CLASS(STRING) = instance, class
    *	WM_NAME(STRING) = title
    */
-  /* class      instance    title       tags mask     isfloating   focusopacity    unfocusopacity     monitor */
-  { "st"       , NULL , scratchpadname , 1 << 8 , 1 , 0.7 , 0.3             , -1 } ,
-  { "st"       , NULL , "ranger"       , 1 << 8 , 1 , 0.9 , inactiveopacity , -1 } ,
+  /* class   instance    title       tags mask  isfloating focusopacity    unfocusopacity     monitor */
+  { "st"       , NULL , scratchpadname , 1 << 8 , 1 ,       0.7 ,          0.3             , -1 } ,
+  /* { "st"       , NULL , "ranger"       , 1 << 8 , 1 ,       0.9 ,          inactiveopacity , -1 } , */
   /* { "weixin"   , NULL , NULL           , 1 << 8 , 1 , 0.9 , 0.7             , -1 } , */
 };
 
@@ -254,10 +260,21 @@ static const Button buttons[] = {
   { ClkStatusText,        0,              Button4,        sigdwmblocks,       {.i = 4} },
   { ClkStatusText,        0,              Button5,        sigdwmblocks,       {.i = 5} },
 
-	{ ClkExBarLeftStatus,   0,              Button2,        spawn,          {.v = termcmd } },
-	{ ClkExBarLeftStatus,   0,              Button1,        spawn,          {.v = rofirun } },
-	{ ClkExBarMiddle,       0,              Button2,        spawn,          {.v = termcmd } },
-	{ ClkExBarRightStatus,  0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkExBarLeftStatus,   0,              Button1,        spawn,          SHCMD("st ranger") },
+	{ ClkExBarLeftStatus,   0,              Button2,        spawn,          SHCMD("st htop") },
+	{ ClkExBarLeftStatus,   0,              Button3,        spawn,          SHCMD("thunar") },
+	/* { ClkExBarLeftStatus,   0,              Button4,        spawn,          {.v = rofirun } }, */
+	/* { ClkExBarLeftStatus,   0,              Button5,        spawn,          {.v = rofirun } }, */
+	{ ClkExBarMiddle,       0,              Button1,        spawn,          {.v = termcmd } },
+	{ ClkExBarMiddle,       0,              Button2,        spawn,          {.v = rofidrun } },
+	{ ClkExBarMiddle,       0,              Button3,        spawn,          SHCMD("microsoft-edge-beta")} ,
+	/* { ClkExBarMiddle,       0,              Button4,        spawn,          {.v = termcmd } }, */
+	/* { ClkExBarMiddle,       0,              Button5,        spawn,          {.v = termcmd } }, */
+	{ ClkExBarRightStatus,  0,              Button1,        spawn,          SHCMD("nm-connection-editor") },
+	{ ClkExBarRightStatus,  0,              Button2,        spawn,          SHCMD("tlpui") },
+	{ ClkExBarRightStatus,  0,              Button3,        spawn,          SHCMD("blueberry")},
+	/* { ClkExBarRightStatus,  0,              Button4,        spawn,          {.v = termcmd } }, */
+	/* { ClkExBarRightStatus,  0,              Button5,        spawn,          {.v = termcmd } }, */
 
   { ClkClientWin,         MODKEY,         Button1,        movemouse,          {0} },
   { ClkClientWin,         MODKEY,         Button2,        togglefloating,     {0} },
