@@ -158,7 +158,7 @@ static const Key keys[] = {
   /* { MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } }, */
 
   { MODKEY|ControlMask,           XK_b,      togglebar,      {0} },
-	{ MODKEY,             XK_e,      toggleextrabar, {0} },
+	{ MODKEY,                       XK_e,      toggleextrabar, {0} },
   { MODKEY,                       XK_j,      focusstackvis,  {.i = +1 } },
   { MODKEY,                       XK_k,      focusstackvis,  {.i = -1 } },
   { MODKEY|ShiftMask,             XK_j,      focusstackhid,  {.i = +1 } },
@@ -177,6 +177,24 @@ static const Key keys[] = {
   { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 
   { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+	{ MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
+	{ MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
+	{ MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h" } },
+	{ MODKEY,                       XK_Left,   moveresize,     {.v = "-25x 0y 0w 0h" } },
+	{ MODKEY|ControlMask,             XK_Down,   moveresize,     {.v = "0x 0y 0w 25h" } },
+	{ MODKEY|ControlMask,             XK_Up,     moveresize,     {.v = "0x 0y 0w -25h" } },
+	{ MODKEY|ControlMask,             XK_Right,  moveresize,     {.v = "0x 0y 25w 0h" } },
+	{ MODKEY|ControlMask,             XK_Left,   moveresize,     {.v = "0x 0y -25w 0h" } },
+	/* { MODKEY|ControlMask,           XK_Up,     moveresizeedge, {.v = "t"} }, */
+	/* { MODKEY|ControlMask,           XK_Down,   moveresizeedge, {.v = "b"} }, */
+	/* { MODKEY|ControlMask,           XK_Left,   moveresizeedge, {.v = "l"} }, */
+	/* { MODKEY|ControlMask,           XK_Right,  moveresizeedge, {.v = "r"} }, */
+	{ MODKEY|ControlMask|ShiftMask, XK_Up,     moveresizeedge, {.v = "t"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Down,   moveresizeedge, {.v = "b"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Left,   moveresizeedge, {.v = "l"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Right,  moveresizeedge, {.v = "r"} },
+
+
   { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
   { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
   
