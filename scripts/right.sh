@@ -13,7 +13,7 @@ fi
 
 printf "] "
 printf "%s%s%s%s" "$wifiicon" "$(sed "s/down/❎/;s/up/🌐/" /sys/class/net/e*/operstate 2>/dev/null)" "$CONNAME"  "$(sed "s/.*/🔒/" /sys/class/net/tun*/operstate 2>/dev/null)"
-printf "|"
+printf "  "
 CHARGE=$(cat /sys/class/power_supply/BAT1/capacity)
 STATUS=$(cat /sys/class/power_supply/BAT1/status)
         if [ "$STATUS" = "Charging" ]; then
@@ -61,9 +61,11 @@ STATUS=$(cat /sys/class/power_supply/BAT1/status)
 	            printf "󰁹%s" "$CHARGE"
           fi
         fi
-printf "|"
+printf "  "
+printf " %.0f"  "$(xbacklight)" 
+printf "  "
 if [ "$bluetoothstatus" == "yes" ]; then
-  printf "%s" "$(bluetoothctl devices Connected |grep "Device" |awk '{print $3}')"
+  printf " %s" "$(bluetoothctl devices Connected |grep "Device" |awk '{print $3}')"
 else
     printf "󰂲"
 fi

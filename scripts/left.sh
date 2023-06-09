@@ -68,31 +68,31 @@ printf "]"
 #dwm_network_speed
 
 
-printf " 󰋊 %s/%s|"   "$STOUSED" "$STOTOT" 
+printf " 󰋊 %s/%s  "   "$STOUSED" "$STOTOT" 
 
-printf "󰍛 %s/%s|" "$MEMUSED" "$MEMTOT" 
+printf "󰍛 %s/%s  " "$MEMUSED" "$MEMTOT" 
 #
-printf "󰘚 %s "  "$CPU" 
-echo "$stats" | while read -r row; do
-id=${row%% *}
-rest=${row#* }
-total=${rest%% *}
-idle=${rest##* }
+printf "󰘚 %s "  "$CPU" 
+# echo "$stats" | while read -r row; do
+# id=${row%% *}
+# rest=${row#* }
+# total=${rest%% *}
+# idle=${rest##* }
 
-case "$(echo "$old" | awk '{if ($1 == id)
-  printf "%d\n", (1 - (idle - $3)  / (total - $2))*100 /12.5}' \
-    id="$id" total="$total" idle="$idle")" in
+# case "$(echo "$old" | awk '{if ($1 == id)
+#   printf "%d\n", (1 - (idle - $3)  / (total - $2))*100 /12.5}' \
+#     id="$id" total="$total" idle="$idle")" in
 
-  "0") printf "▁";;
-  "1") printf "▂";;
-  "2") printf "▃";;
-  "3") printf "▄";;
-  "4") printf "▅";;
-  "5") printf "▆";;
-  "6") printf "▇";;
-  "7") printf "█";;
-  "8") printf "█";;
-esac
-done;
-echo "$stats" > "$cache"
+#   "0") printf "▁";;
+#   "1") printf "▂";;
+#   "2") printf "▃";;
+#   "3") printf "▄";;
+#   "4") printf "▅";;
+#   "5") printf "▆";;
+#   "6") printf "▇";;
+#   "7") printf "█";;
+#   "8") printf "█";;
+# esac
+# done;
+# echo "$stats" > "$cache"
 

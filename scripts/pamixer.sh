@@ -2,7 +2,7 @@
 MUTED=$(pamixer --get-mute)
 VOL=$(pamixer --get-volume)
 
-printf "\x13 "
+printf "\x0e "
     	if [ "$MUTED" = "true" ]; then
 	        if [ "$VOL" -gt -1 ] && [ "$VOL" -le 33 ]; then
 	            printf "󰸈 %s" "$VOL"

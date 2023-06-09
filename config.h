@@ -2,56 +2,42 @@
 #include <X11/XF86keysym.h>
 #include "exitdwm.c"
 /* appearance */
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
+static const unsigned int borderpx  = 4;        /* border pixel of windows */
 static const unsigned int gappx     = 1;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int extrabar           = 1;        /* 0 means no extra bar */
 static const char statussep         = ']';      /* separator between statuses */
-static const double activeopacity   = 0.9f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
-static const double inactiveopacity = 0.8f;     /* Window opacity when it's inactive (0 <= opacity <= 1) */
+static const double activeopacity   = 0.95f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
+static const double inactiveopacity = 0.7f;     /* Window opacity when it's inactive (0 <= opacity <= 1) */
 
 /* static const char *fonts[]        = { "monospace:size                = 10" }; */
 static const char *fonts[]           = { "Code New Roman Nerd Font:size = 12" };
 /* static const char dmenufont[]     = "monospace:size                  = 10"; */
 static const char dmenufont[]        = "Code New Roman Nerd Font:size   = 12";
 
-static const char col_gray1[]        = "#222222";
-static const char col_gray2[]        = "#444444";
-static const char col_gray3[]        = "#bbbbbb";
-static const char col_gray4[]        = "#eeeeee";
-static const char col_cyan[]         = "#777777";
-static const char col_red[]          = "#770000";
-static const char col_AliceBlue[]    = "#F0F8FF";
-static const char col_Aquamarine[]   = "#7FFFD4";
-static const char col_AntiqueWhite[] = "#FAEBD7";
-static const char col_PaleGreen[]    = "#98fb98";
-static const char col_LimeGreen[]    = "#32CD32";
-static const char col_slateblue[]    = "#6A5ACD";
-static const char col_awesome[]      = "#ff2052";
-static const char col_azure[]        = "#007fff";
-static const char col_BabyBlue[]     = "#89cff0";
-static const char col1[]             = "#ffffff";
-static const char col2[]             = "#dfffff";
-static const char col3[]             = "#8a2be2";
-static const char col4[]             = "#9370db";
-static const char col5[]             = "#a020f0";
-static const char col6[]             = "#018274";
-static const char nord1[]="#D8DEE9";
-static const char nord2[]="#81A1C1";
-static const char nord3[]="#B48EAD";
-static const char nord4[]="#434C5E";
-static const char nord5[]="#A3BE8C";
-static const char nord6[]="#2E3440";
-static const char nord8[]="#D8DEE9";
-static const char nord9[]="#E5E9F0";
-static const char nord10[]="#3B4252";
-static const char nord11[]="#81A1C1";
-static const char nord12[]="#BF616A";
-static const char nord13[]="#EBCB8B";
-static const char nord14[]="#D08770";
-static const char nord15[]="#B48EAD";
+static const char col1[]     = "#222222";
+static const char col2[]     = "#444444";
+static const char col3[]     = "#bbbbbb";
+static const char col4[]     = "#eeeeee";
+static const char col5[]     = "#9370db";
+static const char col6[]     = "#018274";
+static const char col7[]     = "#89cff0";
+static const char nord1[]    = "#D8DEE9";
+static const char nord2[]    = "#5E81AC";
+static const char nord3[]    = "#B48EAD";
+static const char nord4[]    = "#434C5E";
+static const char nord5[]    = "#A3BE8C";
+static const char nord6[]    = "#2E3440";
+static const char nord8[]    = "#D8DEE9";
+static const char nord9[]    = "#E5E9F0";
+static const char nord10[]   = "#3B4252";
+static const char nord11[]   = "#81A1C1";
+static const char nord12[]   = "#BF616A";
+static const char nord13[]   = "#EBCB8B";
+static const char nord14[]   = "#D08770";
+static const char nord15[]   = "#B48EAD";
 
 enum {
   Scheme0b,
@@ -62,16 +48,7 @@ enum {
   Scheme10,
   Scheme11,
   Scheme12,
-  Scheme13,
-  Scheme14,
-  Scheme15,
-  Scheme16,
-  Scheme17,
-  Scheme18,
-  Scheme19,
-  Scheme1a,
-  Scheme1b,
-  Scheme1c,
+
   SchemeSel,
   SchemeNorm, 
   SchemeTagNorm,
@@ -86,34 +63,33 @@ enum {
 
 static const char *colors[][3]      = {
   /*               fg         bg         border   */
-  [SchemeNorm] = { col_slateblue, nord1, col_BabyBlue },
-  [SchemeSel]  = { col_AliceBlue, nord11,  col_awesome  },
-  [SchemeTagNorm] = { nord3, nord6, col_gray2 },
-  [SchemeTagSel]  = { col1, nord11,  col_awesome},
-  [SchemeHid]  = { col_cyan,  col_gray1, col_cyan  },
-  [SchemeSymbol] = { col_red,   nord5, col_gray2 },
-  [SchemeStatus] = { col_gray2, nord10, col_gray2 },
-  [Scheme0b] = { col1,      col4, col_gray2 },
-  [Scheme0c] = { nord12,      nord10, col_gray2 },
-  [Scheme0d] = { nord14,      nord1, col_gray2 },
-  [Scheme0e] = { col4,      col2, col_gray2 },
-  [Scheme0f] = { nord1,      nord2, col_gray2 },
-  [Scheme10] = { nord4,      nord5, col_gray2 },
-  [Scheme11] = { nord13,      nord2, col_gray2 },
-  [Scheme12] = { col_gray1,      nord8, col_gray2 },
-  [Scheme13] = { nord12,      nord1, col_gray2 },
-  [Scheme14] = { col3,      col_BabyBlue, col_gray2 },
-  [Scheme15] = { col4,      col3, col_gray2 },
-  [Scheme16] = { col5,      col2, col_gray2 },
-  [Scheme17] = { col3,      col4, col_gray2 },
-  [Scheme18] = { col3,      col4, col_gray2 },
-  [Scheme19] = { col3,      col4, col_gray2 },
-  [Scheme1a] = { col4,      col3, col_gray2 },
-  [Scheme1b] = { col5,      col2, col_gray2 },
-  [Scheme1c] = { col6,      col3, col_gray2 },
-  [SchemeEl] = { nord12,    nord10, col_gray2 },
-  [SchemeEm] = { nord12,    nord8, col_gray2 },
-  [SchemeEr] = { nord6,      nord3, col_gray2 },
+  [SchemeTagNorm] = { nord14         , col4     , col2    } ,
+  [SchemeTagSel]  = { col1          , nord11    , col1  } ,
+
+  [SchemeHid]     = { nord1      , col1 , col4     } ,
+
+  [SchemeSymbol]  = { nord10       , nord13     , col2    } ,
+  
+  [SchemeStatus]  = { col2     , nord10    , col2    } ,
+
+  [SchemeNorm]    = { nord12 , nord1     , col3 } ,
+  [SchemeSel]     = { nord10 , nord11    , nord12  } ,
+
+  [Scheme0b]      = { nord5        , nord1      , col2    } ,
+  [Scheme0c]      = { nord12        , nord5    , col2    } ,
+
+  [Scheme0d]      = { nord14        , nord5     , col2    } ,
+  [Scheme0e]      = { col4          , nord14      , col2    } ,
+
+  [Scheme0f]      = { nord11         , nord14     , col2    } ,
+  [Scheme10]      = { nord4         , nord11     , col2    } ,
+
+  [Scheme11]      = { nord8        , nord11     , col2    } ,
+  [Scheme12]      = { col1     , nord8     , col2    } ,
+
+  [SchemeEl]      = { nord12        , nord10    , col2    } ,
+  [SchemeEm]      = { nord12        , nord8     , col2    } ,
+  [SchemeEr]      = { nord6         , nord3     , col2    } ,
 };
 
 /* tagging */
@@ -160,7 +136,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 
-static const char *dmenucmd[]      = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[]      = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col1, "-nf", col3, "-sb", col5, "-sf", col4, NULL };
 static const char *termcmd[]       = { "st", NULL };
 static const char *rofidrun[]      = {"rofi","-show","drun"};
 static const char *rofirun[]       = {"rofi","-show","run"};
@@ -273,8 +249,8 @@ static const Button buttons[] = {
 	{ ClkExBarRightStatus,  0,              Button1,        spawn,          SHCMD("nm-connection-editor") },
 	{ ClkExBarRightStatus,  0,              Button2,        spawn,          SHCMD("tlpui") },
 	{ ClkExBarRightStatus,  0,              Button3,        spawn,          SHCMD("blueberry")},
-	/* { ClkExBarRightStatus,  0,              Button4,        spawn,          {.v = termcmd } }, */
-	/* { ClkExBarRightStatus,  0,              Button5,        spawn,          {.v = termcmd } }, */
+	{ ClkExBarRightStatus,  0,              Button4,        spawn,          SHCMD("xbacklight -inc 5") },
+	{ ClkExBarRightStatus,  0,              Button5,        spawn,          SHCMD("xbacklight -dec 5") },
 
   { ClkClientWin,         MODKEY,         Button1,        movemouse,          {0} },
   { ClkClientWin,         MODKEY,         Button2,        togglefloating,     {0} },

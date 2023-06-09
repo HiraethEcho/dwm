@@ -984,9 +984,10 @@ drawbar(Monitor *m)
 		x += w;
 	}
 
-	w = TEXTW(m->ltsymbol);
+	w = TTEXTW(m->ltsymbol);
 	drw_setscheme(drw, scheme[SchemeSymbol]);
-	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
+	/* x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0); */
+	x = drw_text(drw, x, 0, w, bh, 0, m->ltsymbol, 0);
 
         if (m == selmon) {
                 blw = w, ble = x;
