@@ -51,13 +51,13 @@ static Block blocks[] = {
   /* { PATH("internet.sh")   , PATH("internet_button.sh")   , 1  , 7} , */
   /* { PATH("bluetooth.sh")  , PATH("bluetooth_button.sh")  , 1  , 4} , */
   /* { PATH("xbacklight.sh") , PATH("xbacklight_button.sh") , 1  , 3} , */
-  { PATH("power1.sh")   , NULL                       , 1  , NULL } ,
+  /* { PATH("power1.sh")   , NULL                       , 1  , NULL } , */
   { PATH("mpc.sh")      , PATH("mpc_button.sh")      , 1  , 4    } ,
-  { PATH("power2.sh")   , NULL                       , 1  , NULL } ,
+  /* { PATH("power2.sh")   , NULL                       , 1  , NULL } , */
   { PATH("pamixer.sh")  , PATH("pamixer_button.sh")  , 1  , 3    } ,
-  { PATH("power3.sh")   , NULL                       , 1  , NULL } ,
+  /* { PATH("power3.sh")   , NULL                       , 1  , NULL } , */
   { PATH("calendar.sh") , PATH("calendar_button.sh") , 30 , 2    } ,
-  { PATH("power4.sh")   , NULL                       , 1  , NULL } ,
+  /* { PATH("power4.sh")   , NULL                       , 1  , NULL } , */
   { PATH("time.sh")     , NULL                       , 10 , 1    } ,
   { PATH("left.sh")     , NULL                       , 1  , NULL } ,
   { PATH("right.sh")    , NULL                       , 1  , NULL } ,

@@ -188,7 +188,7 @@ static void detachstack(Client *c);
 static Monitor *dirtomon(int dir);
 static void drawbar(Monitor *m);
 static void drawbars(void);
-static int drawstatusbar(Monitor *m, int bh, char* text);
+/* static int drawstatusbar(Monitor *m, int bh, char* text); */
 static void enternotify(XEvent *e);
 static void expose(XEvent *e);
 static void focus(Client *c);
@@ -484,8 +484,8 @@ attachstack(Client *c)
 void
 buttonpress(XEvent *e)
 {
-        int i, x;
-        unsigned int click;
+        int i=0, x=0;
+        unsigned int click=-1;
 	Arg arg = {0};
 	Client *c;
 	Monitor *m;
@@ -932,9 +932,9 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
 void
 drawbar(Monitor *m)
 {
-  int x, w, n=0, scm, tw=0, etwl=0,etwr=0;
-	int boxs = drw->fonts->h / 9;
-	int boxw = drw->fonts->h / 6 + 2;
+  int x, w, n=0, scm,  etwl=0,etwr=0;
+	/* int boxs = drw->fonts->h / 9; */
+	/* int boxw = drw->fonts->h / 6 + 2; */
 	unsigned int i, occ = 0, urg = 0;
 	Client *c;
 
@@ -942,36 +942,36 @@ drawbar(Monitor *m)
 		return;
 
 	/* draw status first so it can be overdrawn by tags later */
-	if (m == selmon) { /* status is only drawn on selected monitor */
-		/* tw = m->ww - drawstatusbar(m, bh, stext); */
-                char *stc = stextc;
-                char *stp = stextc;
-                char tmp;
+  if (m == selmon) { /* status is only drawn on selected monitor */
+    /* tw = m->ww - drawstatusbar(m, bh, stext); */
+    char *stc = stextc;
+    char *stp = stextc;
+    char tmp;
 
-                /* drw_setscheme(drw, scheme[SchemeStatus]); */
-                x = m->ww - wstext;
-                /* drw_rect(drw, x, 0, LSPAD, bh, 1, 1); */
-                /* x += LSPAD; /1* to keep left padding clean *1/ */
-                for (;;) {
-                        if ((unsigned char)*stc >= ' ') {
-                                stc++;
-                                continue;
-                        }
-                        tmp = *stc;
-                        if (stp != stc) {
-                                *stc = '\0';
-                                x = drw_text(drw, x, 0, TTEXTW(stp), bh, 0, stp, 0);
-                        }
-                        if (tmp == '\0')
-                                break;
-                        if ((unsigned char)tmp - DELIMITERENDCHAR - 1 < LENGTH(colors))
-                                drw_setscheme(drw, scheme[tmp - DELIMITERENDCHAR - 1]);
-                        *stc = tmp;
-                        stp = ++stc;
-                }
-                /* drw_setscheme(drw, scheme[Scheme12]); */
-                /* drw_rect(drw, x, 0, m->ww - x, bh, 1, 1); /1* to keep right padding clean *1/ */
-	}
+    /* drw_setscheme(drw, scheme[SchemeStatus]); */
+    x = m->ww - wstext;
+    /* drw_rect(drw, x, 0, LSPAD, bh, 1, 1); */
+    /* x += LSPAD; /1* to keep left padding clean *1/ */
+    for (;;) {
+      if ((unsigned char)*stc >= ' ') {
+        stc++;
+        continue;
+      }
+      tmp = *stc;
+      if (stp != stc) {
+        *stc = '\0';
+        x = drw_text(drw, x, 0, TTEXTW(stp), bh, 0, stp, 0);
+      }
+      if (tmp == '\0')
+        break;
+      if ((unsigned char)tmp - DELIMITERENDCHAR - 1 < LENGTH(colors))
+        drw_setscheme(drw, scheme[tmp - DELIMITERENDCHAR - 1]);
+      *stc = tmp;
+      stp = ++stc;
+    }
+    /* drw_setscheme(drw, scheme[Scheme12]); */
+    /* drw_rect(drw, x, 0, m->ww - x, bh, 1, 1); /1* to keep right padding clean *1/ */
+  }
 
 	for (c = m->clients; c; c = c->next) {
 		if (ISVISIBLE(c))
@@ -985,11 +985,13 @@ drawbar(Monitor *m)
 	for (i = 0; i < LENGTH(tags); i++) {
 		w = TEXTW(tags[i]);
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeTagSel : SchemeTagNorm]);
-		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
+		/* drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i); */
+		drw_text(drw, x, 0, w, bh,0, tags[i], urg & 1 << i);
 		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-				urg & 1 << i);
+			drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, 1, 0);
+			/* drw_rect(drw, x + boxs, boxs, boxw, boxw, */
+			/* 	m == selmon && selmon->sel && selmon->sel->tags & 1 << i, */
+			/* 	urg & 1 << i); */
 		x += w;
 	}
 
@@ -2132,7 +2134,7 @@ setmfact(const Arg *arg)
 void
 setup(void)
 {
-	int i;
+	int i=0;
 	XSetWindowAttributes wa;
 	Atom utf8string;
 	struct sigaction sa;
@@ -2182,7 +2184,7 @@ setup(void)
 	/* xatom[XembedInfo] = XInternAtom(dpy, "_XEMBED_INFO", False); */
     /* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
-        cursor[CurHand] = drw_cur_create(drw, XC_hand2);
+  cursor[CurHand] = drw_cur_create(drw, XC_hand2);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
 	cursor[CurMove] = drw_cur_create(drw, XC_fleur);
 	/* init appearance */
@@ -2792,7 +2794,6 @@ void
 updatestatus(void)
 {
   /* char rawstext[STATUSLENGTH]; */
-
 	char text[2048];
 	if (gettextprop(root, XA_WM_NAME, text, sizeof(text))) {
 		char *l = strchr(text, statussep);

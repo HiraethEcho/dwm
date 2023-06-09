@@ -38,8 +38,9 @@ static const char nord12[]   = "#BF616A";
 static const char nord13[]   = "#EBCB8B";
 static const char nord14[]   = "#D08770";
 static const char nord15[]   = "#B48EAD";
-static const unsigned int baralpha = 0xc0;
-static const unsigned int borderalpha = 0xdd;
+static const unsigned int baralpha = 0.8*0xffU;
+static const unsigned int borderalpha = OPAQUE;
+/* static const unsigned int OPAQUE = 0xffU; */
 
 enum {
   Scheme0b,
@@ -65,26 +66,26 @@ enum {
 
 static const char *colors[][3]      = {
   /*               fg         bg         border   */
-  /* [SchemeTagNorm] = { nord14 , col4   , col2   } , */
-  /* [SchemeTagSel]  = { col1   , nord11 , col1   } , */
-  [SchemeTagNorm] = { nord10 , NULL   , col2   } ,
-  [SchemeTagSel]  = { nord13   , NULL , col1   } ,
+  [SchemeTagNorm] = { nord14 , col4   , col2   } ,
+  [SchemeTagSel]  = { col1   , nord11 , col1   } ,
+  /* [SchemeTagNorm] = { nord10 , NULL   , col2   } , */
+  /* [SchemeTagSel]  = { nord13   , NULL , col1   } , */
 
-  /* [SchemeHid]     = { nord1  , col1   , col4   } , */
-  [SchemeHid]     = { nord10  , NULL   , col4   } ,
+  [SchemeHid]     = { nord1  , NULL   , col4   } ,
+  /* [SchemeHid]     = { nord10  , NULL   , col4   } , */
 
-  /* [SchemeSymbol]  = { nord10 , nord13 , col2   } , */
-  [SchemeSymbol]  = { nord13 , NULL , col2   } ,
+  /* [SchemeSymbol]  = { nord13 , NULL , col2   } , */
+  [SchemeSymbol]  = { nord10 , nord13 , col2   } ,
 
   [SchemeStatus]  = { col2   , nord10 , col2   } ,
 
-  /* [SchemeNorm]    = { nord12 , nord1  , col3   } , */
-  /* [SchemeSel]     = { nord10 , nord11 , nord12 } , */
-  [SchemeNorm]    = { nord5 , NULL  , col3   } ,
-  [SchemeSel]     = { nord12 , NULL , nord12 } ,
+  [SchemeNorm]    = { nord12 , nord1  , col3   } ,
+  [SchemeSel]     = { nord10 , nord11 , nord12 } ,
+  /* [SchemeNorm]    = { nord5 , NULL  , col3   } , */
+  /* [SchemeSel]     = { nord12 , NULL , nord12 } , */
 
-  /* [Scheme0b]      = { nord5  , nord1  , col2   } , */
-  [Scheme0b]      = { nord5  , NULL  , col2   } ,
+  [Scheme0b]      = { nord5  , nord1  , col2   } ,
+  /* [Scheme0b]      = { nord5  , NULL  , col2   } , */
   [Scheme0c]      = { nord12 , nord5  , col2   } ,
 
   [Scheme0d]      = { nord14 , nord5  , col2   } ,
@@ -96,18 +97,16 @@ static const char *colors[][3]      = {
   [Scheme11]      = { nord8  , nord11 , col2   } ,
   [Scheme12]      = { col1   , nord8  , col2   } ,
 
-  /* [SchemeEl]      = { nord12 , nord10 , col2   } , */
-  [SchemeEl]      = { nord12 , NULL , col2   } ,
-  /* [SchemeEm]      = { nord12 , nord8  , col2   } , */
-  [SchemeEm]      = { nord12 , NULL  , col2   } ,
-  [SchemeEr]      = { nord5  , NULL  , col2   } ,
+  [SchemeEl]      = { nord12 , nord10 , col2   } ,
+  [SchemeEm]      = { nord12 , nord12  , col2   } ,
+  [SchemeEr]      = { nord5  , nord10  , col2   } ,
 };
 
 static const unsigned int alphas[][3]      = {
     /*               fg      bg        border*/
   [SchemeNorm] = { OPAQUE, baralpha, borderalpha },
 	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
-  [SchemeTagNorm] = { OPAQUE, baralpha, borderalpha } ,
+  [SchemeTagNorm] = { baralpha, baralpha, borderalpha } ,
   [SchemeTagSel]  = { OPAQUE, baralpha, borderalpha } ,
 
   [SchemeHid]     = { OPAQUE, baralpha, borderalpha } ,
@@ -119,17 +118,17 @@ static const unsigned int alphas[][3]      = {
   [SchemeNorm]    = { OPAQUE, baralpha, borderalpha } ,
   [SchemeSel]     = { OPAQUE, baralpha, borderalpha } ,
 
-  [Scheme0b]      = { OPAQUE, baralpha, borderalpha } ,
-  [Scheme0c]      = { OPAQUE, baralpha, borderalpha } ,
+  [Scheme0b]      = { baralpha, baralpha, borderalpha } ,
+  [Scheme0c]      = { baralpha, baralpha, borderalpha } ,
 
-  [Scheme0d]      = { OPAQUE, baralpha, borderalpha } ,
-  [Scheme0e]      = { OPAQUE, baralpha, borderalpha } ,
+  [Scheme0d]      = { baralpha, baralpha, baralpha } ,
+  [Scheme0e]      = { baralpha, baralpha, baralpha } ,
 
-  [Scheme0f]      = { OPAQUE, baralpha, borderalpha } ,
-  [Scheme10]      = { OPAQUE, baralpha, borderalpha } ,
+  [Scheme0f]      = { baralpha, baralpha, baralpha } ,
+  [Scheme10]      = { baralpha, baralpha, baralpha } ,
 
-  [Scheme11]      = { OPAQUE, baralpha, borderalpha } ,
-  [Scheme12]      = { OPAQUE, baralpha, borderalpha } ,
+  [Scheme11]      = { baralpha, baralpha, baralpha } ,
+  [Scheme12]      = { baralpha, baralpha, baralpha } ,
 
   [SchemeEl]      = { OPAQUE, baralpha, borderalpha } ,
   [SchemeEm]      = { OPAQUE, baralpha, borderalpha } ,
@@ -137,8 +136,12 @@ static const unsigned int alphas[][3]      = {
 };
 /* tagging */
 /*   󰈦 󰇩               ﬐    */
-static const char *tags[] = { "","","","󰃨","" };
 /* static const char *tags[] = { "", "", "", "", "", "", "", "﬏", "", "" }; */
+static const char *tags[] = { " "," "," "," 󰃨"," " };
+/* static const char *tags[] = { "1","2","3","4","5","6","7","8","9" }; */
+static const unsigned int ulinepad	= 10;	/* horizontal padding between the underline and tag */
+static const unsigned int ulinestroke	= 1;	/* thickness / height of the underline */
+static const unsigned int ulinevoffset	= 2;	/* how far above the bottom of the bar the line should appear */
 
 static const char scratchpadname[] = "scratchpad";
 static const Rule rules[] = {
