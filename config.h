@@ -2,7 +2,7 @@
 #include <X11/XF86keysym.h>
 #include "exitdwm.c"
 /* appearance */
-static const unsigned int borderpx  = 4;        /* border pixel of windows */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int gappx     = 1;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
@@ -38,6 +38,8 @@ static const char nord12[]   = "#BF616A";
 static const char nord13[]   = "#EBCB8B";
 static const char nord14[]   = "#D08770";
 static const char nord15[]   = "#B48EAD";
+static const unsigned int baralpha = 0xc0;
+static const unsigned int borderalpha = 0xdd;
 
 enum {
   Scheme0b,
@@ -63,35 +65,76 @@ enum {
 
 static const char *colors[][3]      = {
   /*               fg         bg         border   */
-  [SchemeTagNorm] = { nord14         , col4     , col2    } ,
-  [SchemeTagSel]  = { col1          , nord11    , col1  } ,
+  /* [SchemeTagNorm] = { nord14 , col4   , col2   } , */
+  /* [SchemeTagSel]  = { col1   , nord11 , col1   } , */
+  [SchemeTagNorm] = { nord10 , NULL   , col2   } ,
+  [SchemeTagSel]  = { nord13   , NULL , col1   } ,
 
-  [SchemeHid]     = { nord1      , col1 , col4     } ,
+  /* [SchemeHid]     = { nord1  , col1   , col4   } , */
+  [SchemeHid]     = { nord10  , NULL   , col4   } ,
 
-  [SchemeSymbol]  = { nord10       , nord13     , col2    } ,
-  
-  [SchemeStatus]  = { col2     , nord10    , col2    } ,
+  /* [SchemeSymbol]  = { nord10 , nord13 , col2   } , */
+  [SchemeSymbol]  = { nord13 , NULL , col2   } ,
 
-  [SchemeNorm]    = { nord12 , nord1     , col3 } ,
-  [SchemeSel]     = { nord10 , nord11    , nord12  } ,
+  [SchemeStatus]  = { col2   , nord10 , col2   } ,
 
-  [Scheme0b]      = { nord5        , nord1      , col2    } ,
-  [Scheme0c]      = { nord12        , nord5    , col2    } ,
+  /* [SchemeNorm]    = { nord12 , nord1  , col3   } , */
+  /* [SchemeSel]     = { nord10 , nord11 , nord12 } , */
+  [SchemeNorm]    = { nord5 , NULL  , col3   } ,
+  [SchemeSel]     = { nord12 , NULL , nord12 } ,
 
-  [Scheme0d]      = { nord14        , nord5     , col2    } ,
-  [Scheme0e]      = { col4          , nord14      , col2    } ,
+  /* [Scheme0b]      = { nord5  , nord1  , col2   } , */
+  [Scheme0b]      = { nord5  , NULL  , col2   } ,
+  [Scheme0c]      = { nord12 , nord5  , col2   } ,
 
-  [Scheme0f]      = { nord11         , nord14     , col2    } ,
-  [Scheme10]      = { nord4         , nord11     , col2    } ,
+  [Scheme0d]      = { nord14 , nord5  , col2   } ,
+  [Scheme0e]      = { col4   , nord14 , col2   } ,
 
-  [Scheme11]      = { nord8        , nord11     , col2    } ,
-  [Scheme12]      = { col1     , nord8     , col2    } ,
+  [Scheme0f]      = { nord11 , nord14 , col2   } ,
+  [Scheme10]      = { nord4  , nord11 , col2   } ,
 
-  [SchemeEl]      = { nord12        , nord10    , col2    } ,
-  [SchemeEm]      = { nord12        , nord8     , col2    } ,
-  [SchemeEr]      = { nord6         , nord3     , col2    } ,
+  [Scheme11]      = { nord8  , nord11 , col2   } ,
+  [Scheme12]      = { col1   , nord8  , col2   } ,
+
+  /* [SchemeEl]      = { nord12 , nord10 , col2   } , */
+  [SchemeEl]      = { nord12 , NULL , col2   } ,
+  /* [SchemeEm]      = { nord12 , nord8  , col2   } , */
+  [SchemeEm]      = { nord12 , NULL  , col2   } ,
+  [SchemeEr]      = { nord5  , NULL  , col2   } ,
 };
 
+static const unsigned int alphas[][3]      = {
+    /*               fg      bg        border*/
+  [SchemeNorm] = { OPAQUE, baralpha, borderalpha },
+	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
+  [SchemeTagNorm] = { OPAQUE, baralpha, borderalpha } ,
+  [SchemeTagSel]  = { OPAQUE, baralpha, borderalpha } ,
+
+  [SchemeHid]     = { OPAQUE, baralpha, borderalpha } ,
+
+  [SchemeSymbol]  = { OPAQUE, baralpha, borderalpha } ,
+
+  [SchemeStatus]  = { OPAQUE, baralpha, borderalpha } ,
+
+  [SchemeNorm]    = { OPAQUE, baralpha, borderalpha } ,
+  [SchemeSel]     = { OPAQUE, baralpha, borderalpha } ,
+
+  [Scheme0b]      = { OPAQUE, baralpha, borderalpha } ,
+  [Scheme0c]      = { OPAQUE, baralpha, borderalpha } ,
+
+  [Scheme0d]      = { OPAQUE, baralpha, borderalpha } ,
+  [Scheme0e]      = { OPAQUE, baralpha, borderalpha } ,
+
+  [Scheme0f]      = { OPAQUE, baralpha, borderalpha } ,
+  [Scheme10]      = { OPAQUE, baralpha, borderalpha } ,
+
+  [Scheme11]      = { OPAQUE, baralpha, borderalpha } ,
+  [Scheme12]      = { OPAQUE, baralpha, borderalpha } ,
+
+  [SchemeEl]      = { OPAQUE, baralpha, borderalpha } ,
+  [SchemeEm]      = { OPAQUE, baralpha, borderalpha } ,
+  [SchemeEr]      = { OPAQUE, baralpha, borderalpha } ,
+};
 /* tagging */
 /*   󰈦 󰇩               ﬐    */
 static const char *tags[] = { "","","","󰃨","" };
