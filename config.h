@@ -10,7 +10,7 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const int extrabar           = 1;        /* 0 means no extra bar */
 static const char statussep         = ']';      /* separator between statuses */
 static const double activeopacity   = 0.95f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
-static const double inactiveopacity = 0.7f;     /* Window opacity when it's inactive (0 <= opacity <= 1) */
+static const double inactiveopacity = 0.75f;     /* Window opacity when it's inactive (0 <= opacity <= 1) */
 
 /* static const char *fonts[]        = { "monospace:size                = 10" }; */
 static const char *fonts[]           = { "Code New Roman Nerd Font:size = 12" };
@@ -66,7 +66,7 @@ enum {
 
 static const char *colors[][3]      = {
   /*               fg         bg         border   */
-  [SchemeTagNorm] = { nord14 , col4   , col2   } ,
+  [SchemeTagNorm] = { nord11 , col4   , col2   } ,
   [SchemeTagSel]  = { col1   , nord11 , col1   } ,
   /* [SchemeTagNorm] = { nord10 , NULL   , col2   } , */
   /* [SchemeTagSel]  = { nord13   , NULL , col1   } , */
@@ -80,7 +80,7 @@ static const char *colors[][3]      = {
   [SchemeStatus]  = { col2   , nord10 , col2   } ,
 
   [SchemeNorm]    = { nord12 , nord1  , col3   } ,
-  [SchemeSel]     = { nord10 , nord11 , nord12 } ,
+  [SchemeSel]     = { nord10 , nord2 , nord12 } ,
   /* [SchemeNorm]    = { nord5 , NULL  , col3   } , */
   /* [SchemeSel]     = { nord12 , NULL , nord12 } , */
 
@@ -98,7 +98,7 @@ static const char *colors[][3]      = {
   [Scheme12]      = { col1   , nord8  , col2   } ,
 
   [SchemeEl]      = { nord12 , nord10 , col2   } ,
-  [SchemeEm]      = { nord12 , nord12  , col2   } ,
+  [SchemeEm]      = { nord12 , nord8  , col2   } ,
   [SchemeEr]      = { nord5  , nord10  , col2   } ,
 };
 
@@ -223,22 +223,22 @@ static const Key keys[] = {
   { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 
   { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
-	{ MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
-	{ MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h" } },
-	{ MODKEY,                       XK_Left,   moveresize,     {.v = "-25x 0y 0w 0h" } },
-	{ MODKEY|ControlMask,             XK_Down,   moveresize,     {.v = "0x 0y 0w 25h" } },
-	{ MODKEY|ControlMask,             XK_Up,     moveresize,     {.v = "0x 0y 0w -25h" } },
-	{ MODKEY|ControlMask,             XK_Right,  moveresize,     {.v = "0x 0y 25w 0h" } },
-	{ MODKEY|ControlMask,             XK_Left,   moveresize,     {.v = "0x 0y -25w 0h" } },
-	/* { MODKEY|ControlMask,           XK_Up,     moveresizeedge, {.v = "t"} }, */
+  { MODKEY|ControlMask,           XK_j,   moveresize,     {.v = "0x 25y 0w 0h" } },
+  { MODKEY|ControlMask,           XK_k,     moveresize,     {.v = "0x -25y 0w 0h" } },
+  { MODKEY|ControlMask,           XK_l,  moveresize,     {.v = "25x 0y 0w 0h" } },
+  { MODKEY|ControlMask,           XK_h,   moveresize,     {.v = "-25x 0y 0w 0h" } },
+  { MODKEY|ControlMask,           XK_Down,   moveresize,     {.v = "0x 0y 0w 25h" } },
+  { MODKEY|ControlMask,           XK_Up,     moveresize,     {.v = "0x 0y 0w -25h" } },
+  { MODKEY|ControlMask,           XK_Right,  moveresize,     {.v = "0x 0y 25w 0h" } },
+  { MODKEY|ControlMask,           XK_Left,   moveresize,     {.v = "0x 0y -25w 0h" } },
+  /* { MODKEY|ControlMask,           XK_Up,     moveresizeedge, {.v = "t"} }, */
 	/* { MODKEY|ControlMask,           XK_Down,   moveresizeedge, {.v = "b"} }, */
 	/* { MODKEY|ControlMask,           XK_Left,   moveresizeedge, {.v = "l"} }, */
 	/* { MODKEY|ControlMask,           XK_Right,  moveresizeedge, {.v = "r"} }, */
-	{ MODKEY|ControlMask|ShiftMask, XK_Up,     moveresizeedge, {.v = "t"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Down,   moveresizeedge, {.v = "b"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Left,   moveresizeedge, {.v = "l"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Right,  moveresizeedge, {.v = "r"} },
+	/* { MODKEY|ControlMask|ShiftMask, XK_Up,     moveresizeedge, {.v = "t"} }, */
+	/* { MODKEY|ControlMask|ShiftMask, XK_Down,   moveresizeedge, {.v = "b"} }, */
+	/* { MODKEY|ControlMask|ShiftMask, XK_Left,   moveresizeedge, {.v = "l"} }, */
+	/* { MODKEY|ControlMask|ShiftMask, XK_Right,  moveresizeedge, {.v = "r"} }, */
 
 
   { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
