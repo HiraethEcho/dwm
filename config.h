@@ -28,14 +28,16 @@ static const char *colors[][3]      = {
 static const char *tags[] = { "", "", "","","" };
 /* static const char *tags[] = { "", "", "", "", "", "", "",  "", "" }; */
 
+static const char scratchpadname[] = "scratchpad";
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   focusopacity    unfocusopacity     monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           1.0,            inactiveopacity,   -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           activeopacity,  inactiveopacity,   -1 },
+	// { "Gimp",     NULL,       NULL,       0,            1,           1.0,            inactiveopacity,   -1 },
+	// { "Firefox",  NULL,       NULL,       1 << 8,       0,           activeopacity,  inactiveopacity,   -1 },
+  { "st"       , NULL , scratchpadname , 1 << 8 , 1 ,       0.7 ,          0.3             , -1 } ,
 };
 
 /* layout(s) */
@@ -67,18 +69,22 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
+static const char *rofidrun[]      = {"rofi","-show","drun"};
+static const char *rofirun[]       = {"rofi","-show","run"};
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
 
 static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
 static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
 static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
-static const char *light_up[] = {"/usr/bin/xbacklight", "-inc", "5", NULL};
-static const char *light_down[] = {"/usr/bin/xbacklight", "-dec", "5", NULL};
+static const char *light_up[] = {"xbacklight", "-inc", "5", NULL};
+static const char *light_down[] = {"xbacklight", "-dec", "5", NULL};
 
 #include "exitdwm.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+  { Mod4Mask,                     XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -103,10 +109,11 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 
-  { MODKEY|ShiftMask,             XK_a,      changefocusopacity,   {.f = +0.025}},
-  { MODKEY|ShiftMask,             XK_s,      changefocusopacity,   {.f = -0.025}},
-  { MODKEY|ShiftMask,             XK_z,      changeunfocusopacity, {.f = +0.025}},
-  { MODKEY|ShiftMask,             XK_x,      changeunfocusopacity, {.f = -0.025}},
+  { MODKEY,                       XK_space,  spawn,          {.v = rofidrun } },
+  { MODKEY|ShiftMask,             XK_s,      changefocusopacity,   {.f = +0.025}},
+  { MODKEY|ShiftMask,             XK_a,      changefocusopacity,   {.f = -0.025}},
+  { MODKEY|ShiftMask,             XK_x,      changeunfocusopacity, {.f = +0.025}},
+  { MODKEY|ShiftMask,             XK_z,      changeunfocusopacity, {.f = -0.025}},
 	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
