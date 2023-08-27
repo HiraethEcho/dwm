@@ -7,6 +7,10 @@ static const unsigned int gappx     = 5;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
+static const unsigned int systrayspacing = 2;   /* systray spacing */
+static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
+static const int showsystray             = 1;   /* 0 means no systray */
 static const double activeopacity   = 0.9f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
 static const double inactiveopacity = 0.7f;     /* Window opacity when it's inactive (0 <= opacity <= 1) */
 /* static const char *fonts[]          = { "monospace:size=10" }; */
