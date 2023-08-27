@@ -22,7 +22,7 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
-static const unsigned int baralpha = 0xd0;
+static const unsigned int baralpha = 0.6*0xffU;
 static const unsigned int borderalpha = OPAQUE;
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
@@ -34,6 +34,7 @@ static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
 	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
 	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
+	[SchemeHid]  = { OPAQUE, baralpha, borderalpha },
 };
 
 /* tagging */
@@ -49,7 +50,8 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   focusopacity    unfocusopacity     monitor */
 	// { "Gimp",     NULL,       NULL,       0,            1,           1.0,            inactiveopacity,   -1 },
-	// { "Firefox",  NULL,       NULL,       1 << 8,       0,           activeopacity,  inactiveopacity,   -1 },
+	{ "weixin",     NULL,       NULL,       0,            1,           0.8,            inactiveopacity,   -1 },
+	{ "QQ",     NULL,       NULL,       0,            1,           0.8,            inactiveopacity,   -1 },
   { "st"       , NULL , scratchpadname , 1 << 8 , 1 ,       0.7 ,          0.3             , -1 } ,
 };
 
@@ -64,7 +66,7 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
-  { "###",      gaplessgrid },
+  { "[#]",      gaplessgrid },
 };
 
 /* key definitions */
@@ -170,6 +172,8 @@ static const Button buttons[] = {
   { ClkWinTitle,          0,              Button3,        zoom,               {0} },
   { ClkWinTitle,          0,              Button4,        changefocusopacity, {.f = +0.025} },
   { ClkWinTitle,          0,              Button5,        changefocusopacity, {.f = -0.025} },
+  { ClkWinTitle,          MODKEY,         Button4,        changeunfocusopacity, {.f = +0.025} },
+  { ClkWinTitle,          MODKEY,         Button5,        changeunfocusopacity, {.f = -0.025} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
