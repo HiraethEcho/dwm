@@ -28,6 +28,7 @@ static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeHid]  = { col_cyan,  col_gray1, col_cyan  },
 };
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
@@ -98,8 +99,10 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
   { Mod4Mask,                     XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
-	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
+	{ MODKEY,                       XK_j,      focusstackvis,  {.i = +1 } },
+	{ MODKEY,                       XK_k,      focusstackvis,  {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_j,      focusstackhid,  {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_k,      focusstackhid,  {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
@@ -130,6 +133,10 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
 
+	// { MODKEY,                       XK_s,      show,           {0} },
+	{ MODKEY|ShiftMask,             XK_v,      showall,        {0} },
+	{ MODKEY,                       XK_v,      hide,           {0} },
+
   {0,                 XF86XK_AudioLowerVolume, spawn, {.v = downvol}},
 	{0,                 XF86XK_AudioMute,        spawn, {.v = mutevol }},
 	{0,                 XF86XK_AudioRaiseVolume, spawn, {.v = upvol}},
@@ -156,11 +163,18 @@ static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
-	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
+	// { ClkWinTitle,          0,              Button1,        togglewin,      {0} },
+	// { ClkWinTitle,          0,              Button2,        zoom,           {0} },
+  { ClkWinTitle,          0,              Button1,        togglewin,          {0} },
+  { ClkWinTitle,          0,              Button2,        killclient,         {0} },
+  { ClkWinTitle,          0,              Button3,        zoom,               {0} },
+  { ClkWinTitle,          0,              Button4,        changefocusopacity, {.f = +0.025} },
+  { ClkWinTitle,          0,              Button5,        changefocusopacity, {.f = -0.025} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
+
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
