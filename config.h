@@ -41,7 +41,8 @@ static const unsigned int alphas[][3]      = {
 
 /* tagging */
 /*   󰈦 󰇩               ﬐    */
-static const char *tags[] = { "", "", "","","" };
+// static const char *tags[] = { "", "", "","","" };
+static const char *tags[] = { "", "", "","","" };
 /* static const char *tags[] = { "", "", "", "", "", "", "",  "", "" }; */
 
 static const char scratchpadname[] = "scratchpad";
@@ -54,7 +55,7 @@ static const Rule rules[] = {
 	// { "Gimp",     NULL,       NULL,       0,            1,           1.0,            inactiveopacity,   -1 },
 	{ "weixin",     NULL,       NULL,       0,            1,           0.8,            inactiveopacity,   -1 },
 	{ "QQ",     NULL,       NULL,       0,            1,           0.8,            inactiveopacity,   -1 },
-  { "st"       , NULL , scratchpadname , 1 << 8 , 1 ,       0.7 ,          0.3             , -1 } ,
+  { "st"       , NULL , scratchpadname , 0 , 1 ,       0.7 ,          0.3             , -1 } ,
 };
 
 /* layout(s) */
@@ -99,47 +100,47 @@ static const char *light_down[] = {"xbacklight", "-dec", "5", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-  { Mod4Mask,                     XK_grave,  togglescratch,  {.v = scratchpadcmd } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_j,      focusstackvis,  {.i = +1 } },
-	{ MODKEY,                       XK_k,      focusstackvis,  {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_j,      focusstackhid,  {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_k,      focusstackhid,  {.i = -1 } },
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	// { MODKEY,             XK_q,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[3]} },
-	{ MODKEY|ShiftMask,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,             XK_f,      fullscreen,     {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY,           XK_p,      spawn,          {.v = dmenucmd } },
+  { MODKEY,           XK_space,  spawn,          {.v = rofidrun } },
+	{ MODKEY|ShiftMask, XK_Return, spawn,          {.v = termcmd } },
+  { Mod4Mask,         XK_grave,  togglescratch,  {.v = scratchpadcmd } },
+	{ MODKEY,           XK_b,      togglebar,      {0} },
+	{ MODKEY,           XK_j,      focusstackvis,  {.i = +1 } },
+	{ MODKEY,           XK_k,      focusstackvis,  {.i = -1 } },
+	{ MODKEY|ShiftMask, XK_j,      focusstackhid,  {.i = +1 } },
+	{ MODKEY|ShiftMask, XK_k,      focusstackhid,  {.i = -1 } },
+	{ MODKEY,           XK_i,      incnmaster,     {.i = +1 } },
+	{ MODKEY,           XK_d,      incnmaster,     {.i = -1 } },
+	{ MODKEY,           XK_h,      setmfact,       {.f = -0.05} },
+	{ MODKEY,           XK_l,      setmfact,       {.f = +0.05} },
+	{ MODKEY,           XK_Return, zoom,           {0} },
+	{ MODKEY,           XK_Tab,    view,           {0} },
+	{ MODKEY|ShiftMask, XK_c,      killclient,     {0} },
+	{ MODKEY,           XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,           XK_g,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ShiftMask, XK_f,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY,           XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,           XK_f,      fullscreen,     {0} },
+	{ MODKEY|ShiftMask, XK_space,  togglefloating, {0} },
+	{ MODKEY,           XK_0,      view,           {.ui = ~0 } },
+	{ MODKEY|ShiftMask, XK_0,      tag,            {.ui = ~0 } },
+	{ MODKEY,           XK_comma,  focusmon,       {.i = -1 } },
+	{ MODKEY,           XK_period, focusmon,       {.i = +1 } },
+	{ MODKEY|ShiftMask, XK_comma,  tagmon,         {.i = -1 } },
+	{ MODKEY|ShiftMask, XK_period, tagmon,         {.i = +1 } },
 
-  { MODKEY,                       XK_space,  spawn,          {.v = rofidrun } },
-  { MODKEY|ShiftMask,             XK_s,      changefocusopacity,   {.f = +0.025}},
-  { MODKEY|ShiftMask,             XK_a,      changefocusopacity,   {.f = -0.025}},
-  { MODKEY|ShiftMask,             XK_x,      changeunfocusopacity, {.f = +0.025}},
-  { MODKEY|ShiftMask,             XK_z,      changeunfocusopacity, {.f = -0.025}},
-	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
-	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
 
-	// { MODKEY,                       XK_s,      show,           {0} },
-	{ MODKEY|ShiftMask,             XK_v,      showall,        {0} },
-	{ MODKEY,                       XK_v,      hide,           {0} },
+	{ MODKEY,           XK_minus,  setgaps,        {.i = -1 } },
+	{ MODKEY,           XK_equal,  setgaps,        {.i = +1 } },
+	{ MODKEY|ShiftMask, XK_equal,  setgaps,        {.i = 0  } },
+  { MODKEY|ShiftMask, XK_s,      changefocusopacity,   {.f = +0.025}},
+  { MODKEY|ShiftMask, XK_a,      changefocusopacity,   {.f = -0.025}},
+  { MODKEY|ShiftMask, XK_x,      changeunfocusopacity, {.f = +0.025}},
+  { MODKEY|ShiftMask, XK_z,      changeunfocusopacity, {.f = -0.025}},
+
+	// { MODKEY,           XK_s,      show,           {0} },
+	{ MODKEY|ShiftMask, XK_v,      showall,        {0} },
+	{ MODKEY,           XK_v,      hide,           {0} },
 
   {0,                 XF86XK_AudioLowerVolume, spawn, {.v = downvol}},
 	{0,                 XF86XK_AudioMute,        spawn, {.v = mutevol }},
@@ -167,8 +168,6 @@ static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
-	// { ClkWinTitle,          0,              Button1,        togglewin,      {0} },
-	// { ClkWinTitle,          0,              Button2,        zoom,           {0} },
   { ClkWinTitle,          0,              Button1,        togglewin,          {0} },
   { ClkWinTitle,          0,              Button2,        killclient,         {0} },
   { ClkWinTitle,          0,              Button3,        zoom,               {0} },
