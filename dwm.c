@@ -932,8 +932,8 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
 	text = p;
 
 	w += 2; /* 1px padding on both sides */
-	x = m->ww - w - getsystraywidth();
 	ret = m->ww - w;
+	x = m->ww - w - getsystraywidth();
 
 	drw_setscheme(drw, scheme[LENGTH(colors)]);
 	drw->scheme[ColFg] = scheme[SchemeNorm][ColFg];
@@ -1016,15 +1016,12 @@ drawbar(Monitor *m)
 
 	if (showsystray && m == systraytomon(m)) {
 		stw = getsystraywidth();
-		// drw_setscheme(drw, scheme[SchemeNorm]);
-		// drw_rect(drw, m->ww - stw, 0, stw, bh, 1, 1);
+		drw_setscheme(drw, scheme[SchemeNorm]);
+		drw_rect(drw, m->ww - stw, 0, stw, bh, 1, 1);
 	}
 
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
-		// drw_setscheme(drw, scheme[SchemeNorm]);
-		// tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
-		// drw_text(drw, m->ww - tw - stw, 0, tw, bh, 0, stext, 0);
 		tw = m->ww - drawstatusbar(m, bh, stext);
 	}
 
@@ -1081,7 +1078,7 @@ drawbar(Monitor *m)
 	}
 	m->bt = n;
 	m->btw = w;
-	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
+	drw_map(drw, m->barwin, 0, 0, m->ww-stw, bh);
 }
 
 void
@@ -2675,7 +2672,7 @@ void
 updatestatus(void)
 {
 	if (!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
-		strcpy(stext, "dwm-"VERSION);
+		strcpy(stext, "");
 	drawbar(selmon);
 }
 
