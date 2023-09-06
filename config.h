@@ -17,7 +17,7 @@ static const double inactiveopacity = 0.7f;     /* Window opacity when it's inac
 /* static const char *fonts[]          = { "monospace:size=10" }; */
 static const char *fonts[]          = { "Maple Mono NF:size=10" };
 /* static const char dmenufont[]       = "monospace:size=10"; */
-static const char dmenufont[]       = "Maple Mono Nf:size=10";
+static const char dmenufont[]       = "Maple Mono NF:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -54,6 +54,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   focusopacity    unfocusopacity     monitor */
 	// { "Gimp",     NULL,       NULL,       0,            1,           1.0,            inactiveopacity,   -1 },
 	{ "weixin",     NULL,       NULL,       0,            1,           0.8,            inactiveopacity,   -1 },
+	{ "OneDriveGUI",     NULL,       NULL,       0,            1,           0.8,            inactiveopacity,   -1 },
 	{ "QQ",     NULL,       NULL,       0,            1,           0.8,            inactiveopacity,   -1 },
   { "st"       , NULL , scratchpadname , 0 , 1 ,       0.7 ,          0.3             , -1 } ,
 };
@@ -87,16 +88,17 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
+static const char *edge[]  = { "microsoft-edge-stable", NULL };
 
 static const char *rofidrun[]      = {"rofi","-show","drun"};
 static const char *rofirun[]       = {"rofi","-show","run"};
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
 
-static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
-static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
-static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
-static const char *light_up[] = {"xbacklight", "-inc", "5", NULL};
-static const char *light_down[] = {"xbacklight", "-dec", "5", NULL};
+static const char *upvol[]   = { "pamixer", "-i",  "5",     NULL };
+static const char *downvol[] = { "pamixer", "-d", "5",     NULL };
+static const char *mutevol[] = { "pamixer", "-t",  NULL };
+static const char *uplight[] = {"xbacklight", "-inc", "5", NULL};
+static const char *downlight[] = {"xbacklight", "-dec", "5", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -137,16 +139,20 @@ static const Key keys[] = {
   { MODKEY|ShiftMask, XK_a,      changefocusopacity,   {.f = -0.025}},
   { MODKEY|ShiftMask, XK_x,      changeunfocusopacity, {.f = +0.025}},
   { MODKEY|ShiftMask, XK_z,      changeunfocusopacity, {.f = -0.025}},
-
 	// { MODKEY,           XK_s,      show,           {0} },
 	{ MODKEY|ShiftMask, XK_v,      showall,        {0} },
 	{ MODKEY,           XK_v,      hide,           {0} },
 
+
+  { Mod4Mask,         XK_e,  spawn,  SHCMD("st ranger") },
+  { Mod4Mask,         XK_space,  spawn,  SHCMD("xinput enable 8") },
+  { Mod4Mask|ShiftMask,         XK_space,  spawn,  SHCMD("xinput disable 8") },
+
+	{0,                 XF86XK_AudioRaiseVolume, spawn, {.v = upvol}},
   {0,                 XF86XK_AudioLowerVolume, spawn, {.v = downvol}},
 	{0,                 XF86XK_AudioMute,        spawn, {.v = mutevol }},
-	{0,                 XF86XK_AudioRaiseVolume, spawn, {.v = upvol}},
-	{0,                 XF86XK_MonBrightnessUp,  spawn, {.v = light_up}},
-	{0,                 XF86XK_MonBrightnessDown,spawn, {.v = light_down}},
+	{0,                 XF86XK_MonBrightnessUp,  spawn, {.v = uplight}},
+	{0,                 XF86XK_MonBrightnessDown,spawn, {.v = downlight}},
 
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
@@ -175,7 +181,13 @@ static const Button buttons[] = {
   { ClkWinTitle,          0,              Button5,        changefocusopacity, {.f = -0.025} },
   { ClkWinTitle,          MODKEY,         Button4,        changeunfocusopacity, {.f = +0.025} },
   { ClkWinTitle,          MODKEY,         Button5,        changeunfocusopacity, {.f = -0.025} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        0,              Button1,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        0,              Button2,        spawn,          {.v = mutevol } },
+	{ ClkStatusText,        0,              Button3,        spawn,          {.v = edge } },
+	{ ClkStatusText,        0,              Button4,        spawn,          {.v = upvol } },
+	{ ClkStatusText,        0,              Button5,        spawn,          {.v = downvol } },
+	{ ClkStatusText,        MODKEY,         Button4,        spawn,          {.v = uplight } },
+	{ ClkStatusText,        MODKEY,         Button5,        spawn,          {.v = downlight } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
