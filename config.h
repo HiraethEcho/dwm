@@ -45,6 +45,7 @@ static const unsigned int alphas[][3]      = {
 static const char *tags[] = { "", "", "","","" };
 /* static const char *tags[] = { "", "", "", "", "", "", "",  "", "" }; */
 
+#include "shift-tools.c"
 static const char scratchpadname[] = "scratchpad";
 static const Rule rules[] = {
 	/* xprop(1):
@@ -140,13 +141,19 @@ static const Key keys[] = {
   { MODKEY|ShiftMask, XK_x,      changeunfocusopacity, {.f = +0.025}},
   { MODKEY|ShiftMask, XK_z,      changeunfocusopacity, {.f = -0.025}},
 	// { MODKEY,           XK_s,      show,           {0} },
-	{ MODKEY|ShiftMask, XK_v,      showall,        {0} },
+	{ MODKEY|ShiftMask, XK_v,      show,        {0} },
 	{ MODKEY,           XK_v,      hide,           {0} },
 
+  { Mod4Mask,             XK_e,      spawn,  SHCMD("st ranger") },
+  { Mod4Mask,             XK_space,  spawn,  SHCMD("xinput enable 8") },
+  { Mod4Mask|ShiftMask,   XK_space,  spawn,  SHCMD("xinput disable 8") },
+	{ Mod4Mask|ControlMask, XK_Right,	shiftview,      { .i = +1 } },
+	{ Mod4Mask|ControlMask, XK_Left,	shiftview,      { .i = -1 } },
+	{ Mod4Mask|ShiftMask,   XK_Right, shiftboth,      { .i = +1 }	},
+	{ Mod4Mask|ShiftMask,	  XK_Left,  shiftboth,      { .i = -1 }	},
+	// { MODKEY|ControlMask,		XK_w,      shiftswaptags,  { .i = -1 }	},
+	// { MODKEY|ControlMask,		XK_e,      shiftswaptags,  { .i = +1 }	},
 
-  { Mod4Mask,         XK_e,  spawn,  SHCMD("st ranger") },
-  { Mod4Mask,         XK_space,  spawn,  SHCMD("xinput enable 8") },
-  { Mod4Mask|ShiftMask,         XK_space,  spawn,  SHCMD("xinput disable 8") },
 
 	{0,                 XF86XK_AudioRaiseVolume, spawn, {.v = upvol}},
   {0,                 XF86XK_AudioLowerVolume, spawn, {.v = downvol}},
