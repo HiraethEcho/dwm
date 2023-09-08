@@ -18,29 +18,40 @@ static const double inactiveopacity = 0.7f;     /* Window opacity when it's inac
 static const char *fonts[]          = { "Maple Mono NF:size=10" };
 /* static const char dmenufont[]       = "monospace:size=10"; */
 static const char dmenufont[]       = "Maple Mono NF:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const char col_red[]        = "#BF616A";
-static const unsigned int baralpha = 0.5*0xffU;
+
+#include "themes/catppuccin.h"
+static const char col_gray1[] = "#222222";
+static const char col_gray2[] = "#444444";
+static const char col_gray3[] = "#bbbbbb";
+static const char col_gray4[] = "#eeeeee";
+static const char col_gray5[] = "#D8DEE9";
+static const char col_cyan[]  = "#005577";
+static const char col_red[]   = "#BF616A";
+
+static const unsigned int baralpha = 0.7*0xffU;
 static const unsigned int borderalpha = OPAQUE;
+
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_red  },
-	[SchemeHid]  = { col_cyan,  col_gray1, col_cyan  },
+	// [SchemeNorm] = { col_gray3, col_gray5, col_gray2 },
+	// [SchemeSel]  = { col_gray4, col_cyan,  col_red  },
+    [SchemeNorm]    = { yellow,   black,  gray2 },
+    [SchemeSel]     = { gray4,   blue,   blue  },
+    [SchemeTagNorm] = { yellow , gray3,  black },
+    [SchemeTagSel]  = { blue,    black,  black },
+    [SchemeHid]     = { red,  col_gray1, col_cyan  },
 };
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
-	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
-	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
-	[SchemeHid]  = { OPAQUE, baralpha, borderalpha },
+	[SchemeNorm]    = { OPAQUE, baralpha, borderalpha },
+	[SchemeSel]     = { OPAQUE, baralpha, borderalpha },
+	[SchemeTagSel]  = { OPAQUE, baralpha, borderalpha },
+	[SchemeTagNorm] = { OPAQUE, baralpha, borderalpha },
+	[SchemeHid]     = { OPAQUE, baralpha, borderalpha },
 };
 
 /* tagging */
-/*   󰈦 󰇩               ﬐    */
+/*   󰈦 󰇩                 */
 // static const char *tags[] = { "", "", "","","" };
 static const char *tags[] = { "", "", "","","" };
 /* static const char *tags[] = { "", "", "", "", "", "", "",  "", "" }; */
@@ -54,16 +65,16 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   focusopacity    unfocusopacity     monitor */
 	// { "Gimp",     NULL,       NULL,       0,            1,           1.0,            inactiveopacity,   -1 },
-	{ "weixin",     NULL,       NULL,       0,            1,           0.8,            inactiveopacity,   -1 },
-	{ "OneDriveGUI",     NULL,       NULL,       0,            1,           0.8,            inactiveopacity,   -1 },
-	{ "QQ",     NULL,       NULL,       0,            1,           0.8,            inactiveopacity,   -1 },
-  { "st"       , NULL , scratchpadname , 0 , 1 ,       0.7 ,          0.3             , -1 } ,
+	{ "weixin"      , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
+	{ "OneDriveGUI" , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
+	{ "QQ"          , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
+  { "st"          , NULL , scratchpadname , 0 , 1 , 0.7 , 0.3             , -1 } ,
 };
 
 /* layout(s) */
-static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
-static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const float mfact        = 0.55; /* factor of master area size [0.05..0.95] */
+static const int nmaster        = 1;    /* number of clients in master area */
+static const int resizehints    = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 static const Layout layouts[] = {
@@ -87,18 +98,18 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "alacritty", NULL };
-static const char *edge[]  = { "microsoft-edge-stable", NULL };
-
+static const char *dmenucmd[]      = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *termcmd[]       = { "alacritty", NULL };
 static const char *rofidrun[]      = {"rofi","-show","drun"};
 static const char *rofirun[]       = {"rofi","-show","run"};
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
 
-static const char *upvol[]   = { "pamixer", "-i",  "5",     NULL };
-static const char *downvol[] = { "pamixer", "-d", "5",     NULL };
-static const char *mutevol[] = { "pamixer", "-t",  NULL };
-static const char *uplight[] = {"xbacklight", "-inc", "5", NULL};
+static const char *edge[]      = { "microsoft-edge-stable", NULL };
+static const char *pavu[]      = { "pavucontrol", NULL };
+static const char *upvol[]     = { "pamixer", "-i",  "5",     NULL };
+static const char *downvol[]   = { "pamixer", "-d", "5",     NULL };
+static const char *mutevol[]   = { "pamixer", "-t",  NULL };
+static const char *uplight[]   = {"xbacklight", "-inc", "5", NULL};
 static const char *downlight[] = {"xbacklight", "-dec", "5", NULL};
 
 static const Key keys[] = {
@@ -140,9 +151,9 @@ static const Key keys[] = {
   { MODKEY|ShiftMask, XK_a,      changefocusopacity,   {.f = -0.025}},
   { MODKEY|ShiftMask, XK_x,      changeunfocusopacity, {.f = +0.025}},
   { MODKEY|ShiftMask, XK_z,      changeunfocusopacity, {.f = -0.025}},
-	// { MODKEY,           XK_s,      show,           {0} },
-	{ MODKEY|ShiftMask, XK_v,      show,        {0} },
-	{ MODKEY,           XK_v,      hide,           {0} },
+	// { MODKEY,           XK_s,      showall,           {0} },
+	{ MODKEY|ShiftMask, XK_q,      show,        {0} },
+	{ MODKEY,           XK_q,      hide,           {0} },
 
   { Mod4Mask,             XK_e,      spawn,  SHCMD("st ranger") },
   { Mod4Mask,             XK_space,  spawn,  SHCMD("xinput enable 8") },
@@ -190,6 +201,7 @@ static const Button buttons[] = {
   { ClkWinTitle,          MODKEY,         Button5,        changeunfocusopacity, {.f = -0.025} },
 	{ ClkStatusText,        0,              Button1,        spawn,          {.v = termcmd } },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = mutevol } },
+	{ ClkStatusText,        MODKEY,         Button2,        spawn,          {.v = pavu }},
 	{ ClkStatusText,        0,              Button3,        spawn,          {.v = edge } },
 	{ ClkStatusText,        0,              Button4,        spawn,          {.v = upvol } },
 	{ ClkStatusText,        0,              Button5,        spawn,          {.v = downvol } },
