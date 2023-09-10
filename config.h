@@ -12,11 +12,11 @@ static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows sel
 static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray             = 1;   /* 0 means no systray */
+static const int colorfultag        = 1;        /* 0 means use SchemeSel for selected non vacant tag */
 static const double activeopacity   = 0.9f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
 static const double inactiveopacity = 0.7f;     /* Window opacity when it's inactive (0 <= opacity <= 1) */
-/* static const char *fonts[]          = { "monospace:size=10" }; */
+
 static const char *fonts[]          = { "Maple Mono NF:size=10" };
-/* static const char dmenufont[]       = "monospace:size=10"; */
 static const char dmenufont[]       = "Maple Mono NF:size=10";
 
 #include "themes/catppuccin.h"
@@ -35,19 +35,31 @@ static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	// [SchemeNorm] = { col_gray3, col_gray5, col_gray2 },
 	// [SchemeSel]  = { col_gray4, col_cyan,  col_red  },
-    [SchemeNorm]    = { yellow,   black,  gray2 },
-    [SchemeSel]     = { gray4,   blue,   blue  },
-    [SchemeTagNorm] = { yellow , gray3,  black },
-    [SchemeTagSel]  = { blue,    black,  black },
-    [SchemeHid]     = { red,  col_gray1, col_cyan  },
+    [SchemeNorm]    = { yellow, black    , gray2    },
+    [SchemeSel]     = { gray4 , blue     , blue     },
+    [SchemeTagNorm] = { yellow, gray3    , black    },
+    [SchemeTagSel]  = { blue  , black    , black    },
+    [SchemeTag]     = { gray3 , black    , black    },
+    [SchemeTag1]    = { blue  , black    , black    },
+    [SchemeTag2]    = { red   , black    , black    },
+    [SchemeTag3]    = { orange, black    , black    },
+    [SchemeTag4]    = { green , black    , black    },
+    [SchemeTag5]    = { pink  , black    , black    },
+    [SchemeHid]     = { red   , col_gray1, col_cyan },
 };
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
-	[SchemeNorm]    = { OPAQUE, baralpha, borderalpha },
-	[SchemeSel]     = { OPAQUE, baralpha, borderalpha },
-	[SchemeTagSel]  = { OPAQUE, baralpha, borderalpha },
-	[SchemeTagNorm] = { OPAQUE, baralpha, borderalpha },
-	[SchemeHid]     = { OPAQUE, baralpha, borderalpha },
+  [SchemeNorm]    = { OPAQUE, baralpha, borderalpha },
+  [SchemeSel]     = { OPAQUE, baralpha, borderalpha },
+  [SchemeTagNorm] = { OPAQUE, baralpha, borderalpha },
+  [SchemeTagSel]  = { OPAQUE, baralpha, borderalpha },
+  [SchemeTag]     = { OPAQUE, baralpha, borderalpha },
+  [SchemeTag1]    = { OPAQUE, baralpha, borderalpha },
+  [SchemeTag2]    = { OPAQUE, baralpha, borderalpha },
+  [SchemeTag3]    = { OPAQUE, baralpha, borderalpha },
+  [SchemeTag4]    = { OPAQUE, baralpha, borderalpha },
+  [SchemeTag5]    = { OPAQUE, baralpha, borderalpha },
+  [SchemeHid]     = { OPAQUE, baralpha, borderalpha },
 };
 
 /* tagging */
@@ -55,6 +67,14 @@ static const unsigned int alphas[][3]      = {
 // static const char *tags[] = { "", "", "","","" };
 static const char *tags[] = { "", "", "","","" };
 /* static const char *tags[] = { "", "", "", "", "", "", "",  "", "" }; */
+
+static const int tagschemes[] = {
+    SchemeTag1, SchemeTag2, SchemeTag3, SchemeTag4, SchemeTag5
+};
+static const unsigned int ulinepad      = 5; /* horizontal padding between the underline and tag */
+static const unsigned int ulinestroke   = 2; /* thickness / height of the underline */
+static const unsigned int ulinevoffset  = 0; /* how far above the bottom of the bar the line should appear */
+static const int ulineall               = 0; /* 1 to show underline on all tags, 0 for just the active ones */
 
 #include "shift-tools.c"
 static const char scratchpadname[] = "scratchpad";
