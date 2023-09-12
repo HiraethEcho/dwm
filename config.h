@@ -19,7 +19,7 @@ static const double inactiveopacity = 0.7f;     /* Window opacity when it's inac
 static const char *fonts[]          = { "Maple Mono NF:size=10" };
 static const char dmenufont[]       = "Maple Mono NF:size=10";
 
-#include "themes/catppuccin.h"
+#include "themes/gruvchad.h"
 static const char col_gray1[] = "#222222";
 static const char col_gray2[] = "#444444";
 static const char col_gray3[] = "#bbbbbb";
@@ -29,14 +29,18 @@ static const char col_cyan[]  = "#005577";
 static const char col_red[]   = "#BF616A";
 
 static const unsigned int baralpha = 0.7*0xffU;
+static const unsigned int sysalpha = 0.9*0xffU;
+static const unsigned int nonealpha= 0x01U;
 static const unsigned int borderalpha = OPAQUE;
 
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	// [SchemeNorm] = { col_gray3, col_gray5, col_gray2 },
 	// [SchemeSel]  = { col_gray4, col_cyan,  col_red  },
+    [SchemeStatus]  = { red   , col_gray1, col_cyan },
     [SchemeNorm]    = { yellow, black    , gray2    },
     [SchemeSel]     = { gray4 , blue     , blue     },
+    [SchemeNone]    = { gray4, gray4    , gray4    },
     [SchemeTagNorm] = { yellow, gray3    , black    },
     [SchemeTagSel]  = { blue  , black    , black    },
     [SchemeTag]     = { gray3 , black    , black    },
@@ -46,11 +50,15 @@ static const char *colors[][3]      = {
     [SchemeTag4]    = { green , black    , black    },
     [SchemeTag5]    = { pink  , black    , black    },
     [SchemeHid]     = { red   , col_gray1, col_cyan },
+    [SchemeSystray] = { col_gray1   , blue, col_cyan },
+    [SchemeSymbol]  = { yellow   , col_gray1 , col_cyan },
 };
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
+  [SchemeStatus]  = { OPAQUE, OPAQUE, borderalpha },
   [SchemeNorm]    = { OPAQUE, baralpha, borderalpha },
-  [SchemeSel]     = { OPAQUE, baralpha, borderalpha },
+  [SchemeSel]     = { OPAQUE, nonealpha, borderalpha },
+  [SchemeNone]    = { OPAQUE, nonealpha, nonealpha },
   [SchemeTagNorm] = { OPAQUE, baralpha, borderalpha },
   [SchemeTagSel]  = { OPAQUE, baralpha, borderalpha },
   [SchemeTag]     = { OPAQUE, baralpha, borderalpha },
@@ -60,6 +68,8 @@ static const unsigned int alphas[][3]      = {
   [SchemeTag4]    = { OPAQUE, baralpha, borderalpha },
   [SchemeTag5]    = { OPAQUE, baralpha, borderalpha },
   [SchemeHid]     = { OPAQUE, baralpha, borderalpha },
+  [SchemeSystray] = { OPAQUE, OPAQUE, OPAQUE },
+  [SchemeSymbol]  = { OPAQUE, baralpha, OPAQUE },
 };
 
 /* tagging */

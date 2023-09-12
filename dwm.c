@@ -80,7 +80,7 @@
 /* enums */
 enum { Manager, Xembed, XembedInfo, XLast }; /* Xembed atoms */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeHid, SchemeTagSel, SchemeTagNorm, SchemeTag, SchemeTag1, SchemeTag2, SchemeTag3, SchemeTag4, SchemeTag5, }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeHid, SchemeTagSel, SchemeTagNorm, SchemeTag, SchemeTag1, SchemeTag2, SchemeTag3, SchemeTag4, SchemeTag5, SchemeSystray, SchemeSymbol, SchemeStatus, SchemeNone }; /* color schemes */
 enum { NetSupported, NetSystemTray, NetSystemTrayOP, NetSystemTrayOrientation, NetSystemTrayVisual,
 	   NetWMName, NetWMState, NetWMFullscreen, NetActiveWindow, NetWMWindowType, NetWMWindowTypeDock,
 	   NetSystemTrayOrientationHorz, NetWMWindowTypeDialog, NetClientList, NetWMCheck, NetWMWindowsOpacity,NetLast }; /* EWMH atoms */
@@ -940,8 +940,8 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
 	x = m->ww - w - getsystraywidth();
 
 	drw_setscheme(drw, scheme[LENGTH(colors)]);
-	drw->scheme[ColFg] = scheme[SchemeNorm][ColFg];
-	drw->scheme[ColBg] = scheme[SchemeNorm][ColBg];
+	drw->scheme[ColFg] = scheme[SchemeStatus][ColFg];
+	drw->scheme[ColBg] = scheme[SchemeStatus][ColBg];
 	drw_rect(drw, x, 0, w, bh, 1, 1);
 	x++;
 
@@ -972,8 +972,8 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
 					drw_clr_create(drw, &drw->scheme[ColBg], buf,alphas[0]);
 					i += 7;
 				} else if (text[i] == 'd') {
-					drw->scheme[ColFg] = scheme[SchemeNorm][ColFg];
-					drw->scheme[ColBg] = scheme[SchemeNorm][ColBg];
+					drw->scheme[ColFg] = scheme[SchemeStatus][ColFg];
+					drw->scheme[ColBg] = scheme[SchemeStatus][ColBg];
 				} else if (text[i] == 'r') {
 					int rx = atoi(text + ++i);
 					while (text[++i] != ',');
@@ -1020,14 +1020,14 @@ drawbar(Monitor *m)
 
 	if (showsystray && m == systraytomon(m)) {
 		stw = getsystraywidth();
-		drw_setscheme(drw, scheme[SchemeNorm]);
-		// drw_setscheme(drw, scheme[SchemeSystray]);
+		// drw_setscheme(drw, scheme[SchemeNorm]);
+		drw_setscheme(drw, scheme[SchemeSystray]);
 		drw_rect(drw, m->ww - stw, 0, stw, bh, 1, 1);
 	}
 
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
-		// drw_setscheme(drw, scheme[SchemeStatus]);
+		drw_setscheme(drw, scheme[SchemeStatus]);
 		tw = drawstatusbar(m, bh, stext);
 	}
 
@@ -1068,7 +1068,7 @@ drawbar(Monitor *m)
 	// 	x += w;
 	// }
 	w = TEXTW(m->ltsymbol);
-	drw_setscheme(drw, scheme[SchemeNorm]);
+	drw_setscheme(drw, scheme[SchemeSymbol]);
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	if ((w = m->ww - tw - stw - x) > bh) {
@@ -1096,8 +1096,8 @@ drawbar(Monitor *m)
 				x += tabw;
 			}
 		} else {
-			drw_setscheme(drw, scheme[SchemeNorm]);
-			// drw_setscheme(drw, scheme[SchemeNone]);
+			// drw_setscheme(drw, scheme[SchemeNorm]);
+			drw_setscheme(drw, scheme[SchemeNone]);
 			drw_rect(drw, x, 0, w, bh, 1, 1);
 		}
 	}
