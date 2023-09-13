@@ -80,7 +80,23 @@
 /* enums */
 enum { Manager, Xembed, XembedInfo, XLast }; /* Xembed atoms */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeHid, SchemeTagSel, SchemeTagNorm, SchemeTag, SchemeTag1, SchemeTag2, SchemeTag3, SchemeTag4, SchemeTag5, SchemeSystray, SchemeSymbol, SchemeStatus, SchemeNone }; /* color schemes */
+enum { 
+  SchemeStatus, 
+  SchemeNorm,
+  SchemeSel, 
+  SchemeNone,
+  SchemeTagNorm, 
+  SchemeTagSel, 
+  SchemeTag, 
+  SchemeTag1, 
+  SchemeTag2, 
+  SchemeTag3, 
+  SchemeTag4, 
+  SchemeTag5, 
+  SchemeHid, 
+  SchemeSystray, 
+  SchemeSymbol 
+}; /* color schemes */
 enum { NetSupported, NetSystemTray, NetSystemTrayOP, NetSystemTrayOrientation, NetSystemTrayVisual,
 	   NetWMName, NetWMState, NetWMFullscreen, NetActiveWindow, NetWMWindowType, NetWMWindowTypeDock,
 	   NetSystemTrayOrientationHorz, NetWMWindowTypeDialog, NetClientList, NetWMCheck, NetWMWindowsOpacity,NetLast }; /* EWMH atoms */

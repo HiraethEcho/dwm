@@ -17,9 +17,10 @@ static const double activeopacity   = 0.9f;     /* Window opacity when it's focu
 static const double inactiveopacity = 0.7f;     /* Window opacity when it's inactive (0 <= opacity <= 1) */
 
 static const char *fonts[]          = { "Maple Mono NF:size=10" };
-static const char dmenufont[]       = "Maple Mono NF:size=10";
+static const char dmenufont[]       = "Maple Mono NF:size=15";
 
-#include "themes/gruvchad.h"
+#include "themes/tokyonight.h"
+static const char col_gray0[] = "#111111";
 static const char col_gray1[] = "#222222";
 static const char col_gray2[] = "#444444";
 static const char col_gray3[] = "#bbbbbb";
@@ -27,6 +28,7 @@ static const char col_gray4[] = "#eeeeee";
 static const char col_gray5[] = "#D8DEE9";
 static const char col_cyan[]  = "#005577";
 static const char col_red[]   = "#BF616A";
+static const char col_green[] = "#89b482";
 
 static const unsigned int baralpha = 0.7*0xffU;
 static const unsigned int sysalpha = 0.9*0xffU;
@@ -37,46 +39,44 @@ static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	// [SchemeNorm] = { col_gray3, col_gray5, col_gray2 },
 	// [SchemeSel]  = { col_gray4, col_cyan,  col_red  },
-    [SchemeStatus]  = { red   , col_gray1, col_cyan },
-    [SchemeNorm]    = { yellow, black    , gray2    },
-    [SchemeSel]     = { gray4 , blue     , blue     },
+    [SchemeStatus]  = { red   , col_gray0, col_cyan },
+    [SchemeNorm]    = { yellow, col_gray2    , gray2    },
+    [SchemeSel]     = { col_green , blue     , red     },
     [SchemeNone]    = { gray4, gray4    , gray4    },
     [SchemeTagNorm] = { yellow, gray3    , black    },
     [SchemeTagSel]  = { blue  , black    , black    },
-    [SchemeTag]     = { gray3 , black    , black    },
+    [SchemeTag]     = { white , black    , black    },
     [SchemeTag1]    = { blue  , black    , black    },
     [SchemeTag2]    = { red   , black    , black    },
     [SchemeTag3]    = { orange, black    , black    },
     [SchemeTag4]    = { green , black    , black    },
     [SchemeTag5]    = { pink  , black    , black    },
     [SchemeHid]     = { red   , col_gray1, col_cyan },
-    [SchemeSystray] = { col_gray1   , blue, col_cyan },
-    [SchemeSymbol]  = { yellow   , col_gray1 , col_cyan },
+    [SchemeSystray] = { col_gray1   , col_gray0, col_cyan },
+    [SchemeSymbol]  = { col_gray1   , col_green, col_cyan },
 };
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
   [SchemeStatus]  = { OPAQUE, OPAQUE, borderalpha },
   [SchemeNorm]    = { OPAQUE, baralpha, borderalpha },
-  [SchemeSel]     = { OPAQUE, nonealpha, borderalpha },
-  [SchemeNone]    = { OPAQUE, nonealpha, nonealpha },
+  [SchemeSel]     = { OPAQUE, OPAQUE, borderalpha },
+  [SchemeNone]    = { nonealpha, nonealpha, nonealpha },
   [SchemeTagNorm] = { OPAQUE, baralpha, borderalpha },
   [SchemeTagSel]  = { OPAQUE, baralpha, borderalpha },
   [SchemeTag]     = { OPAQUE, baralpha, borderalpha },
-  [SchemeTag1]    = { OPAQUE, baralpha, borderalpha },
-  [SchemeTag2]    = { OPAQUE, baralpha, borderalpha },
-  [SchemeTag3]    = { OPAQUE, baralpha, borderalpha },
-  [SchemeTag4]    = { OPAQUE, baralpha, borderalpha },
-  [SchemeTag5]    = { OPAQUE, baralpha, borderalpha },
-  [SchemeHid]     = { OPAQUE, baralpha, borderalpha },
+  [SchemeTag1]    = { baralpha, baralpha, borderalpha },
+  [SchemeTag2]    = { baralpha, baralpha, borderalpha },
+  [SchemeTag3]    = { baralpha, baralpha, borderalpha },
+  [SchemeTag4]    = { baralpha, baralpha, borderalpha },
+  [SchemeTag5]    = { baralpha, baralpha, borderalpha },
+  [SchemeHid]     = { OPAQUE, nonealpha, nonealpha },
   [SchemeSystray] = { OPAQUE, OPAQUE, OPAQUE },
-  [SchemeSymbol]  = { OPAQUE, baralpha, OPAQUE },
+  [SchemeSymbol]  = { OPAQUE, OPAQUE, OPAQUE },
 };
 
 /* tagging */
-/*   󰈦 󰇩                 */
-// static const char *tags[] = { "", "", "","","" };
-static const char *tags[] = { "", "", "","","" };
-/* static const char *tags[] = { "", "", "", "", "", "", "",  "", "" }; */
+/*   󰈦 󰇩          󰨞   󰗚  󰓓   󰏊 󰖳 󰿎  󰮯   󰍖  󰊨 󱉺  󰉋  󰂤  󰇮 󰖟          󰑴  ☭ ☯ ⚛    󰏬 󰴓 󱓷 󱓧 */
+static const char *tags[] = { "󰋜", "󰗚", "","","" };
 
 static const int tagschemes[] = {
     SchemeTag1, SchemeTag2, SchemeTag3, SchemeTag4, SchemeTag5
