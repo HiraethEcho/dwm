@@ -30,8 +30,8 @@ static const char col_cyan[]  = "#005577";
 static const char col_red[]   = "#BF616A";
 static const char col_green[] = "#89b482";
 
-static const unsigned int baralpha = 0.7*0xffU;
-static const unsigned int sysalpha = 0.9*0xffU;
+static const unsigned int baralpha = 0.5*0xffU;
+static const unsigned int sysalpha = 0.8*0xffU;
 static const unsigned int nonealpha= 0x01U;
 static const unsigned int borderalpha = OPAQUE;
 
@@ -41,7 +41,7 @@ static const char *colors[][3]      = {
 	// [SchemeSel]  = { col_gray4, col_cyan,  col_red  },
     [SchemeStatus]  = { red   , col_gray0, col_cyan },
     [SchemeNorm]    = { yellow, col_gray2    , gray2    },
-    [SchemeSel]     = { col_green , blue     , red     },
+    [SchemeSel]     = { col_red , blue     , red     },
     [SchemeNone]    = { gray4, gray4    , gray4    },
     [SchemeTagNorm] = { yellow, gray3    , black    },
     [SchemeTagSel]  = { blue  , black    , black    },
@@ -57,18 +57,18 @@ static const char *colors[][3]      = {
 };
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
-  [SchemeStatus]  = { OPAQUE, OPAQUE, borderalpha },
+  [SchemeStatus]  = { baralpha, sysalpha, borderalpha },
   [SchemeNorm]    = { OPAQUE, baralpha, borderalpha },
   [SchemeSel]     = { OPAQUE, OPAQUE, borderalpha },
   [SchemeNone]    = { nonealpha, nonealpha, nonealpha },
   [SchemeTagNorm] = { OPAQUE, baralpha, borderalpha },
   [SchemeTagSel]  = { OPAQUE, baralpha, borderalpha },
   [SchemeTag]     = { OPAQUE, baralpha, borderalpha },
-  [SchemeTag1]    = { baralpha, baralpha, borderalpha },
-  [SchemeTag2]    = { baralpha, baralpha, borderalpha },
-  [SchemeTag3]    = { baralpha, baralpha, borderalpha },
-  [SchemeTag4]    = { baralpha, baralpha, borderalpha },
-  [SchemeTag5]    = { baralpha, baralpha, borderalpha },
+  [SchemeTag1]    = { baralpha, borderalpha, borderalpha },
+  [SchemeTag2]    = { baralpha, borderalpha, borderalpha },
+  [SchemeTag3]    = { baralpha, borderalpha, borderalpha },
+  [SchemeTag4]    = { baralpha, borderalpha, borderalpha },
+  [SchemeTag5]    = { baralpha, borderalpha, borderalpha },
   [SchemeHid]     = { OPAQUE, nonealpha, nonealpha },
   [SchemeSystray] = { OPAQUE, OPAQUE, OPAQUE },
   [SchemeSymbol]  = { OPAQUE, OPAQUE, OPAQUE },
@@ -185,7 +185,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask, XK_q,      show,        {0} },
 	{ MODKEY,           XK_q,      hide,           {0} },
 
-  { Mod4Mask,             XK_e,      spawn,  SHCMD("st ranger") },
+  { Mod4Mask,             XK_e,      spawn,  SHCMD("pcmanfm") },
   { Mod4Mask,             XK_space,  spawn,  SHCMD("xinput enable 8") },
   { Mod4Mask|ShiftMask,   XK_space,  spawn,  SHCMD("xinput disable 8") },
 	{ Mod4Mask|ControlMask, XK_Right,	shiftview,      { .i = +1 } },
