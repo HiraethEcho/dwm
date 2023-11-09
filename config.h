@@ -134,7 +134,7 @@ static const char *rofidrun[]      = {"rofi","-show","drun"};
 static const char *rofirun[]       = {"rofi","-show","run"};
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
 
-static const char *edge[]      = { "microsoft-edge-stable", NULL };
+static const char *firefox[]      = { "firefox", NULL };
 static const char *pavu[]      = { "pavucontrol", NULL };
 static const char *upvol[]     = { "pamixer", "-i",  "5",     NULL };
 static const char *downvol[]   = { "pamixer", "-d", "5",     NULL };
@@ -232,7 +232,7 @@ static const Button buttons[] = {
 	{ ClkStatusText,        0,              Button1,        spawn,          {.v = termcmd } },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = mutevol } },
 	{ ClkStatusText,        MODKEY,         Button2,        spawn,          {.v = pavu }},
-	{ ClkStatusText,        0,              Button3,        spawn,          {.v = edge } },
+	{ ClkStatusText,        0,              Button3,        spawn,          {.v = firefox } },
 	{ ClkStatusText,        0,              Button4,        spawn,          {.v = upvol } },
 	{ ClkStatusText,        0,              Button5,        spawn,          {.v = downvol } },
 	{ ClkStatusText,        MODKEY,         Button4,        spawn,          {.v = uplight } },
