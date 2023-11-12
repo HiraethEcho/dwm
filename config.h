@@ -186,8 +186,8 @@ static const Key keys[] = {
 	{ MODKEY,           XK_q,      hide,           {0} },
 
   { Mod4Mask,             XK_e,      spawn,  SHCMD("pcmanfm") },
-  { Mod4Mask,             XK_space,  spawn,  SHCMD("xinput enable 8") },
-  { Mod4Mask|ShiftMask,   XK_space,  spawn,  SHCMD("xinput disable 8") },
+  { Mod4Mask,             XK_space,  spawn,  SHCMD("xinput enable 10") },
+  { Mod4Mask|ShiftMask,   XK_space,  spawn,  SHCMD("xinput disable 10") },
 	{ Mod4Mask|ControlMask, XK_Right,	shiftview,      { .i = +1 } },
 	{ Mod4Mask|ControlMask, XK_Left,	shiftview,      { .i = -1 } },
 	{ Mod4Mask|ShiftMask,   XK_Right, shiftboth,      { .i = +1 }	},
