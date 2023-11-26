@@ -135,6 +135,7 @@ static const char *rofirun[]       = {"rofi","-show","run"};
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
 
 static const char *edge[]      = { "microsoft-edge-stable", NULL };
+static const char *touchpad[]      = { "/home/hiraeth/scripts/touchpad.sh", NULL };
 static const char *pavu[]      = { "pavucontrol", NULL };
 static const char *upvol[]     = { "pamixer", "-i",  "5",     NULL };
 static const char *downvol[]   = { "pamixer", "-d", "5",     NULL };
@@ -186,8 +187,8 @@ static const Key keys[] = {
 	{ MODKEY,           XK_q,      hide,           {0} },
 
   { Mod4Mask,             XK_e,      spawn,  SHCMD("pcmanfm") },
-  { Mod4Mask,             XK_space,  spawn,  SHCMD("xinput enable 10") },
-  { Mod4Mask|ShiftMask,   XK_space,  spawn,  SHCMD("xinput disable 10") },
+  { Mod4Mask,             XK_space,  spawn,  {.v=touchpad} },
+  // { Mod4Mask|ShiftMask,   XK_space,  spawn,  SHCMD("xinput disable 10") },
 	{ Mod4Mask|ControlMask, XK_Right,	shiftview,      { .i = +1 } },
 	{ Mod4Mask|ControlMask, XK_Left,	shiftview,      { .i = -1 } },
 	{ Mod4Mask|ShiftMask,   XK_Right, shiftboth,      { .i = +1 }	},
