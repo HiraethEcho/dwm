@@ -187,8 +187,10 @@ static const Key keys[] = {
 	{ MODKEY,           XK_q,      hide,           {0} },
 
   { Mod4Mask,             XK_e,      spawn,  SHCMD("pcmanfm") },
+  { Mod4Mask,             XK_l,      spawn,  SHCMD("betterlockscreen -l blur") },
+  { Mod4Mask,             XK_k,      spawn,  SHCMD("sudo -A gparted") },
+
   { Mod4Mask,             XK_space,  spawn,  {.v=touchpad} },
-  // { Mod4Mask|ShiftMask,   XK_space,  spawn,  SHCMD("xinput disable 10") },
 	{ Mod4Mask|ControlMask, XK_Right,	shiftview,      { .i = +1 } },
 	{ Mod4Mask|ControlMask, XK_Left,	shiftview,      { .i = -1 } },
 	{ Mod4Mask|ShiftMask,   XK_Right, shiftboth,      { .i = +1 }	},
