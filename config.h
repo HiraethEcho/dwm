@@ -189,6 +189,8 @@ static const Key keys[] = {
   { Mod4Mask,             XK_e,      spawn,  SHCMD("pcmanfm") },
   { Mod4Mask,             XK_l,      spawn,  SHCMD("betterlockscreen -l blur") },
   { Mod4Mask,             XK_k,      spawn,  SHCMD("sudo -A gparted") },
+  { Mod4Mask,             XK_Tab,      spawn,  SHCMD("rofi -show window") },
+  { Mod4Mask,             XK_r,      spawn,  SHCMD("rofi -show run") },
 
   { Mod4Mask,             XK_space,  spawn,  {.v=touchpad} },
 	{ Mod4Mask|ControlMask, XK_Right,	shiftview,      { .i = +1 } },
