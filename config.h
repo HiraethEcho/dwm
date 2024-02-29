@@ -75,12 +75,13 @@ static const unsigned int alphas[][3]      = {
 };
 
 /* tagging */
-/*   󰈦 󰇩          󰨞   󰗚  󰓓   󰏊 󰖳 󰿎  󰮯   󰍖  󰊨 󱉺  󰉋  󰂤  󰇮 󰖟          󰑴  ☭ ☯ ⚛    󰏬 󰴓 󱓷 󱓧 */
-static const char *tags[] = { "󰋜", "󰗚", "","","" };
+/* 󰃨   󰈦 󰇩          󰨞   󰗚  󰓓   󰏊 󰖳 󰿎  󰮯   󰍖  󰊨 󱉺  󰉋  󰂤  󰇮 󰖟  󰨇         󰑴  ☭ ☯ ⚛    󰏬 󰴓 󱓷 󱓧 */
+static const char *tags[] = { "󰋜", "󰗚", "","󰃨","󰨇" };
 
 static const int tagschemes[] = {
     SchemeTag1, SchemeTag2, SchemeTag3, SchemeTag4, SchemeTag5
 };
+
 static const unsigned int ulinepad      = 5; /* horizontal padding between the underline and tag */
 static const unsigned int ulinestroke   = 2; /* thickness / height of the underline */
 static const unsigned int ulinevoffset  = 0; /* how far above the bottom of the bar the line should appear */
@@ -95,9 +96,9 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   focusopacity    unfocusopacity     monitor */
 	// { "Gimp",     NULL,       NULL,       0,            1,           1.0,            inactiveopacity,   -1 },
-	{ "weixin"      , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
-	{ "OneDriveGUI" , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
-	{ "QQ"          , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
+	// { "weixin"      , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
+	// { "OneDriveGUI" , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
+	// { "QQ"          , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
   { "st"          , NULL , scratchpadname , 0 , 1 , 0.7 , 0.3             , -1 } ,
 };
 
@@ -152,6 +153,8 @@ static const Key keys[] = {
 	{ MODKEY,           XK_b,      togglebar,      {0} },
 	{ MODKEY,           XK_j,      focusstackvis,  {.i = +1 } },
 	{ MODKEY,           XK_k,      focusstackvis,  {.i = -1 } },
+	{ MODKEY,           XK_Tab,    focusstackvis,  {.i = +1 } },
+	{ MODKEY|ShiftMask, XK_Tab,    focusstackvis,  {.i = -1 } },
 	{ MODKEY|ShiftMask, XK_j,      focusstackhid,  {.i = +1 } },
 	{ MODKEY|ShiftMask, XK_k,      focusstackhid,  {.i = -1 } },
 	{ MODKEY,           XK_i,      incnmaster,     {.i = +1 } },
@@ -159,7 +162,7 @@ static const Key keys[] = {
 	{ MODKEY,           XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,           XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask, XK_Return, zoom,           {0} },
-	{ MODKEY,           XK_Tab,    view,           {0} },
+	// { MODKEY,           XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask, XK_c,      killclient,     {0} },
 	{ MODKEY,           XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,           XK_g,      setlayout,      {.v = &layouts[3]} },
@@ -187,7 +190,7 @@ static const Key keys[] = {
 	{ MODKEY,           XK_q,      hide,           {0} },
 
   { Mod4Mask,             XK_e,      spawn,  SHCMD("pcmanfm") },
-  { Mod4Mask,             XK_l,      spawn,  SHCMD("betterlockscreen -l blur") },
+  { Mod4Mask,             XK_l,      spawn,  SHCMD("i3lock --clock --blur 10") },
   { Mod4Mask,             XK_k,      spawn,  SHCMD("sudo -A gparted") },
   { Mod4Mask,             XK_Tab,      spawn,  SHCMD("rofi -show window") },
   { Mod4Mask,             XK_r,      spawn,  SHCMD("rofi -show run") },
