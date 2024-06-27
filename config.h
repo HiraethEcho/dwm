@@ -1,17 +1,23 @@
 /* See LICENSE file for copyright and license details. */
-
+#include <X11/XF86keysym.h>
+#include "exitdwm.c"
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+
+static const char *fonts[]          = { "Maple Mono NF:size=10" };
+static const char dmenufont[]       = "Maple Mono NF:size=15";
+
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char col_gray5[] = "#D8DEE9";
+static const char col_cyan[]  = "#005577";
+static const char col_red[]   = "#BF616A";
+static const char col_green[] = "#89b482";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -19,7 +25,9 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+// static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+/* 󰃨   󰈦 󰇩          󰨞   󰗚  󰓓   󰏊 󰖳 󰨇 󰿎  󰮯   󰍖  󰊨 󱉺  󰉋  󰂤  󰇮 󰖟  󰨇         󰑴  ☭ ☯ ⚛    󰏬 󰴓 󱓷 󱓧 */
+static const char *tags[] = { "󰋜", "󰗚", "","󰃨","󰃥" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -63,7 +71,6 @@ static const char *termcmd[]  = { "alacritty", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
 
-#include "exitdwm.c"
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -80,10 +87,10 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,                       XK_s,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
+	{ MODKEY,                       XK_a,      setlayout,      {.v = &layouts[2]} },
+	// { MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
@@ -106,6 +113,12 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_minus, scratchpad_show, {0} },
 	{ MODKEY|ShiftMask,             XK_minus, scratchpad_hide, {0} },
 	{ MODKEY,                       XK_equal,scratchpad_remove,{0} },
+
+	{0,                 XF86XK_AudioRaiseVolume, spawn, SHCMD("pamixer -i 5")},
+  {0,                 XF86XK_AudioLowerVolume, spawn, SHCMD("pamixer -d 5")},
+	{0,                 XF86XK_AudioMute,        spawn, SHCMD("pamixer -t")},
+	{0,                 XF86XK_MonBrightnessUp,  spawn, SHCMD("xbacklight -inc 5")},
+	{0,                 XF86XK_MonBrightnessDown,spawn, SHCMD("xbacklight -dec 5")},
 };
 
 /* button definitions */
