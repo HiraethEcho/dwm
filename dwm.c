@@ -223,7 +223,7 @@ static Monitor *dirtomon(int dir);
 static void drawbar(Monitor *m);
 static void drawbars(void);
 static int drawstatusbar(Monitor *m, int bh, char *text);
-static void enternotify(XEvent *e);
+// static void enternotify(XEvent *e);
 static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
@@ -249,7 +249,6 @@ static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
 static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
-static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void pop(Client *c);
@@ -345,13 +344,13 @@ static void (*handler[LASTEvent])(XEvent *) = {
     [ConfigureRequest] = configurerequest,
     [ConfigureNotify] = configurenotify,
     [DestroyNotify] = destroynotify,
-    [EnterNotify] = enternotify,
+    // [EnterNotify] = enternotify,
     [Expose] = expose,
     [FocusIn] = focusin,
     [KeyPress] = keypress,
     [MappingNotify] = mappingnotify,
     [MapRequest] = maprequest,
-    [MotionNotify] = motionnotify,
+    // [MotionNotify] = motionnotify,
     [PropertyNotify] = propertynotify,
     [ResizeRequest] = resizerequest,
     [UnmapNotify] = unmapnotify};
@@ -522,7 +521,9 @@ void buttonpress(XEvent *e) {
 
   click = ClkRootWin;
   /* focus monitor if necessary */
-  if ((m = wintomon(ev->window)) && m != selmon) {
+  // if ((m = wintomon(ev->window)) && m != selmon) {
+	if ((m = wintomon(ev->window)) && m != selmon
+	    && (focusonwheel || (ev->button != Button4 && ev->button != Button5))) {
     unfocus(selmon->sel, 1);
     selmon = m;
     focus(NULL);
@@ -587,8 +588,10 @@ void buttonpress(XEvent *e) {
       }
     }
   } else if ((c = wintoclient(ev->window))) {
-    focus(c);
-    restack(selmon);
+    // focus(c);
+    // restack(selmon);
+		if (focusonwheel || (ev->button != Button4 && ev->button != Button5))
+			focus(c);
     XAllowEvents(dpy, ReplayPointer, CurrentTime);
     click = ClkClientWin;
   }
