@@ -5,34 +5,26 @@
 static const unsigned int borderpx = 1; /* border pixel of windows */
 static const unsigned int snap = 32;    /* snap pixel */
 
-static const unsigned int gappih = 20; /* horiz inner gap between windows */
-static const unsigned int gappiv = 10; /* vert inner gap between windows */
-static const unsigned int gappoh =
-    10; /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov =
-    30; /* vert outer gap between windows and screen edge */
-static int smartgaps =
-    1; /* 1 means no outer gap when there is only one window */
+static const unsigned int gappih = 3; /* horiz inner gap between windows */
+static const unsigned int gappiv = 3; /* vert inner gap between windows */
+static const unsigned int gappoh = 3; /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov = 3; /* vert outer gap between windows and screen edge */
+static int smartgaps = 1; /* 1 means no outer gap when there is only one window */
 
-static const unsigned int systraypinning =
-    0; /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor
+static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor
 X */
-static const unsigned int systrayonleft =
-    0; /* 0: systray in the right corner, >0: systray on left of status text */
+static const unsigned int systrayonleft = 0; /* 0: systray in the right corner, >0: systray on left of status text */
 static const unsigned int systrayspacing = 2; /* systray spacing */
-static const int systraypinningfailfirst =
-    1; /* 1: if pinning fails, display systray on the first monitor, False:
+static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False:
 display systray on the last monitor*/
 static const int showsystray = 1; /* 0 means no systray */
 static const int showbar = 1;     /* 0 means no bar */
 static const int topbar = 1;      /* 0 means bottom bar */
+// ⭘  󰣇 󱓞
+static const char buttonbar[]       = "󰣇";
 
-static const char buttonbar[]       = "<O>";
-
-static const double activeopacity =
-    0.9f; /* Window opacity when it's focused (0 <= opacity <= 1) */
-static const double inactiveopacity =
-    0.7f; /* Window opacity when it's inactive (0 <= opacity <= 1) */
+static const double activeopacity = 0.9f; /* Window opacity when it's focused (0 <= opacity <= 1) */
+static const double inactiveopacity = 0.7f; /* Window opacity when it's inactive (0 <= opacity <= 1) */
 
 static const int focusonwheel = 0;
 
@@ -68,9 +60,9 @@ static const char *tagsel[][2] = {
     {"#ffffff", "#9400d3"}, {"#000000", "#ffffff"}, {"#ffffff", "#000000"},
 };
 
-static const unsigned int ulinepad = 5; /* horizontal padding between the underline and tag */
-static const unsigned int ulinestroke = 3; /* thickness / height of the underline */
-static const unsigned int ulinevoffset = 0; /* how far above the bottom of the bar the line should appear */
+static const unsigned int ulinepad = 6;/* horizontal padding between the underline and tag */
+static const unsigned int ulinestroke = 2; /* thickness / height of the underline */
+static const unsigned int ulinevoffset = 2; /* how far above the bottom of the bar the line should appear */
 // static const int ulineall    = 1;  /* 1 to show underline on all tags, 0 for just the active ones */
 
 	/* xprop(1):
@@ -83,7 +75,7 @@ static const Rule rules[] = {
 	// { "weixin"      , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
 	// { "OneDriveGUI" , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
 	// { "QQ"          , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
-  // { "st"          , NULL , scratchpadname , 0 , 1 , 0.7 , 0.3             , -1 } ,
+  { "st"          , NULL , "scratchpad" , 0 , 1 , 0.7 , 0.3             , -1 } ,
 };
 /* layout(s) */
 static const float mfact = 0.55;                 /* factor of master area size [0.05..0.95] */
@@ -97,36 +89,33 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 
 static const Layout layouts[] = {
     /* symbol     arrange function */
-    {"[]=", tile}, /* first entry is default */
-    {"[M]", monocle},
-	{ "[@]",      spiral },
-	{ "[\\]",     dwindle },
-	{ "H[]",      deck },
-	{ "TTT",      bstack },
-	{ "===",      bstackhoriz },
-	{ "HHH",      grid },
-	{ "###",      nrowgrid },
-	{ "---",      horizgrid },
-	{ ":::",      gaplessgrid },
-	{ "|M|",      centeredmaster },
-	{ ">M>",      centeredfloatingmaster },
-	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ NULL,       NULL },
+{"[]="   , tile}                    , /* first entry is default */
+{"[M]"   , monocle}                 ,
+{ "[@]"  , spiral }                 ,
+{ "[\\]" , dwindle }                ,
+{ "H[]"  , deck }                   ,
+{ "TTT"  , bstack }                 ,
+{ "==="  , bstackhoriz }            ,
+{ "HHH"  , grid }                   ,
+{ "###"  , nrowgrid }               ,
+{ "---"  , horizgrid }              ,
+{ ":::"  , gaplessgrid }            ,
+{ "|M|"  , centeredmaster }         ,
+{ ">M>"  , centeredfloatingmaster } ,
+{ "><>"  , NULL }                   , /* no layout function means floating behavior */
+{ NULL   , NULL }                   ,
 };
 
 /* key definitions */
 #define MODKEY Mod1Mask
-#define TAGKEYS(KEY, TAG)                                                      \
-  {MODKEY, KEY, view, {.ui = 1 << TAG}},                                       \
-      {MODKEY | ControlMask, KEY, toggleview, {.ui = 1 << TAG}},               \
-      {MODKEY | ShiftMask, KEY, tag, {.ui = 1 << TAG}},                        \
-      {MODKEY | ControlMask | ShiftMask, KEY, toggletag, {.ui = 1 << TAG}},
+#define TAGKEYS(KEY, TAG) \
+{MODKEY,                           KEY, view,       {.ui = 1 << TAG}}, \
+{MODKEY | ControlMask,             KEY, toggleview, {.ui = 1 << TAG}}, \
+{MODKEY | ShiftMask,               KEY, tag,        {.ui = 1 << TAG}}, \
+{MODKEY | ControlMask | ShiftMask, KEY, toggletag,  {.ui = 1 << TAG}},
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd)                                                             \
-  {                                                                            \
-    .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL }                       \
-  }
+#define SHCMD(cmd) { .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL } }
 
 #define STATUSBAR "dwmblocks"
 
@@ -142,7 +131,7 @@ static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40
 static const Key keys[] = {
     /* modifier                     key        function        argument */
     {MODKEY, XK_p, spawn, {.v = dmenucmd}},
-    {MODKEY | ShiftMask, XK_Return, spawn, {.v = termcmd}},
+    {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_grave, togglescratch, {.v = scratchpadcmd}},
     {MODKEY, XK_b, togglebar, {0}},
     {MODKEY, XK_j, focusstackvis, {.i = +1}},
@@ -160,9 +149,9 @@ static const Key keys[] = {
 	{ MODKEY|Mod4Mask,              XK_o,      incrogaps,      {.i = +1 } },
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_o,      incrogaps,      {.i = -1 } },
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_0,      defaultgaps,    {0} },
-    {MODKEY, XK_Return, zoom, {0}},
+	{ MODKEY|ShiftMask, XK_Return, zoom,           {0} },
     {MODKEY, XK_Tab, view, {0}},
-    {MODKEY | ShiftMask, XK_c, killclient, {0}},
+    {MODKEY, XK_c, killclient, {0}},
     {MODKEY, XK_s, setlayout, {.v = &layouts[0]}},
     {MODKEY, XK_f, setlayout, {.v = &layouts[1]}},
     {MODKEY, XK_a, setlayout, {.v = &layouts[2]}},
@@ -177,9 +166,13 @@ static const Key keys[] = {
     // {MODKEY                     , XK_s                     , show , {0}} ,
     // {MODKEY | ShiftMask         , XK_s                     , showall , {0}} ,
     // {MODKEY                     , XK_h                     , hide , {0}} ,
-    TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2) TAGKEYS(XK_4, 3)
-        TAGKEYS(XK_5, 4) TAGKEYS(XK_6, 5) TAGKEYS(XK_7, 6) TAGKEYS(XK_8, 7)
-            TAGKEYS(XK_9, 8){MODKEY | ShiftMask, XK_q, quit, {0}},
+	{ MODKEY,           XK_m,      togglehide,           {0} },
+    TAGKEYS(XK_1 , 0)
+    TAGKEYS(XK_2 , 1)
+    TAGKEYS(XK_3 , 2)
+    TAGKEYS(XK_4 , 3)
+    TAGKEYS(XK_5 , 4)
+    {MODKEY | ShiftMask, XK_q, quit, {0}},
     {Mod4Mask | ShiftMask, XK_q, quit, {1}},
     {MODKEY | ShiftMask, XK_e, exitdwm, {0}},
 
@@ -210,24 +203,31 @@ static const Key keys[] = {
  * ClkClientWin, or ClkRootWin */
 static const Button buttons[] = {
     /* click                event mask      button          function argument */
-	{ ClkButton,		0,		Button1,	spawn,		{.v = dmenucmd } },
+	{ ClkButton,        0,              Button1,        spawn,          SHCMD("rofi_quickapps") },
+	{ ClkButton,        0,              Button2,        spawn,          SHCMD("rofi_powermenu")},
+	{ ClkButton,        0,              Button3,        spawn,          SHCMD("rofi_allapps") },
+
     {ClkLtSymbol, 0, Button1, setlayout, {0}},
     {ClkLtSymbol, 0, Button3, setlayout, {.v = &layouts[2]}},
-    {ClkWinTitle, 0, Button1, togglewin, {0}},
-    {ClkWinTitle, 0, Button2, zoom, {0}},
+
+  { ClkWinTitle,          0,              Button1,        togglewin,          {0} },
+  { ClkWinTitle,          0,              Button2,        killclient,         {0} },
+  { ClkWinTitle,          0,              Button3,        zoom,               {0} },
+  { ClkWinTitle,          0,              Button4,        changefocusopacity, {.f = +0.025} },
+  { ClkWinTitle,          0,              Button5,        changefocusopacity, {.f = -0.025} },
+  { ClkWinTitle,          MODKEY,         Button4,        changeunfocusopacity, {.f = +0.025} },
+  { ClkWinTitle,          MODKEY,         Button5,        changeunfocusopacity, {.f = -0.025} },
+
     {ClkStatusText, 0, Button1, sigstatusbar, {.i = 1}},
     {ClkStatusText, 0, Button2, sigstatusbar, {.i = 2}},
     {ClkStatusText, 0, Button3, sigstatusbar, {.i = 3}},
     {ClkStatusText, 0, Button4, sigstatusbar, {.i = 4}},
     {ClkStatusText, 0, Button5, sigstatusbar, {.i = 5}},
-    // {ClkStatusText, 0, Button1, sigdwmblocks, {.i = 1}},
-    // {ClkStatusText, 0, Button2, sigdwmblocks, {.i = 2}},
-    // {ClkStatusText, 0, Button3, sigdwmblocks, {.i = 3}},
-    // {ClkStatusText, 0, Button4, sigdwmblocks, {.i = 4}},
-    // {ClkStatusText, 0, Button5, sigdwmblocks, {.i = 5}},
+
     {ClkClientWin, MODKEY, Button1, movemouse, {0}},
     {ClkClientWin, MODKEY, Button2, togglefloating, {0}},
     {ClkClientWin, MODKEY, Button3, resizemouse, {0}},
+
     {ClkTagBar, 0, Button1, view, {0}},
     {ClkTagBar, 0, Button3, toggleview, {0}},
     {ClkTagBar, MODKEY, Button1, tag, {0}},
