@@ -936,8 +936,8 @@ int drawstatusbar(Monitor *m, int bh, char *stext) {
   text = p;
 
   w += 2; /* 1px padding on both sides */
-  ret = m->ww - w;
-  x = m->ww - w - getsystraywidth();
+  // ret = m->ww - w;
+  x = ret = m->ww - w - getsystraywidth();
 
   drw_setscheme(drw, scheme[LENGTH(colors)]);
   drw->scheme[ColFg] = scheme[SchemeNorm][ColFg];
@@ -1025,7 +1025,7 @@ void drawbar(Monitor *m) {
 
   /* draw status first so it can be overdrawn by tags later */
   if (m == selmon) { /* status is only drawn on selected monitor */
-    tw = statusw = m->ww - drawstatusbar(m, bh, stext);
+    tw = statusw = m->ww - drawstatusbar(m, bh, stext) - stw;
   }
 
   resizebarwin(m);
