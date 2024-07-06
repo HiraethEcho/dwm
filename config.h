@@ -55,9 +55,15 @@ static const char *colors[][3] = {
 static const char *tags[] = {"󰋜", "󰗚", "", "󰃨", "󰃥"};
 
 static const char *tagsel[][2] = {
-    {"#ffffff", "#ff0000"}, {"#ffffff", "#ff7f00"}, {"#000000", "#ffff00"},
-    {"#000000", "#00ff00"}, {"#ffffff", "#0000ff"}, {"#ffffff", "#4b0082"},
-    {"#ffffff", "#9400d3"}, {"#000000", "#ffffff"}, {"#ffffff", "#000000"},
+    {"#ffffff", "#ff0000"}, 
+    {"#ffffff", "#00ff00"}, 
+    {"#ffffff", "#0000ff"}, 
+    {"#ffffff", "#4b0082"},
+    {"#ffffff", "#9400d3"}, 
+    {"#ffffff", "#ff7f00"}, 
+    {"#000000", "#ffff00"},
+    {"#000000", "#ffffff"}, 
+    {"#ffffff", "#000000"},
 };
 
 static const unsigned int ulinepad = 6;/* horizontal padding between the underline and tag */
@@ -75,7 +81,7 @@ static const Rule rules[] = {
 	// { "weixin"      , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
 	// { "OneDriveGUI" , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
 	// { "QQ"          , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity , -1 } ,
-  { "st"          , NULL , "scratchpad" , 0 , 1 , 0.7 , 0.3             , -1 } ,
+  { "st"          , NULL , "scratchpad" , 0 , 1 , 0.8 , 0.4             , -1 } ,
 };
 /* layout(s) */
 static const float mfact = 0.55;                 /* factor of master area size [0.05..0.95] */
@@ -152,9 +158,9 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask, XK_Return, zoom,           {0} },
     {MODKEY, XK_Tab, view, {0}},
     {MODKEY, XK_c, killclient, {0}},
-    {MODKEY, XK_s, setlayout, {.v = &layouts[0]}},
+    {MODKEY, XK_t, setlayout, {.v = &layouts[0]}},
     {MODKEY, XK_f, setlayout, {.v = &layouts[1]}},
-    {MODKEY, XK_a, setlayout, {.v = &layouts[2]}},
+    // {MODKEY, XK_a, setlayout, {.v = &layouts[2]}},
     // { MODKEY                 , XK_space                 , setlayout , {0} } ,
     {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
     {MODKEY, XK_0, view, {.ui = ~0}},
@@ -191,6 +197,10 @@ static const Key keys[] = {
     {MODKEY | Mod4Mask | ShiftMask, XK_o, incrogaps, {.i = -1}},
     {MODKEY | Mod4Mask | ShiftMask, XK_0, defaultgaps, {0}},
 
+
+	{ MODKEY|ShiftMask,       		XK_comma,  cyclelayout,    {.i = -1 } },
+	{ MODKEY|ShiftMask,           XK_period, cyclelayout,    {.i = +1 } },
+
     {0, XF86XK_AudioRaiseVolume, spawn, SHCMD("pamixer -i 5")},
     {0, XF86XK_AudioLowerVolume, spawn, SHCMD("pamixer -d 5")},
     {0, XF86XK_AudioMute, spawn, SHCMD("pamixer -t")},
@@ -207,8 +217,10 @@ static const Button buttons[] = {
 	{ ClkButton,        0,              Button2,        spawn,          SHCMD("rofi_powermenu")},
 	{ ClkButton,        0,              Button3,        spawn,          SHCMD("rofi_allapps") },
 
-    {ClkLtSymbol, 0, Button1, setlayout, {0}},
-    {ClkLtSymbol, 0, Button3, setlayout, {.v = &layouts[2]}},
+    // {ClkLtSymbol, 0, Button1, setlayout, {0}},
+    {ClkLtSymbol, 0, Button2, setlayout, {.v = &layouts[2]}},
+    {ClkLtSymbol, 0, Button1, cyclelayout, {.i=-1}},
+    {ClkLtSymbol, 0, Button3, cyclelayout, {.i=+1}},
 
   { ClkWinTitle,          0,              Button1,        togglewin,          {0} },
   { ClkWinTitle,          0,              Button2,        killclient,         {0} },
