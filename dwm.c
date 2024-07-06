@@ -82,7 +82,14 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeHid };       /* color schemes */
+enum {
+  SchemeButton,
+  SchemeTag,
+  SchemeNorm,
+  SchemeSel,
+  SchemeHid,
+  SchemeStatus, 
+};       /* color schemes */
 enum {
   NetSupported,
   NetWMName,
@@ -1248,12 +1255,12 @@ void drawbar(Monitor *m) {
   }
   x = 0;
 	w = TEXTW(buttonbar);
-	drw_setscheme(drw, scheme[SchemeNorm]);
+	drw_setscheme(drw, scheme[SchemeButton]);
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, buttonbar, 0);
   for (i = 0; i < LENGTH(tags); i++) {
     w = TEXTW(tags[i]);
     // drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeNorm]));
-    drw_setscheme(drw, (occ & 1 << i ? tagscheme[i] : scheme[SchemeNorm]));
+    drw_setscheme(drw, (occ & 1 << i ? tagscheme[i] : scheme[SchemeTag]));
     drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
     if ( m->tagset[m->seltags] & 1 << i) /* if there are conflicts, just move these lines directly underneath both 'drw_setscheme' and 'drw_text' :) */
       drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, 1, urg & 1 << i);

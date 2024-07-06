@@ -41,14 +41,20 @@ static const char col_gray2[] = "#444444";
 static const char col_gray3[] = "#bbbbbb";
 static const char col_gray4[] = "#eeeeee";
 static const char col_gray5[] = "#D8DEE9";
-static const char col_cyan[] = "#005577";
-static const char col_red[] = "#BF616A";
+static const char col_cyan[]  = "#005577";
+static const char blue[]      = "#81A1C1";  // focused window border
+static const char red[]       = "#d57780";
+static const char rose[]      = "#BF616A";
 static const char col_green[] = "#89b482";
+
 static const char *colors[][3] = {
     /*               fg         bg         border   */
-    [SchemeNorm] = {col_gray3, col_gray1, col_gray2},
-    [SchemeSel] = {col_gray4, col_cyan, col_cyan},
-    [SchemeHid] = {col_cyan, col_gray1, col_cyan},
+    [SchemeButton] = { red   , col_gray1, col_cyan },
+    [SchemeTag]    = { blue   , col_gray1, col_cyan },
+    [SchemeNorm]   = {col_gray3, col_gray1, col_gray2},
+    [SchemeSel]    = {col_gray4, blue, red},
+    [SchemeHid]    = {blue, col_gray1, blue},
+    [SchemeStatus] = {col_gray3, col_gray1, col_gray2},
 };
 
 /* tagging */
@@ -65,10 +71,6 @@ static const char *tagsel[][2] = {
     {"#ffffff", "#EBCB8B"}, 
     {"#ffffff", "#A3BE8C"},
     {"#ffffff", "#B48EAD"}, 
-    {"#ffffff", "#ff7f00"}, 
-    {"#000000", "#ffff00"},
-    {"#000000", "#ffffff"}, 
-    {"#ffffff", "#000000"},
 };
 /* 
 #BF616A
@@ -106,21 +108,21 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 
 static const Layout layouts[] = {
     /* symbol     arrange function */
-{"[]="   , tile}                    , /* first entry is default */
-{"[M]"   , monocle}                 ,
-{ "[@]"  , spiral }                 ,
-{ "[\\]" , dwindle }                ,
-{ "H[]"  , deck }                   ,
-{ "TTT"  , bstack }                 ,
-{ "==="  , bstackhoriz }            ,
-{ "HHH"  , grid }                   ,
-{ "###"  , nrowgrid }               ,
-{ "---"  , horizgrid }              ,
-{ ":::"  , gaplessgrid }            ,
-{ "|M|"  , centeredmaster }         ,
-{ ">M>"  , centeredfloatingmaster } ,
-{ "><>"  , NULL }                   , /* no layout function means floating behavior */
-{ NULL   , NULL }                   ,
+{"[]="   , tile}, /* first entry is default */
+{"[M]"   , monocle},
+{ "[@]"  , spiral },
+{ "[\\]" , dwindle },
+{ "H[]"  , deck },
+{ "TTT"  , bstack },
+{ "==="  , bstackhoriz },
+{ "HHH"  , grid },
+{ "###"  , nrowgrid },
+{ "---"  , horizgrid },
+{ ":::"  , gaplessgrid },
+{ "|M|"  , centeredmaster },
+{ ">M>"  , centeredfloatingmaster },
+{ "><>"  , NULL }, /* no layout function means floating behavior */
+{ NULL   , NULL },
 };
 
 /* key definitions */
@@ -137,8 +139,7 @@ static const Layout layouts[] = {
 #define STATUSBAR "dwmblocks"
 
 /* commands */
-static char dmenumon[2] =
-    "0"; /* component of dmenucmd, manipulated in spawn() */
+static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m",      dmenumon, "-fn",    dmenufont, "-nb",     col_gray1, "-nf",       col_gray3, "-sb",    col_cyan, "-sf",     col_gray4, NULL};
 static const char *termcmd[] = {"alacritty", NULL};
 
@@ -153,7 +154,7 @@ static const Key keys[] = {
     {MODKEY, XK_equal, scratchpad_remove, {0}},
     {MODKEY, XK_grave, togglescratch, {.v = scratchpadcmd}},
 
-  // spawn and kill client
+// spawn and kill client
     {MODKEY, XK_p, spawn, {.v = dmenucmd}},
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_c, killclient, {0}},
@@ -167,6 +168,7 @@ static const Key keys[] = {
     // {MODKEY                     , XK_s                     , show , {0}} ,
     // {MODKEY | ShiftMask         , XK_s                     , showall , {0}} ,
     // {MODKEY                     , XK_h                     , hide , {0}} ,
+
 // choose clients
 	{ MODKEY,                       XK_o,      winview,        {0} },
 	{ Mod1Mask,                     XK_Tab,    alttab,         {0} },
