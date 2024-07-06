@@ -85,10 +85,12 @@ enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
 enum {
   SchemeButton,
   SchemeTag,
+  SchemeSym,
   SchemeNorm,
   SchemeSel,
   SchemeHid,
   SchemeStatus, 
+  SchemeSys, 
 };       /* color schemes */
 enum {
   NetSupported,
@@ -1157,8 +1159,8 @@ int drawstatusbar(Monitor *m, int bh, char *stext) {
   x = ret = m->ww - w - getsystraywidth();
 
   drw_setscheme(drw, scheme[LENGTH(colors)]);
-  drw->scheme[ColFg] = scheme[SchemeNorm][ColFg];
-  drw->scheme[ColBg] = scheme[SchemeNorm][ColBg];
+  drw->scheme[ColFg] = scheme[SchemeStatus][ColFg];
+  drw->scheme[ColBg] = scheme[SchemeStatus][ColBg];
   drw_rect(drw, x, 0, w, bh, 1, 1);
   x++;
 
@@ -1189,8 +1191,8 @@ int drawstatusbar(Monitor *m, int bh, char *stext) {
           drw_clr_create(drw, &drw->scheme[ColBg], buf);
           i += 7;
         } else if (text[i] == 'd') {
-          drw->scheme[ColFg] = scheme[SchemeNorm][ColFg];
-          drw->scheme[ColBg] = scheme[SchemeNorm][ColBg];
+          drw->scheme[ColFg] = scheme[SchemeStatus][ColFg];
+          drw->scheme[ColBg] = scheme[SchemeStatus][ColBg];
         } else if (text[i] == 'r') {
           int rx = atoi(text + ++i);
           while (text[++i] != ',')
@@ -1239,6 +1241,8 @@ void drawbar(Monitor *m) {
 
   if (showsystray && m == systraytomon(m) && !systrayonleft)
     stw = getsystraywidth();
+		// drw_setscheme(drw, scheme[SchemeSys]);
+		// drw_rect(drw, m->ww - stw, 0, stw, bh, 1, 1);
 
   /* draw status first so it can be overdrawn by tags later */
   if (m == selmon) { /* status is only drawn on selected monitor */
@@ -1267,7 +1271,7 @@ void drawbar(Monitor *m) {
     x += w;
   }
   w = TEXTW(m->ltsymbol);
-  drw_setscheme(drw, scheme[SchemeNorm]);
+  drw_setscheme(drw, scheme[SchemeSym]);
   x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
   if ((w = m->ww - tw - stw - x) > bh) {

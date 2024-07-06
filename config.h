@@ -3,7 +3,7 @@
 #include <X11/XF86keysym.h>
 #include "movestack.c"
 /* appearance */
-static const unsigned int borderpx = 2; /* border pixel of windows */
+static const unsigned int borderpx = 3; /* border pixel of windows */
 static const unsigned int snap = 32;    /* snap pixel */
 
 
@@ -25,8 +25,7 @@ display systray on the last monitor*/
 static const int showsystray = 1; /* 0 means no systray */
 static const int showbar = 1;     /* 0 means no bar */
 static const int topbar = 1;      /* 0 means bottom bar */
-// ⭘  󰣇 󱓞
-static const char buttonbar[]       = "󰣇";
+// ⭘  󰣇 󱓞 󰣇
 
 static const double activeopacity = 0.9f; /* Window opacity when it's focused (0 <= opacity <= 1) */
 static const double inactiveopacity = 0.7f; /* Window opacity when it's inactive (0 <= opacity <= 1) */
@@ -36,25 +35,65 @@ static const int focusonwheel = 0;
 static const char *fonts[] = {"Maple Mono NF:size=10"};
 static const char dmenufont[] = "Maple Mono NF:size=15";
 
-static const char col_gray1[] = "#222222";
-static const char col_gray2[] = "#444444";
+/* 
+#8fbcbb
+#88c0d0
+#81a1c1
+#5e81ac
+#bf616a（极光的红色
+#D08770
+#EBCB8B
+#A3BE8C
+#B48EAD 
+#2e3440
+#3b4252
+#434c5e
+#d8dee9
+#e5e9f0
+#eceff4
+#4c566a
+*/
+static const char col_gray1[] = "#3b4252";
+static const char whiten[]     = "#abb2bf";
+static const char gray1[]     = "#a9b1d6";
+static const char gray2[]     = "#24283b"; // unfocused window border
+static const char gray3[]     = "#414868";
+static const char gray4[]     = "#565f89";
+static const char gray5[]     = "#6d8dad";
+static const char col_gray2[] = "#8fbcbb";
 static const char col_gray3[] = "#bbbbbb";
-static const char col_gray4[] = "#eeeeee";
+static const char col_gray4[] = "#88c0d0";
 static const char col_gray5[] = "#D8DEE9";
+static const char col_gray6[] = "#d8dee9";
 static const char col_cyan[]  = "#005577";
-static const char blue[]      = "#81A1C1";  // focused window border
+static const char blue[]      = "#81A1C1";  
 static const char red[]       = "#d57780";
 static const char rose[]      = "#BF616A";
-static const char col_green[] = "#89b482";
+static const char brown[]     = "#c7b89d";
+static const char green[]     = "#89b482";
+static const char grass[]     = "#A3BE8C";
+static const char black[]     = "#2A303C";
+static const char pink[]        = "#ff79c6";
+static const char white[]       = "#f8f8f2";
+
+static const char *tagsel[][2] = {
+    { "#2e3440","#D08770"}, 
+    { "#2e3440","#EBCB8B"}, 
+    { "#2e3440","#A3BE8C"},
+    { "#2e3440","#B48EAD"}, 
+    { "#2e3440","#BF616A"}, 
+};
 
 static const char *colors[][3] = {
     /*               fg         bg         border   */
-    [SchemeButton] = { red   , col_gray1, col_cyan },
+    [SchemeButton] = { pink   , white, col_cyan },
     [SchemeTag]    = { blue   , col_gray1, col_cyan },
-    [SchemeNorm]   = {col_gray3, col_gray1, col_gray2},
-    [SchemeSel]    = {col_gray4, blue, red},
-    [SchemeHid]    = {blue, col_gray1, blue},
-    [SchemeStatus] = {col_gray3, col_gray1, col_gray2},
+    [SchemeSym]    = { rose  , brown, col_cyan },
+    [SchemeNorm]   = {col_gray5, gray4, col_gray2},
+    [SchemeSel]    = {black, gray5, red},
+    [SchemeHid]    = {blue, gray2, blue},
+    [SchemeStatus] = {col_gray3, gray3, col_gray2},
+    [SchemeSys] = {col_gray3, gray3, col_gray2},
 };
 
 /* tagging */
@@ -63,22 +102,9 @@ static const char *colors[][3] = {
  *  󰓓   󰏊 󰖳 󰨇 󰿎  󰮯   󰍖  󰊨 󱉺 
  * 󰉋  󰂤  󰇮 󰖟  󰨇         󰑴 
  * ☭ ☯ ⚛    󰏬 󰴓 󱓷 󱓧 */
+static const char buttonbar[]       = "󰖳";
 static const char *tags[] = {"󰋜", "󰗚", "", "󰃨", "󰃥"};
 
-static const char *tagsel[][2] = {
-    {"#ffffff", "#BF616A"}, 
-    {"#ffffff", "#D08770"}, 
-    {"#ffffff", "#EBCB8B"}, 
-    {"#ffffff", "#A3BE8C"},
-    {"#ffffff", "#B48EAD"}, 
-};
-/* 
-#BF616A
-#D08770
-#EBCB8B
-#A3BE8C
-#B48EAD 
-*/
 static const unsigned int ulinepad = 6;/* horizontal padding between the underline and tag */
 static const unsigned int ulinestroke = 2; /* thickness / height of the underline */
 static const unsigned int ulinevoffset = 2; /* how far above the bottom of the bar the line should appear */
