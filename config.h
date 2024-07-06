@@ -2,8 +2,12 @@
 #include "exitdwm.c"
 #include <X11/XF86keysym.h>
 /* appearance */
-static const unsigned int borderpx = 1; /* border pixel of windows */
+static const unsigned int borderpx = 2; /* border pixel of windows */
 static const unsigned int snap = 32;    /* snap pixel */
+
+
+static const unsigned int tabModKey = 0x40;
+static const unsigned int tabCycleKey = 0x17;
 
 static const unsigned int gappih = 3; /* horiz inner gap between windows */
 static const unsigned int gappiv = 3; /* vert inner gap between windows */
@@ -197,6 +201,8 @@ static const Key keys[] = {
     {MODKEY | Mod4Mask | ShiftMask, XK_o, incrogaps, {.i = -1}},
     {MODKEY | Mod4Mask | ShiftMask, XK_0, defaultgaps, {0}},
 
+	{ MODKEY,                       XK_o,      winview,        {0} },
+	{ Mod1Mask,                     XK_Tab,    alttab,         {0} },
 
 	{ MODKEY|ShiftMask,       		XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ShiftMask,           XK_period, cyclelayout,    {.i = +1 } },
