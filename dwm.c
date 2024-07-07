@@ -1193,6 +1193,19 @@ int drawstatusbar(Monitor *m, int bh, char *stext) {
         } else if (text[i] == 'd') {
           drw->scheme[ColFg] = scheme[SchemeStatus][ColFg];
           drw->scheme[ColBg] = scheme[SchemeStatus][ColBg];
+        } else if (text[i] == 's') {
+          int rx = atoi(text + ++i);
+          while (text[++i] != ',')
+            ;
+          int ry = atoi(text + ++i);
+          while (text[++i] != ',')
+            ;
+          int rw = atoi(text + ++i);
+          while (text[++i] != ',')
+            ;
+          int rh = atoi(text + ++i);
+
+          drw_rect(drw, rx + x, ry, rw, rh, 0, 0);
         } else if (text[i] == 'r') {
           int rx = atoi(text + ++i);
           while (text[++i] != ',')
@@ -1206,7 +1219,8 @@ int drawstatusbar(Monitor *m, int bh, char *stext) {
           int rh = atoi(text + ++i);
 
           drw_rect(drw, rx + x, ry, rw, rh, 1, 0);
-        } else if (text[i] == 'f') {
+        } else if 
+        (text[i] == 'f') {
           x += atoi(text + ++i);
         }
       }
@@ -2389,11 +2403,11 @@ void setup(void) {
   cursor[CurResize] = drw_cur_create(drw, XC_sizing);
   cursor[CurMove] = drw_cur_create(drw, XC_fleur);
   /* init appearance */
-  if (LENGTH(tags) > LENGTH(tagsel))
+  if (LENGTH(tags) > LENGTH(tagocc))
     die("too few color schemes for the tags");
-  tagscheme = ecalloc(LENGTH(tagsel), sizeof(Clr *));
-  for (i = 0; i < LENGTH(tagsel); i++)
-    tagscheme[i] = drw_scm_create(drw, tagsel[i], 2);
+  tagscheme = ecalloc(LENGTH(tagocc), sizeof(Clr *));
+  for (i = 0; i < LENGTH(tagocc); i++)
+    tagscheme[i] = drw_scm_create(drw, tagocc[i], 2);
   scheme = ecalloc(LENGTH(colors) + 1, sizeof(Clr *));
   scheme[LENGTH(colors)] = drw_scm_create(drw, colors[0], 3);
   for (i = 0; i < LENGTH(colors); i++)
