@@ -423,6 +423,7 @@ struct NumTags { char limitexceeded[LENGTH(tags) > 30 ? -1 : 1]; };
 static void
 alttab(const Arg *arg) {
 
+  showall(0);
   view(&(Arg){ .ui = ~0 });
   focusnext(&(Arg){ .i = alt_tab_direction });
 
@@ -1310,12 +1311,15 @@ void drawbar(Monitor *m) {
           remainder--;
         }
         drw_text(drw, x, 0, tabw, bh, lrpad / 2, c->name, 0);
+			if (c->isfloating)
+				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel ==c, 0);
         x += tabw;
       }
-    } else {
-      drw_setscheme(drw, scheme[SchemeNorm]);
-      drw_rect(drw, x, 0, w, bh, 1, 1);
     }
+    // else {
+    //   drw_setscheme(drw, scheme[SchemeNorm]);
+    //   drw_rect(drw, x, 0, w, bh, 1, 1);
+    // }
   }
   m->bt = n;
   m->btw = w;

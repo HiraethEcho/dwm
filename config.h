@@ -151,7 +151,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m",      dmenumon, "-fn",    dmenufont, "-nb",     col_gray1, "-nf",       col_gray3, "-sb",    col_cyan, "-sf",     col_gray4, NULL};
+static const char *dmenucmd[] = {"dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL};
 static const char *termcmd[] = {"alacritty", NULL};
 
 static const char scratchpadname[] = "scratchpad";
@@ -177,7 +177,7 @@ static const Key keys[] = {
     {MODKEY | ShiftMask, XK_k, focusstackhid, {.i = -1}},
     {MODKEY, XK_m, togglehide, {0}},
     // {MODKEY                     , XK_s                     , show , {0}} ,
-    // {MODKEY | ShiftMask         , XK_s                     , showall , {0}} ,
+    {MODKEY | ShiftMask         , XK_s                     , showall , {0}} ,
     // {MODKEY                     , XK_h                     , hide , {0}} ,
 
     // choose clients
@@ -230,9 +230,7 @@ static const Key keys[] = {
     {MODKEY | ShiftMask, XK_period, tagmon, {.i = +1}},
 
     // tags
-    TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2) TAGKEYS(XK_4, 3)
-        TAGKEYS(XK_5, 4){MODKEY | ShiftMask, XK_0, tag, {.ui = ~0}},
-    {MODKEY, XK_0, view, {.ui = ~0}},
+    TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2) TAGKEYS(XK_4, 3) TAGKEYS(XK_5, 4){MODKEY | ShiftMask, XK_0, tag, {.ui = ~0}}, {MODKEY, XK_0, view, {.ui = ~0}},
 
     // quit
     {MODKEY | ShiftMask, XK_q, quit, {0}},
@@ -240,12 +238,12 @@ static const Key keys[] = {
     {MODKEY | ShiftMask, XK_e, exitdwm, {0}},
 
     // Functions
-    {0, XF86XK_AudioRaiseVolume, spawn, SHCMD("pamixer -i 5")},
-    {0, XF86XK_AudioLowerVolume, spawn, SHCMD("pamixer -d 5")},
-    {0, XF86XK_AudioMute, spawn, SHCMD("pamixer -t")},
-    {0, XF86XK_MonBrightnessUp, spawn, SHCMD("xbacklight -inc 5")},
-    {0, XF86XK_MonBrightnessDown, spawn, SHCMD("xbacklight -dec 5")},
-    {0, XF86XK_WLAN, spawn, SHCMD("iwgtk")},
+    {0, XF86XK_AudioRaiseVolume, spawn, SHCMD("pamixer -i 5 ; pkill -SIGUSR1 dwmblocks ")},
+    {0, XF86XK_AudioLowerVolume, spawn, SHCMD("pamixer -d 5; pkill -SIGUSR1 dwmblocks")},
+    {0, XF86XK_AudioMute, spawn, SHCMD("pamixer -t; pkill -SIGUSR1 dwmblocks")},
+    {0, XF86XK_MonBrightnessUp, spawn, SHCMD("xbacklight -inc 5; pkill -SIGUSR1 dwmblocks")},
+    {0, XF86XK_MonBrightnessDown, spawn, SHCMD("xbacklight -dec 5; pkill -SIGUSR1 dwmblocks")},
+    {0, XF86XK_WLAN, spawn, SHCMD("nm-connection-editor")},
     {0, XF86XK_Tools, spawn, SHCMD("rofi_allapps")},
 };
 
