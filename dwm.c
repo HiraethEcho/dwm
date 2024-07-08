@@ -1316,10 +1316,10 @@ void drawbar(Monitor *m) {
         x += tabw;
       }
     }
-    // else {
-    //   drw_setscheme(drw, scheme[SchemeNorm]);
-    //   drw_rect(drw, x, 0, w, bh, 1, 1);
-    // }
+    else {
+      drw_setscheme(drw, scheme[SchemeNorm]);
+      drw_rect(drw, x, 0, w, bh, 1, 1);
+    }
   }
   m->bt = n;
   m->btw = w;
