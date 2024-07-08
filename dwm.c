@@ -148,7 +148,7 @@ typedef struct Client Client;
 struct Client {
   char name[256];
   float mina, maxa;
-	float cfact;
+  float cfact;
   int x, y, w, h;
   int oldx, oldy, oldw, oldh;
   int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
@@ -186,10 +186,10 @@ struct Monitor {
   int bt;             /* number of tasks */
   int mx, my, mw, mh; /* screen size */
   int wx, wy, ww, wh; /* window area  */
-	int gappih;           /* horizontal gap between windows */
-	int gappiv;           /* vertical gap between windows */
-	int gappoh;           /* horizontal outer gaps */
-	int gappov;           /* vertical outer gaps */
+  int gappih;           /* horizontal gap between windows */
+  int gappiv;           /* vertical gap between windows */
+  int gappoh;           /* horizontal outer gaps */
+  int gappov;           /* vertical outer gaps */
   unsigned int seltags;
   unsigned int sellt;
   unsigned int tagset[2];
@@ -423,73 +423,73 @@ struct NumTags { char limitexceeded[LENGTH(tags) > 30 ? -1 : 1]; };
 static void
 alttab(const Arg *arg) {
 
-	view(&(Arg){ .ui = ~0 });
-	focusnext(&(Arg){ .i = alt_tab_direction });
+  view(&(Arg){ .ui = ~0 });
+  focusnext(&(Arg){ .i = alt_tab_direction });
 
-	int grabbed = 1;
-	int grabbed_keyboard = 1000;
-	for (int i = 0; i < 100; i += 1) {
-		struct timespec ts;
-		ts.tv_sec = 0;
-		ts.tv_nsec = 1000000;
+  int grabbed = 1;
+  int grabbed_keyboard = 1000;
+  for (int i = 0; i < 100; i += 1) {
+    struct timespec ts;
+    ts.tv_sec = 0;
+    ts.tv_nsec = 1000000;
 
-		if (grabbed_keyboard != GrabSuccess) {
-			grabbed_keyboard = XGrabKeyboard(dpy, DefaultRootWindow(dpy), True,
-											 GrabModeAsync, GrabModeAsync, CurrentTime);
-		}
-		if (grabbed_keyboard == GrabSuccess) {
-			XGrabButton(dpy, AnyButton, AnyModifier, None, False,
-						BUTTONMASK, GrabModeAsync, GrabModeAsync,
-						None, None);
-			break;
-		}
-		nanosleep(&ts, NULL);
-		if (i == 100 - 1)
-			grabbed = 0;
-	}
+    if (grabbed_keyboard != GrabSuccess) {
+      grabbed_keyboard = XGrabKeyboard(dpy, DefaultRootWindow(dpy), True,
+                       GrabModeAsync, GrabModeAsync, CurrentTime);
+    }
+    if (grabbed_keyboard == GrabSuccess) {
+      XGrabButton(dpy, AnyButton, AnyModifier, None, False,
+            BUTTONMASK, GrabModeAsync, GrabModeAsync,
+            None, None);
+      break;
+    }
+    nanosleep(&ts, NULL);
+    if (i == 100 - 1)
+      grabbed = 0;
+  }
 
-	XEvent event;
-	Client *c;
-	Monitor *m;
-	XButtonPressedEvent *ev;
+  XEvent event;
+  Client *c;
+  Monitor *m;
+  XButtonPressedEvent *ev;
 
-	while (grabbed) {
-		XNextEvent(dpy, &event);
-		switch (event.type) {
-		case KeyPress:
-			if (event.xkey.keycode == tabCycleKey)
-				focusnext(&(Arg){ .i = alt_tab_direction });
-			break;
-		case KeyRelease:
-			if (event.xkey.keycode == tabModKey) {
-				XUngrabKeyboard(dpy, CurrentTime);
-				XUngrabButton(dpy, AnyButton, AnyModifier, None);
-				grabbed = 0;
-				alt_tab_direction = !alt_tab_direction;
-				winview(0);
-			}
-			break;
-	    case ButtonPress:
-			ev = &(event.xbutton);
-			if ((m = wintomon(ev->window)) && m != selmon) {
-				unfocus(selmon->sel, 1);
-				selmon = m;
-				focus(NULL);
-			}
-			if ((c = wintoclient(ev->window)))
-				focus(c);
-			XAllowEvents(dpy, AsyncBoth, CurrentTime);
-			break;
-		case ButtonRelease:
-			XUngrabKeyboard(dpy, CurrentTime);
-			XUngrabButton(dpy, AnyButton, AnyModifier, None);
-			grabbed = 0;
-			alt_tab_direction = !alt_tab_direction;
-			winview(0);
-			break;
-		}
-	}
-	return;
+  while (grabbed) {
+    XNextEvent(dpy, &event);
+    switch (event.type) {
+    case KeyPress:
+      if (event.xkey.keycode == tabCycleKey)
+        focusnext(&(Arg){ .i = alt_tab_direction });
+      break;
+    case KeyRelease:
+      if (event.xkey.keycode == tabModKey) {
+        XUngrabKeyboard(dpy, CurrentTime);
+        XUngrabButton(dpy, AnyButton, AnyModifier, None);
+        grabbed = 0;
+        alt_tab_direction = !alt_tab_direction;
+        winview(0);
+      }
+      break;
+      case ButtonPress:
+      ev = &(event.xbutton);
+      if ((m = wintomon(ev->window)) && m != selmon) {
+        unfocus(selmon->sel, 1);
+        selmon = m;
+        focus(NULL);
+      }
+      if ((c = wintoclient(ev->window)))
+        focus(c);
+      XAllowEvents(dpy, AsyncBoth, CurrentTime);
+      break;
+    case ButtonRelease:
+      XUngrabKeyboard(dpy, CurrentTime);
+      XUngrabButton(dpy, AnyButton, AnyModifier, None);
+      grabbed = 0;
+      alt_tab_direction = !alt_tab_direction;
+      winview(0);
+      break;
+    }
+  }
+  return;
 }
 /* function implementations */
 void applyrules(Client *c) {
@@ -515,8 +515,8 @@ void applyrules(Client *c) {
         (!r->instance || strstr(instance, r->instance))) {
       c->isfloating = r->isfloating;
       c->tags |= r->tags;
-			c->opacity = r->opacity;
-			c->unfocusopacity = r->unfocusopacity;
+      c->opacity = r->opacity;
+      c->unfocusopacity = r->unfocusopacity;
       for (m = mons; m && m->num != r->monitor; m = m->next) ;
       if (m)
         c->mon = m;
@@ -644,9 +644,9 @@ void buttonpress(XEvent *e) {
   }
   if (ev->window == selmon->barwin) {
     i = x = 0;
-		x += TEXTW(buttonbar);
-		if(ev->x < x){
-			click = ClkButton;
+    x += TEXTW(buttonbar);
+    if(ev->x < x){
+      click = ClkButton;
     }
     else {
     do
@@ -1003,10 +1003,10 @@ Monitor *createmon(void) {
   strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
   m->pertag = ecalloc(1, sizeof(Pertag));
   m->pertag->curtag = m->pertag->prevtag = 1;
-	m->gappih = gappih;
-	m->gappiv = gappiv;
-	m->gappoh = gappoh;
-	m->gappov = gappov;
+  m->gappih = gappih;
+  m->gappiv = gappiv;
+  m->gappoh = gappoh;
+  m->gappov = gappov;
 
   for (i = 0; i <= LENGTH(tags); i++) {
     m->pertag->nmasters[i] = m->nmaster;
@@ -1025,41 +1025,41 @@ Monitor *createmon(void) {
 
 static void
 focusnext(const Arg *arg) {
-	Monitor *m;
-	Client *c;
-	m = selmon;
-	c = m->sel;
+  Monitor *m;
+  Client *c;
+  m = selmon;
+  c = m->sel;
 
-	if (arg->i) {
-		if (c->next)
-			c = c->next;
-		else
-			c = m->clients;
-	} else {
-		Client *last = c;
-		if (last == m->clients)
-			last = NULL;
-		for (c = m->clients; c->next != last; c = c->next);
-	}
-	focus(c);
-	return;
+  if (arg->i) {
+    if (c->next)
+      c = c->next;
+    else
+      c = m->clients;
+  } else {
+    Client *last = c;
+    if (last == m->clients)
+      last = NULL;
+    for (c = m->clients; c->next != last; c = c->next);
+  }
+  focus(c);
+  return;
 }
 
 void
 cyclelayout(const Arg *arg) {
-	Layout *l;
-	for(l = (Layout *)layouts; l != selmon->lt[selmon->sellt]; l++);
-	if(arg->i > 0) {
-		if(l->symbol && (l + 1)->symbol)
-			setlayout(&((Arg) { .v = (l + 1) }));
-		else
-			setlayout(&((Arg) { .v = layouts }));
-	} else {
-		if(l != layouts && (l - 1)->symbol)
-			setlayout(&((Arg) { .v = (l - 1) }));
-		else
-			setlayout(&((Arg) { .v = &layouts[LENGTH(layouts) - 2] }));
-	}
+  Layout *l;
+  for(l = (Layout *)layouts; l != selmon->lt[selmon->sellt]; l++);
+  if(arg->i > 0) {
+    if(l->symbol && (l + 1)->symbol)
+      setlayout(&((Arg) { .v = (l + 1) }));
+    else
+      setlayout(&((Arg) { .v = layouts }));
+  } else {
+    if(l != layouts && (l - 1)->symbol)
+      setlayout(&((Arg) { .v = (l - 1) }));
+    else
+      setlayout(&((Arg) { .v = &layouts[LENGTH(layouts) - 2] }));
+  }
 }
 
 void destroynotify(XEvent *e) {
@@ -1255,8 +1255,8 @@ void drawbar(Monitor *m) {
 
   if (showsystray && m == systraytomon(m) && !systrayonleft)
     stw = getsystraywidth();
-		// drw_setscheme(drw, scheme[SchemeSys]);
-		// drw_rect(drw, m->ww - stw, 0, stw, bh, 1, 1);
+    // drw_setscheme(drw, scheme[SchemeSys]);
+    // drw_rect(drw, m->ww - stw, 0, stw, bh, 1, 1);
 
   /* draw status first so it can be overdrawn by tags later */
   if (m == selmon) { /* status is only drawn on selected monitor */
@@ -1272,9 +1272,9 @@ void drawbar(Monitor *m) {
       urg |= c->tags;
   }
   x = 0;
-	w = TEXTW(buttonbar);
-	drw_setscheme(drw, scheme[SchemeButton]);
-	x = drw_text(drw, x, 0, w, bh, lrpad / 2, buttonbar, 0);
+  w = TEXTW(buttonbar);
+  drw_setscheme(drw, scheme[SchemeButton]);
+  x = drw_text(drw, x, 0, w, bh, lrpad / 2, buttonbar, 0);
   for (i = 0; i < LENGTH(tags); i++) {
     w = TEXTW(tags[i]);
     // drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeNorm]));
@@ -1688,7 +1688,7 @@ void manage(Window w, XWindowAttributes *wa) {
   c->w = c->oldw = wa->width;
   c->h = c->oldh = wa->height;
   c->oldbw = wa->border_width;
-	c->cfact = 1.0;
+  c->cfact = 1.0;
 
   updatetitle(c);
   if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
@@ -2310,20 +2310,20 @@ void setlayout(const Arg *arg) {
 
 void
 setcfact(const Arg *arg) {
-	float f;
-	Client *c;
+  float f;
+  Client *c;
 
-	c = selmon->sel;
+  c = selmon->sel;
 
-	if(!arg || !c || !selmon->lt[selmon->sellt]->arrange)
-		return;
-	f = arg->f + c->cfact;
-	if(arg->f == 0.0)
-		f = 1.0;
-	else if(f < 0.25 || f > 4.0)
-		return;
-	c->cfact = f;
-	arrange(selmon);
+  if(!arg || !c || !selmon->lt[selmon->sellt]->arrange)
+    return;
+  f = arg->f + c->cfact;
+  if(arg->f == 0.0)
+    f = 1.0;
+  else if(f < 0.25 || f > 4.0)
+    return;
+  c->cfact = f;
+  arrange(selmon);
 }
 
 /* arg > 1.0 will set mfact absolutely */
@@ -2460,14 +2460,14 @@ void show(const Arg *arg) {
 void
 togglehide(const Arg *arg)
 {
-	if (selmon->hidsel)
+  if (selmon->hidsel)
   {
-		selmon->hidsel = 0;
-	showwin(selmon->sel);
+    selmon->hidsel = 0;
+  showwin(selmon->sel);
   } else {
-	hidewin(selmon->sel);
-	focus(NULL);
-	arrange(selmon);
+  hidewin(selmon->sel);
+  focus(NULL);
+  arrange(selmon);
   }
 }
 
@@ -3219,20 +3219,20 @@ Monitor *wintomon(Window w) {
 /* to be displayed is matched to the focused window tag list. */
 void
 winview(const Arg* arg){
-	Window win, win_r, win_p, *win_c;
-	unsigned nc;
-	int unused;
-	Client* c;
-	Arg a;
+  Window win, win_r, win_p, *win_c;
+  unsigned nc;
+  int unused;
+  Client* c;
+  Arg a;
 
-	if (!XGetInputFocus(dpy, &win, &unused)) return;
-	while(XQueryTree(dpy, win, &win_r, &win_p, &win_c, &nc)
-	      && win_p != win_r) win = win_p;
+  if (!XGetInputFocus(dpy, &win, &unused)) return;
+  while(XQueryTree(dpy, win, &win_r, &win_p, &win_c, &nc)
+        && win_p != win_r) win = win_p;
 
-	if (!(c = wintoclient(win))) return;
+  if (!(c = wintoclient(win))) return;
 
-	a.ui = c->tags;
-	view(&a);
+  a.ui = c->tags;
+  view(&a);
 }
 
 /* There's no way to check accesses to destroyed windows, thus those cases are
