@@ -83,7 +83,7 @@ static const char *colors[][3] = {
     [SchemeSys]    = {col_gray3, gray3, col_gray2},
 };
 
-static const char buttonbar[] = "󰖳";
+static const char buttonbar[] = "";
 static const char *tags[] = {"󰋜", "󰗚", "", "󰃨", "󰃥"};
 
 static const unsigned int ulinepad = 6; /* horizontal padding between the underline and tag */
@@ -105,6 +105,7 @@ static const Rule rules[] = {
     // inactiveopacity , -1 } , { "QQ"          , NULL , NULL           , 0 , 1
     // , 0.8 , inactiveopacity , -1 } ,
     {"st", NULL, "scratchpad", 0, 1, 0.8, 0.7, -1},
+    {"st", NULL, "tasks", 0, 1, 0.8, 0.7, -1},
 };
 /* layout(s) */
 static const float mfact = 0.55; /* factor of master area size [0.05..0.95] */
@@ -122,7 +123,8 @@ static const Layout layouts[] = {
     {"[M]", monocle},
     {"H[]", deck},
     {"TTT", bstack},
-    {"---", horizgrid},
+    {"HHH", grid},
+    // {"---", horizgrid},
     {"|M|", centeredmaster},
     {"><>", NULL}, /* no layout function means floating behavior */
     {NULL, NULL},
@@ -130,7 +132,6 @@ static const Layout layouts[] = {
 /*
     {">M>", centeredfloatingmaster},
     {"[@]", spiral},
-    {"HHH", grid},
     {"[\\]", dwindle},
     {":::", gaplessgrid},
     {"###", nrowgrid},
@@ -163,7 +164,7 @@ static const Key keys[] = {
     {MODKEY, XK_minus, scratchpad_show, {0}},
     {MODKEY | ShiftMask, XK_minus, scratchpad_hide, {0}},
     {MODKEY, XK_equal, scratchpad_remove, {0}},
-    {MODKEY, XK_grave, togglescratch, {.v = scratchpadcmd}},
+    {Mod4Mask, XK_grave, togglescratch, {.v = scratchpadcmd}},
 
     // spawn and kill client
     {MODKEY, XK_p, spawn, {.v = dmenucmd}},
@@ -243,8 +244,9 @@ static const Key keys[] = {
     {0, XF86XK_AudioMute, spawn, SHCMD("pamixer -t; pkill -SIGUSR1 dwmblocks")},
     {0, XF86XK_MonBrightnessUp, spawn, SHCMD("xbacklight -inc 5; pkill -SIGUSR1 dwmblocks")},
     {0, XF86XK_MonBrightnessDown, spawn, SHCMD("xbacklight -dec 5; pkill -SIGUSR1 dwmblocks")},
-    {0, XF86XK_WLAN, spawn, SHCMD("nm-connection-editor")},
+    {0, XF86XK_WLAN, spawn, SHCMD("iwgtknm-connection-editornm-connection-editor")},
     {0, XF86XK_Tools, spawn, SHCMD("rofi_allapps")},
+    {0, XK_F5, spawn, SHCMD("block_update")},
 };
 
 /* button definitions */
@@ -274,6 +276,7 @@ static const Button buttons[] = {
     {ClkStatusText, 0, Button3, sigstatusbar, {.i = 3}},
     {ClkStatusText, 0, Button4, sigstatusbar, {.i = 4}},
     {ClkStatusText, 0, Button5, sigstatusbar, {.i = 5}},
+    {ClkStatusText, MODKEY, Button1, sigstatusbar, {.i = 1}},
 
     {ClkClientWin, MODKEY, Button1, movemouse, {0}},
     {ClkClientWin, MODKEY, Button2, togglefloating, {0}},

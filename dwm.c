@@ -1311,8 +1311,8 @@ void drawbar(Monitor *m) {
           remainder--;
         }
         drw_text(drw, x, 0, tabw, bh, lrpad / 2, c->name, 0);
-			if (c->isfloating)
-				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel ==c, 0);
+      if (c->isfloating)
+        drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel ==c, 0);
         x += tabw;
       }
     }
@@ -1726,9 +1726,9 @@ void manage(Window w, XWindowAttributes *wa) {
   updatewindowtype(c);
   updatesizehints(c);
   updatewmhints(c);
-  XSelectInput(dpy, w,
-               EnterWindowMask | FocusChangeMask | PropertyChangeMask |
-                   StructureNotifyMask);
+  XSelectInput(dpy, w, EnterWindowMask | FocusChangeMask | PropertyChangeMask | StructureNotifyMask);
+  c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
+	c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
   grabbuttons(c, 0);
   if (!c->isfloating)
     c->isfloating = c->oldstate = trans != None || c->isfixed;
