@@ -93,8 +93,8 @@ static const unsigned int ulinevoffset = 2; /* how far above the bottom of the b
 // just the active ones */
 
 /* xprop(1):
- *	WM_CLASS(STRING) = instance, class
- *	WM_NAME(STRING) = title
+ *  WM_CLASS(STRING) = instance, class
+ *  WM_NAME(STRING) = title
  */
 static const Rule rules[] = {
     /* class      instance    title       tags mask     isfloating focusopacity
@@ -193,12 +193,25 @@ static const Key keys[] = {
     {MODKEY | ShiftMask, XK_s, changefocusopacity, {.f = -0.025}},
     {MODKEY | ShiftMask, XK_z, changeunfocusopacity, {.f = +0.025}},
     {MODKEY | ShiftMask, XK_x, changeunfocusopacity, {.f = -0.025}},
+    // move and resize float clients
+    { MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
+    { MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
+    { MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h" } },
+    { MODKEY,                       XK_Left,   moveresize,     {.v = "-25x 0y 0w 0h" } },
+    { MODKEY|ShiftMask,             XK_Down,   moveresize,     {.v = "0x 0y 0w 25h" } },
+    { MODKEY|ShiftMask,             XK_Up,     moveresize,     {.v = "0x 0y 0w -25h" } },
+    { MODKEY|ShiftMask,             XK_Right,  moveresize,     {.v = "0x 0y 25w 0h" } },
+    { MODKEY|ShiftMask,             XK_Left,   moveresize,     {.v = "0x 0y -25w 0h" } },
+    { Mod4Mask,           XK_Up,     moveresizeedge, {.v = "t"} },
+    { Mod4Mask,           XK_Down,   moveresizeedge, {.v = "b"} },
+    { Mod4Mask,           XK_Left,   moveresizeedge, {.v = "l"} },
+    { Mod4Mask,           XK_Right,  moveresizeedge, {.v = "r"} },
 
     // change layouts
     {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
     {MODKEY, XK_t, setlayout, {.v = &layouts[0]}},
     {MODKEY, XK_f, setlayout, {.v = &layouts[1]}},
-    // { MODKEY|ShiftMask,       		XK_comma,  cyclelayout,    {.i =
+    // { MODKEY|ShiftMask,          XK_comma,  cyclelayout,    {.i =
     // -1 } }, { MODKEY|ShiftMask,           XK_period, cyclelayout,    {.i = +1
     // } },
     // {MODKEY, XK_Tab, view, {0}},
