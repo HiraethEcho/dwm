@@ -65,7 +65,6 @@
 #define TEXTW(X) (drw_fontset_getwidth(drw, (X)) + lrpad)
 #define TTEXTW(X) (drw_fontset_getwidth(drw, (X)))
 
-#define DWMBLOCKSLOCKFILE "/var/local/dwmblocks/dwmblocks.pid"
 
 #define SYSTEM_TRAY_REQUEST_DOCK 0
 /* XEMBED messages */
@@ -321,7 +320,7 @@ static void togglehide(const Arg *arg);
 static void sighup(int unused);
 static void sigterm(int unused);
 static void sigstatusbar(const Arg *arg);
-static void sigdwmblocks(const Arg *arg);
+// static void sigdwmblocks(const Arg *arg);
 static void spawn(const Arg *arg);
 static Monitor *systraytomon(Monitor *m);
 static void tag(const Arg *arg);
@@ -632,12 +631,14 @@ void attachstack(Client *c) {
 
 void buttonpress(XEvent *e) {
   unsigned int i, x, click;
+  int stw;
   Arg arg = {0};
   Client *c;
   Monitor *m;
   XButtonPressedEvent *ev = &e->xbutton;
 
   click = ClkRootWin;
+  stw = getsystraywidth();
   /* focus monitor if necessary */
   if ((m = wintomon(ev->window)) && m != selmon &&
       (focusonwheel || (ev->button != Button4 && ev->button != Button5))) {
@@ -646,12 +647,12 @@ void buttonpress(XEvent *e) {
     focus(NULL);
   }
   if (ev->window == selmon->barwin) {
-    i = x = 0;
-    x += TEXTW(buttonbar);
+    x = TEXTW(buttonbar);
     if(ev->x < x){
       click = ClkButton;
     }
     else {
+      i = 0;
     do
       x += TEXTW(tags[i]);
     while (ev->x >= x && ++i < LENGTH(tags));
@@ -664,8 +665,8 @@ void buttonpress(XEvent *e) {
     // else if (ev->x > selmon->ww - (int)TEXTW(stext) - getsystraywidth())
     /* 2px right padding */
     // else if (ev->x > selmon->ww - TEXTW(stext) + lrpad - 2)
-    else if (ev->x > selmon->ww - statusw - getsystraywidth()) {
-      x = selmon->ww - statusw - getsystraywidth();
+    else if (ev->x > selmon->ww - statusw - stw) {
+      x = selmon->ww - statusw - stw;
       click = ClkStatusText;
       // else
       // click = ClkWinTitle;
@@ -698,7 +699,6 @@ void buttonpress(XEvent *e) {
     else {
       x += TEXTW(selmon->ltsymbol);
       c = m->clients;
-
       if (c) {
         do {
           if (!ISVISIBLE(c))
@@ -706,13 +706,16 @@ void buttonpress(XEvent *e) {
           else
             x += (1.0 / (double)m->bt) * m->btw;
         } while (ev->x > x && (c = c->next));
-
+      if (m->bt > 0){
         click = ClkWinTitle;
         arg.v = c;
+      } else
+        click = ClkRootWin;
       }
     }
   }
-  } else if ((c = wintoclient(ev->window))) {
+  } // if barwin
+  else if ((c = wintoclient(ev->window))) {
     // focus(c);
     // restack(selmon);
     if (focusonwheel || (ev->button != Button4 && ev->button != Button5))
@@ -1730,7 +1733,7 @@ void manage(Window w, XWindowAttributes *wa) {
   updatewmhints(c);
   XSelectInput(dpy, w, EnterWindowMask | FocusChangeMask | PropertyChangeMask | StructureNotifyMask);
   c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
-	c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
+  c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
   grabbuttons(c, 0);
   if (!c->isfloating)
     c->isfloating = c->oldstate = trans != None || c->isfixed;
@@ -1868,130 +1871,130 @@ void movemouse(const Arg *arg) {
 
 void
 moveresize(const Arg *arg) {
-	/* only floating windows can be moved */
-	Client *c;
-	c = selmon->sel;
-	int x, y, w, h, nx, ny, nw, nh, ox, oy, ow, oh;
-	char xAbs, yAbs, wAbs, hAbs;
-	int msx, msy, dx, dy, nmx, nmy;
-	unsigned int dui;
-	Window dummy;
+  /* only floating windows can be moved */
+  Client *c;
+  c = selmon->sel;
+  int x, y, w, h, nx, ny, nw, nh, ox, oy, ow, oh;
+  char xAbs, yAbs, wAbs, hAbs;
+  int msx, msy, dx, dy, nmx, nmy;
+  unsigned int dui;
+  Window dummy;
 
-	if (!c || !arg)
-		return;
-	// if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
-	// 	return;
-	if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
+  if (!c || !arg)
+    return;
+  // if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
+  //  return;
+  if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
     togglefloating(NULL);
 
-	if (sscanf((char *)arg->v, "%d%c %d%c %d%c %d%c", &x, &xAbs, &y, &yAbs, &w, &wAbs, &h, &hAbs) != 8)
-		return;
+  if (sscanf((char *)arg->v, "%d%c %d%c %d%c %d%c", &x, &xAbs, &y, &yAbs, &w, &wAbs, &h, &hAbs) != 8)
+    return;
 
-	/* compute new window position; prevent window from be positioned outside the current monitor */
-	nw = c->w + w;
-	if (wAbs == 'W')
-		nw = w < selmon->mw - 2 * c->bw ? w : selmon->mw - 2 * c->bw;
+  /* compute new window position; prevent window from be positioned outside the current monitor */
+  nw = c->w + w;
+  if (wAbs == 'W')
+    nw = w < selmon->mw - 2 * c->bw ? w : selmon->mw - 2 * c->bw;
 
-	nh = c->h + h;
-	if (hAbs == 'H')
-		nh = h < selmon->mh - 2 * c->bw ? h : selmon->mh - 2 * c->bw;
+  nh = c->h + h;
+  if (hAbs == 'H')
+    nh = h < selmon->mh - 2 * c->bw ? h : selmon->mh - 2 * c->bw;
 
-	nx = c->x + x;
-	if (xAbs == 'X') {
-		if (x < selmon->mx)
-			nx = selmon->mx;
-		else if (x > selmon->mx + selmon->mw)
-			nx = selmon->mx + selmon->mw - nw - 2 * c->bw;
-		else
-			nx = x;
-	}
+  nx = c->x + x;
+  if (xAbs == 'X') {
+    if (x < selmon->mx)
+      nx = selmon->mx;
+    else if (x > selmon->mx + selmon->mw)
+      nx = selmon->mx + selmon->mw - nw - 2 * c->bw;
+    else
+      nx = x;
+  }
 
-	ny = c->y + y;
-	if (yAbs == 'Y') {
-		if (y < selmon->my)
-			ny = selmon->my;
-		else if (y > selmon->my + selmon->mh)
-			ny = selmon->my + selmon->mh - nh - 2 * c->bw;
-		else
-			ny = y;
-	}
+  ny = c->y + y;
+  if (yAbs == 'Y') {
+    if (y < selmon->my)
+      ny = selmon->my;
+    else if (y > selmon->my + selmon->mh)
+      ny = selmon->my + selmon->mh - nh - 2 * c->bw;
+    else
+      ny = y;
+  }
 
-	ox = c->x;
-	oy = c->y;
-	ow = c->w;
-	oh = c->h;
+  ox = c->x;
+  oy = c->y;
+  ow = c->w;
+  oh = c->h;
 
-	XRaiseWindow(dpy, c->win);
-	Bool xqp = XQueryPointer(dpy, root, &dummy, &dummy, &msx, &msy, &dx, &dy, &dui);
-	resize(c, nx, ny, nw, nh, True);
+  XRaiseWindow(dpy, c->win);
+  Bool xqp = XQueryPointer(dpy, root, &dummy, &dummy, &msx, &msy, &dx, &dy, &dui);
+  resize(c, nx, ny, nw, nh, True);
 
-	/* move cursor along with the window to avoid problems caused by the sloppy focus */
-	if (xqp && ox <= msx && (ox + ow) >= msx && oy <= msy && (oy + oh) >= msy)
-	{
-		nmx = c->x - ox + c->w - ow;
-		nmy = c->y - oy + c->h - oh;
-		/* make sure the cursor stays inside the window */
-		if ((msx + nmx) > c->x && (msy + nmy) > c->y)
-			XWarpPointer(dpy, None, None, 0, 0, 0, 0, nmx, nmy);
-	}
+  /* move cursor along with the window to avoid problems caused by the sloppy focus */
+  if (xqp && ox <= msx && (ox + ow) >= msx && oy <= msy && (oy + oh) >= msy)
+  {
+    nmx = c->x - ox + c->w - ow;
+    nmy = c->y - oy + c->h - oh;
+    /* make sure the cursor stays inside the window */
+    if ((msx + nmx) > c->x && (msy + nmy) > c->y)
+      XWarpPointer(dpy, None, None, 0, 0, 0, 0, nmx, nmy);
+  }
 }
 
 void
 moveresizeedge(const Arg *arg) {
-	/* move or resize floating window to edge of screen */
-	Client *c;
-	c = selmon->sel;
-	char e;
-	int nx, ny, nw, nh, ox, oy, ow, oh, bp;
-	int msx, msy, dx, dy, nmx, nmy;
-	int starty;
-	unsigned int dui;
-	Window dummy;
+  /* move or resize floating window to edge of screen */
+  Client *c;
+  c = selmon->sel;
+  char e;
+  int nx, ny, nw, nh, ox, oy, ow, oh, bp;
+  int msx, msy, dx, dy, nmx, nmy;
+  int starty;
+  unsigned int dui;
+  Window dummy;
 
-	nx = c->x;
-	ny = c->y;
-	nw = c->w;
-	nh = c->h;
+  nx = c->x;
+  ny = c->y;
+  nw = c->w;
+  nh = c->h;
 
-	starty = selmon->showbar && topbar ? bh : 0;
-	bp = selmon->showbar && !topbar ? bh : 0;
+  starty = selmon->showbar && topbar ? bh : 0;
+  bp = selmon->showbar && !topbar ? bh : 0;
 
-	if (!c || !arg)
-		return;
-	if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
-		return;
-	if(sscanf((char *)arg->v, "%c", &e) != 1)
-		return;
+  if (!c || !arg)
+    return;
+  if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
+    return;
+  if(sscanf((char *)arg->v, "%c", &e) != 1)
+    return;
 
-	if(e == 't')
-		ny = starty;
+  if(e == 't')
+    ny = starty;
 
-	if(e == 'b')
-		ny = c->h > selmon->mh - 2 * c->bw ? c->h - bp : selmon->mh - c->h - 2 * c->bw - bp;
+  if(e == 'b')
+    ny = c->h > selmon->mh - 2 * c->bw ? c->h - bp : selmon->mh - c->h - 2 * c->bw - bp;
 
-	if(e == 'l')
-		nx = selmon->mx;
+  if(e == 'l')
+    nx = selmon->mx;
 
-	if(e == 'r')
-		nx = c->w > selmon->mw - 2 * c->bw ? selmon->mx + c->w : selmon->mx + selmon->mw - c->w - 2 * c->bw;
+  if(e == 'r')
+    nx = c->w > selmon->mw - 2 * c->bw ? selmon->mx + c->w : selmon->mx + selmon->mw - c->w - 2 * c->bw;
 
-	ox = c->x;
-	oy = c->y;
-	ow = c->w;
-	oh = c->h;
+  ox = c->x;
+  oy = c->y;
+  ow = c->w;
+  oh = c->h;
 
-	XRaiseWindow(dpy, c->win);
-	Bool xqp = XQueryPointer(dpy, root, &dummy, &dummy, &msx, &msy, &dx, &dy, &dui);
-	resizeclient(c, nx, ny, nw, nh);
+  XRaiseWindow(dpy, c->win);
+  Bool xqp = XQueryPointer(dpy, root, &dummy, &dummy, &msx, &msy, &dx, &dy, &dui);
+  resizeclient(c, nx, ny, nw, nh);
 
-	/* move cursor along with the window to avoid problems caused by the sloppy focus */
-	if (xqp && ox <= msx && (ox + ow) >= msx && oy <= msy && (oy + oh) >= msy) {
-		nmx = c->x - ox + c->w - ow;
-		nmy = c->y - oy + c->h - oh;
-		/* make sure the cursor stays inside the window */
-		if ((msx + nmx) > c->x && (msy + nmy) > c->y)
-			XWarpPointer(dpy, None, None, 0, 0, 0, 0, nmx, nmy);
-	}
+  /* move cursor along with the window to avoid problems caused by the sloppy focus */
+  if (xqp && ox <= msx && (ox + ow) >= msx && oy <= msy && (oy + oh) >= msy) {
+    nmx = c->x - ox + c->w - ow;
+    nmy = c->y - oy + c->h - oh;
+    /* make sure the cursor stays inside the window */
+    if ((msx + nmx) > c->x && (msy + nmy) > c->y)
+      XWarpPointer(dpy, None, None, 0, 0, 0, 0, nmx, nmy);
+  }
 }
 
 Client *nexttiled(Client *c) {
@@ -2669,7 +2672,7 @@ void sigstatusbar(const Arg *arg) {
 
   sigqueue(statuspid, SIGRTMIN + statussig, sv);
 }
-
+/*
 void sigdwmblocks(const Arg *arg) {
   static int fd = -1;
   struct flock fl;
@@ -2698,7 +2701,7 @@ signal:
   sv.sival_int = (statussig << 8) | arg->i;
   sigqueue(fl.l_pid, SIGRTMIN, sv);
 }
-
+*/
 void spawn(const Arg *arg) {
   struct sigaction sa;
 

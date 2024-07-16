@@ -153,7 +153,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = {"dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL};
-static const char *termcmd[] = {"alacritty", NULL};
+static const char *termcmd[] = {"kitty", NULL};
 
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
@@ -257,9 +257,9 @@ static const Key keys[] = {
     {0, XF86XK_AudioMute, spawn, SHCMD("pamixer -t; pkill -SIGUSR1 dwmblocks")},
     {0, XF86XK_MonBrightnessUp, spawn, SHCMD("xbacklight -inc 5; pkill -SIGUSR1 dwmblocks")},
     {0, XF86XK_MonBrightnessDown, spawn, SHCMD("xbacklight -dec 5; pkill -SIGUSR1 dwmblocks")},
-    {0, XF86XK_WLAN, spawn, SHCMD("iwgtknm-connection-editornm-connection-editor")},
+    {0, XF86XK_WLAN, spawn, SHCMD("nm-connection-editor")},
     {0, XF86XK_Tools, spawn, SHCMD("rofi_allapps")},
-    {0, XK_F5, spawn, SHCMD("block_update")},
+    // {0, XK_F5, spawn, SHCMD("block_update")},
 };
 
 /* button definitions */
@@ -290,6 +290,8 @@ static const Button buttons[] = {
     {ClkStatusText, 0, Button4, sigstatusbar, {.i = 4}},
     {ClkStatusText, 0, Button5, sigstatusbar, {.i = 5}},
     {ClkStatusText, MODKEY, Button1, sigstatusbar, {.i = 6}},
+
+    {ClkRootWin, 0, Button2, spawn, SHCMD("wallpaper_change")},
 
     {ClkClientWin, MODKEY, Button1, movemouse, {0}},
     {ClkClientWin, MODKEY, Button2, togglefloating, {0}},
