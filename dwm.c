@@ -1290,7 +1290,7 @@ void drawbar(Monitor *m) {
     w = TEXTW(tags[i]);
 		// drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]); //original
     
-    drw_setscheme(drw, (occ & 1 << i ?  ( m->tagset[m->seltags] & 1 << i ? tagschemesel[i] : tagschemeocc[i] ) : scheme[SchemeTag]));
+    drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagschemesel[i] : (occ & 1 << i ?  tagschemeocc[i]: scheme[SchemeTag])));
 
 		// drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeNorm]));
 		// if ( occ & 1 << i )
@@ -1304,8 +1304,8 @@ void drawbar(Monitor *m) {
           // drw_clr_create(drw, &drw->scheme[ColFg], tagscheme[i][ColFg]);
 
     drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-    // if ( m->tagset[m->seltags] & 1 << i) 
-    //   drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, 1, urg & 1 << i);
+    if ( m->tagset[m->seltags] & 1 << i) 
+      drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
     x += w;
   }
 

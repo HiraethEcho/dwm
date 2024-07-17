@@ -1,27 +1,69 @@
-static const char black[]       = "#2A303C";
-static const char white[]       = "#D8DEE9";
-static const char gray2[]       = "#3B4252"; // unfocused window border
-static const char gray3[]       = "#606672";
-static const char gray4[]       = "#6d8dad";
-static const char blue[]        = "#81A1C1";  // focused window border
-static const char green[]       = "#89b482";
-static const char red[]         = "#d57780";
-static const char orange[]      = "#caaa6a";
-static const char yellow[]      = "#EBCB8B";
-static const char pink[]        = "#e39a83";
 /* 󰃨   󰈦 󰇩          󰨞   󰗚
  *  󰓓   󰏊 󰖳 󰨇 󰿎  󰮯   󰍖  󰊨 󱉺 
  * 󰉋  󰂤  󰇮 󰖟  󰨇         󰑴 
  * ☭ ☯ ⚛    󰏬 󰴓 󱓷 󱓧 */
 
 /*
-static const char col_gray1[] = "#3b4252";
-static const char whiten[] = "#abb2bf";
-static const char gray1[] = "#a9b1d6";
-static const char gray5[] = "#6d8dad";
-static const char deepred[] = "#9d2933";
-static const char green[] = "#89b482";
-static const char yellow[] = "#FFFF00";
+  {"#D08770", "#ffb3ba" },
+  {"#A3BE8C", "#ffdfba" },
+  {"#B48EAD", "#ffffba" },
+  {"#BF616A", "#baffc9" },
+  {"#EBCB8B", "#bae1ff" },
+
+  {"#e06666", "#ffb3ba"},
+  {"#ffd966", "#ffdfba"},
+  {"#93c47d", "#ffffba"},
+  {"#76a5af", "#baffc9"},
+  {"#8e7cc3", "#bae1ff"},
+ *
+  {"#bf616a", "#8fbcbb"},
+  {"#d08770", "#88c0d0"},
+  {"#ebcb8b", "#81a1c1"},
+  {"#a3be8c", "#5e81ac"},
+  {"#b48ead", "#49688e"},
+ 
+  {"#ffb3ba", "#1b85b8" },
+  {"#ffdfba", "#5a5255" },
+  {"#ffffba", "#559e83" },
+  {"#baffc9", "#ae5a41" },
+  {"#bae1ff", "#c3cb71" },
+
+  {"#D08770", "#1b85b8" },
+  {"#A3BE8C", "#5a5255" },
+  {"#B48EAD", "#559e83" },
+  {"#BF616A", "#ae5a41" },
+  {"#EBCB8B", "#c3cb71" },
+
+following
+#24527b	(36,82,123)
+#2d72a2	(45,114,162)
+#6a92bb	(106,146,187)
+#95a5c7	(149,165,199)
+#b5c9dd	(181,201,221)
+dracula
+#4a3341	(74,51,65)
+#6d4d6e	(109,77,110)
+#7e6991	(126,105,145)
+#a3a4be	(163,164,190)
+#e0e6e9	(224,230,233)
+grey
+#8b8589	(139,133,137)
+#989898	(152,152,152)
+#838996	(131,137,150)
+#979aaa	(151,154,170)
+#4c516d	(76,81,109)
+shade
+#997a8d	(153,122,141)
+#aa98a9	(170,152,169)
+#b39eb5	(179,158,181)
+#777696	(119,118,150)
+#796878	(121,104,120)
+summer
+#ff4e50	(255,78,80)
+#fc913a	(252,145,58)
+#f9d62e	(249,214,46)
+#eae374	(234,227,116)
+#e2f4c7	(226,244,199)
 nord forest
 #343131	(52,49,49)
 #bab99d	(186,185,157)
@@ -68,7 +110,12 @@ rainbow
 #93c47d	(147,196,125)
 #76a5af	(118,165,175)
 #8e7cc3	(142,124,195)
-
+facebook
+#3b5998	(59,89,152)
+#8b9dc3	(139,157,195)
+#dfe3ee	(223,227,238)
+#f7f7f7	(247,247,247)
+#ffffff	(255,255,255)
 rainbow
 #e06666 #ffb3ba	(255,179,186)
 #ffd966 #ffdfba	(255,223,186)
