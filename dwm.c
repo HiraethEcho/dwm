@@ -254,7 +254,6 @@ static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusmon(const Arg *arg);
-static void focusnext(const Arg *arg);
 // static void focusstack(const Arg *arg);
 static void focusstackvis(const Arg *arg);
 static void focusstackhid(const Arg *arg);
@@ -402,7 +401,7 @@ static Window root, wmcheckwin;
 #define SCRATCHPAD_MASK (1u << sizeof tags / sizeof *tags)
 static Client *scratchpad_last_showed = NULL;
 
-static int alt_tab_direction = 0;
+static int alt_tab_direction = 1;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -425,10 +424,7 @@ struct NumTags { char limitexceeded[LENGTH(tags) > 30 ? -1 : 1]; };
 static void
 alttab(const Arg *arg) {
 
-  // showall(0);
   view(&(Arg){ .ui = ~0 });
-  // focusnext(&(Arg){ .i = alt_tab_direction });
-  // focusstackhid(&(Arg){ .i=alt_tab_direction});;
 
   int grabbed = 1;
   int grabbed_keyboard = 1000;
@@ -462,17 +458,19 @@ alttab(const Arg *arg) {
     switch (event.type) {
     case KeyPress:
       if (event.xkey.keycode == tabCycleKey)
-        // focusnext(&(Arg){ .i = alt_tab_direction });
         focusstackhid(&(Arg){ .i=alt_tab_direction});;
+      if (event.xkey.keycode == tabCycleKeyInv)
+        alt_tab_direction = 0;
       break;
     case KeyRelease:
       if (event.xkey.keycode == tabModKey) {
         XUngrabKeyboard(dpy, CurrentTime);
         XUngrabButton(dpy, AnyButton, AnyModifier, None);
         grabbed = 0;
-        alt_tab_direction = !alt_tab_direction;
         winview(0);
       }
+      if (event.xkey.keycode == tabCycleKeyInv)
+        alt_tab_direction = 1;
       break;
     case ButtonPress:
       ev = &(event.xbutton);
@@ -1037,27 +1035,6 @@ Monitor *createmon(void) {
   return m;
 }
 
-static void
-focusnext(const Arg *arg) {
-  Monitor *m;
-  Client *c;
-  m = selmon;
-  c = m->sel;
-
-  if (arg->i) {
-    if (c->next)
-      c = c->next;
-    else
-      c = m->clients;
-  } else {
-    Client *last = c;
-    if (last == m->clients)
-      last = NULL;
-    for (c = m->clients; c->next != last; c = c->next);
-  }
-  focus(c);
-  return;
-}
 
 void
 cyclelayout(const Arg *arg) {

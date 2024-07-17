@@ -8,6 +8,7 @@ static const unsigned int snap = 15;    /* snap pixel */
 // static const unsigned int tabModKey = 0x40; //alt
 static const unsigned int tabModKey = 0x85; //win
 static const unsigned int tabCycleKey = 0x17;
+static const unsigned int tabCycleKeyInv = 0x32;
 
 static const unsigned int gappih = 2; /* horiz inner gap between windows */
 static const unsigned int gappiv = 2; /* vert inner gap between windows */
