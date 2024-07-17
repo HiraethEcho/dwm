@@ -33,54 +33,77 @@ static const int focusonwheel = 0;
 static const char *fonts[] = {"Maple Mono NF:size=10"};
 static const char dmenufont[] = "Maple Mono NF:size=15";
 
-static const char col_gray1[] = "#3b4252";
-static const char whiten[] = "#abb2bf";
-static const char gray1[] = "#a9b1d6";
 static const char gray2[] = "#24283b"; // unfocused window border
 static const char gray3[] = "#414868";
 static const char gray4[] = "#565f89";
-static const char gray5[] = "#6d8dad";
 static const char col_gray2[] = "#8fbcbb";
 static const char col_gray3[] = "#bbbbbb";
 static const char col_gray4[] = "#88c0d0";
-static const char col_gray5[] = "#D8DEE9";
+static const char gray1[] = "#D8DEE9";
 static const char col_gray6[] = "#d8dee9";
 static const char col_cyan[] = "#005577";
 static const char blue[] = "#81A1C1";
 static const char bblue[] = "#5e81ac";
 static const char sky[] = "#61afef";
 static const char red[] = "#d57780";
-static const char yellow[] = "#FFFF00";
-static const char deepred[] = "#9d2933";
-static const char green[] = "#89b482";
 static const char antigreen[] = "#764b7d";
-static const char rose[] = "#BF616A";
 static const char brown[] = "#c7b89d";
-static const char ggreen[] = "#99CC32";
 static const char grass[] = "#A3BE8C";
 static const char black[] = "#2A303C";
 static const char pink[] = "#c71585";
-static const char white[] = "#f8f8f2";
-static const char white2[] = "#d8dee9";
+// static const char white[] = "#f8f8f2";
+static const char white[] = "#d8dee9";
 
 static const char *tagocc[][2] = {
-  {"#D08770", gray3},
-  {"#A3BE8C", gray3},
-  {"#B48EAD", gray3},
-  {"#BF616A", gray3},
-  {"#EBCB8B", gray3},
+  {"#ffb3ba", "#8fbcbb" },
+  {"#ffdfba", "#88c0d0" },
+  {"#ffffba", "#81a1c1" },
+  {"#baffc9", "#5e81ac" },
+  {"#bae1ff", "#49688e" },
 };
 
+static const char *tagsel[][2] = {
+  {"#e06666", "#8fbcbb" },
+  {"#ffd966", "#88c0d0" },
+  {"#93c47d", "#81a1c1" },
+  {"#76a5af", "#5e81ac" },
+  {"#8e7cc3", "#49688e" },
+};
+/*
+  {"#e06666", "#ffb3ba"},
+  {"#ffd966", "#ffdfba"},
+  {"#93c47d", "#ffffba"},
+  {"#76a5af", "#baffc9"},
+  {"#8e7cc3", "#bae1ff"},
+ *
+  {"#bf616a", "#8fbcbb"},
+  {"#d08770", "#88c0d0"},
+  {"#ebcb8b", "#81a1c1"},
+  {"#a3be8c", "#5e81ac"},
+  {"#b48ead", "#49688e"},
+ 
+  {"#ffb3ba", "#1b85b8" },
+  {"#ffdfba", "#5a5255" },
+  {"#ffffba", "#559e83" },
+  {"#baffc9", "#ae5a41" },
+  {"#bae1ff", "#c3cb71" },
+
+  {"#D08770", "#1b85b8" },
+  {"#A3BE8C", "#5a5255" },
+  {"#B48EAD", "#559e83" },
+  {"#BF616A", "#ae5a41" },
+  {"#EBCB8B", "#c3cb71" },
+*/
 static const char *colors[][3] = {
     /*               fg         bg         border   */
-    [SchemeButton] = {white, sky, col_cyan},
-    [SchemeTag]    = {white , black, col_cyan},
-    [SchemeSym]    = {rose, green, col_cyan},
-    [SchemeNorm]   = {col_gray5, gray3, grass},
-    [SchemeSel]    = {black, blue, deepred},
-    [SchemeHid]    = {blue, gray2, rose},
-    [SchemeStatus] = {col_gray3, gray4, col_gray2},
-    [SchemeSys]    = {col_gray3, gray3, col_gray2},
+    [SchemeButton] = { "#61afef" , "#5a5255" , col_cyan}  ,
+    [SchemeTag]    = { "#5a5255" , black     , col_cyan}  ,
+    [SchemeSym]    = { "#ffff00" , "#677e75" , col_cyan}  ,
+    [SchemeNorm]   = {gray1      , gray3     , "#d8dee9"} ,
+    [SchemeSel]    = {black      , blue      , "#cc241d"}     ,
+    [SchemeHid]    = {blue       , gray2     , col_gray2} ,
+    [SchemeStatus] = {col_gray3  , gray4     , col_gray2} ,
+    [SchemeSys]    = {"#ffffff"  , "#ffff00"     , col_gray2} ,
 };
 
 static const char buttonbar[] = "";
@@ -120,12 +143,12 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 static const Layout layouts[] = {
     /* symbol     arrange function */
     {"[]=", tile}, /* first entry is default */
-    {"[M]", monocle},
     {"H[]", deck},
-    {"TTT", bstack},
+    {"[M]", monocle},
     {"HHH", grid},
+    {"TTT", bstack},
     // {"---", horizgrid},
-    {"|M|", centeredmaster},
+    // {"|M|", centeredmaster},
     {"><>", NULL}, /* no layout function means floating behavior */
     {NULL, NULL},
 };
@@ -152,7 +175,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = {"dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL};
+static const char *dmenucmd[] = {"dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray6, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL};
 static const char *termcmd[] = {"kitty", NULL};
 
 static const char scratchpadname[] = "scratchpad";
@@ -208,9 +231,11 @@ static const Key keys[] = {
     { Mod4Mask,           XK_Right,  moveresizeedge, {.v = "r"} },
 
     // change layouts
-    {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
-    {MODKEY, XK_t, setlayout, {.v = &layouts[0]}},
-    {MODKEY, XK_f, setlayout, {.v = &layouts[1]}},
+    {MODKEY, XK_a, togglefloating, {0}},
+    {MODKEY, XK_s, setlayout, {.v = &layouts[0]}},
+    {MODKEY, XK_d, setlayout, {.v = &layouts[1]}},
+    {MODKEY, XK_f, setlayout, {.v = &layouts[2]}},
+    {MODKEY, XK_g, setlayout, {.v = &layouts[3]}},
     // { MODKEY|ShiftMask,          XK_comma,  cyclelayout,    {.i =
     // -1 } }, { MODKEY|ShiftMask,           XK_period, cyclelayout,    {.i = +1
     // } },
@@ -267,9 +292,9 @@ static const Key keys[] = {
  * ClkClientWin, or ClkRootWin */
 static const Button buttons[] = {
     /* click                event mask      button          function argument */
-    {ClkButton, 0, Button1, spawn, SHCMD("rofi_quickapps")},
+    {ClkButton, 0, Button1, spawn, SHCMD("kitty")},
     {ClkButton, 0, Button2, spawn, SHCMD("rofi_powermenu")},
-    {ClkButton, 0, Button3, spawn, SHCMD("rofi_allapps")},
+    {ClkButton, 0, Button3, spawn, {.v = termcmd}},
 
     // {ClkLtSymbol, 0, Button1, setlayout, {0}},
     {ClkLtSymbol, 0, Button2, setlayout, {.v = &layouts[2]}},
@@ -294,8 +319,9 @@ static const Button buttons[] = {
     {ClkRootWin, 0, Button2, spawn, SHCMD("wallpaper_change")},
 
     {ClkClientWin, MODKEY, Button1, movemouse, {0}},
-    {ClkClientWin, MODKEY, Button2, togglefloating, {0}},
+    // {ClkClientWin, MODKEY, Button2, togglefloating, {0}},
     {ClkClientWin, MODKEY, Button3, resizemouse, {0}},
+    {ClkClientWin, MODKEY|ShiftMask, Button1, resizemouse, {0}},
 
     {ClkTagBar, 0, Button1, view, {0}},
     {ClkTagBar, 0, Button3, toggleview, {0}},

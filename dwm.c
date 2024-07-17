@@ -391,7 +391,8 @@ static int restart = 0;
 static int running = 1;
 static Cur *cursor[CurLast];
 static Clr **scheme;
-static Clr **tagscheme;
+static Clr **tagschemesel;
+static Clr **tagschemeocc;
 static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
@@ -858,7 +859,7 @@ void clientmessage(XEvent *e) {
                        ResizeRedirectMask);
       XReparentWindow(dpy, c->win, systray->win, 0, 0);
       /* use parents background color */
-      swa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
+      swa.background_pixel = scheme[SchemeSys][ColBg].pixel;
       XChangeWindowAttributes(dpy, c->win, CWBackPixel, &swa);
       sendevent(c->win, netatom[Xembed], StructureNotifyMask, CurrentTime,
                 XEMBED_EMBEDDED_NOTIFY, 0, systray->win,
@@ -1270,6 +1271,7 @@ void drawbar(Monitor *m) {
   }
 
   resizebarwin(m);
+
   for (c = m->clients; c; c = c->next) {
     if (ISVISIBLE(c))
       n++;
@@ -1277,19 +1279,36 @@ void drawbar(Monitor *m) {
     if (c->isurgent)
       urg |= c->tags;
   }
+
   x = 0;
   w = TEXTW(buttonbar);
   drw_setscheme(drw, scheme[SchemeButton]);
   x = drw_text(drw, x, 0, w, bh, lrpad / 2, buttonbar, 0);
+
   for (i = 0; i < LENGTH(tags); i++) {
+    // drw_setscheme(drw, tagscheme[i]);
     w = TEXTW(tags[i]);
-    // drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeNorm]));
-    drw_setscheme(drw, (occ & 1 << i ? tagscheme[i] : scheme[SchemeTag]));
+		// drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]); //original
+    
+    drw_setscheme(drw, (occ & 1 << i ?  ( m->tagset[m->seltags] & 1 << i ? tagschemesel[i] : tagschemeocc[i] ) : scheme[SchemeTag]));
+
+		// drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeNorm]));
+		// if ( occ & 1 << i )
+		// drw_setscheme(drw, m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeTag]);
+    // drw->scheme[ColFg] = occ & 1 << i ? tagscheme[i][ColFg] : scheme[SchemeTag][ColFg];
+    // drw->scheme[ColBg] = m->tagset[m->seltags] & 1 << i ? tagscheme[i][ColBg] : scheme[SchemeTag][ColBg];
+    // drw_setscheme(drw, (occ & 1 << i ? tagscheme[i] : scheme[SchemeTag]));
+
+    // if ( m->tagset[m->seltags] & 1 << i )
+  //     drw->scheme[ColBg] = tagscheme[i][ColBg];
+          // drw_clr_create(drw, &drw->scheme[ColFg], tagscheme[i][ColFg]);
+
     drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-    if ( m->tagset[m->seltags] & 1 << i) /* if there are conflicts, just move these lines directly underneath both 'drw_setscheme' and 'drw_text' :) */
-      drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, 1, urg & 1 << i);
+    // if ( m->tagset[m->seltags] & 1 << i) 
+    //   drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, 1, urg & 1 << i);
     x += w;
   }
+
   w = TEXTW(m->ltsymbol);
   drw_setscheme(drw, scheme[SchemeSym]);
   x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
@@ -2543,9 +2562,15 @@ void setup(void) {
   /* init appearance */
   if (LENGTH(tags) > LENGTH(tagocc))
     die("too few color schemes for the tags");
-  tagscheme = ecalloc(LENGTH(tagocc), sizeof(Clr *));
+
+  tagschemeocc = ecalloc(LENGTH(tagocc), sizeof(Clr *));
   for (i = 0; i < LENGTH(tagocc); i++)
-    tagscheme[i] = drw_scm_create(drw, tagocc[i], 2);
+    tagschemeocc[i] = drw_scm_create(drw, tagocc[i], 2);
+
+  tagschemesel = ecalloc(LENGTH(tagsel), sizeof(Clr *));
+  for (i = 0; i < LENGTH(tagocc); i++)
+    tagschemesel[i] = drw_scm_create(drw, tagsel[i], 2);
+
   scheme = ecalloc(LENGTH(colors) + 1, sizeof(Clr *));
   scheme[LENGTH(colors)] = drw_scm_create(drw, colors[0], 3);
   for (i = 0; i < LENGTH(colors); i++)
@@ -3214,7 +3239,7 @@ void updatesystray(void) {
   }
   for (w = 0, i = systray->icons; i; i = i->next) {
     /* make sure the background color stays the same */
-    wa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
+    wa.background_pixel = scheme[SchemeSys][ColBg].pixel;
     XChangeWindowAttributes(dpy, i->win, CWBackPixel, &wa);
     XMapRaised(dpy, i->win);
     w += systrayspacing;
@@ -3239,7 +3264,7 @@ void updatesystray(void) {
   XMapWindow(dpy, systray->win);
   XMapSubwindows(dpy, systray->win);
   /* redraw background */
-  XSetForeground(dpy, drw->gc, scheme[SchemeNorm][ColBg].pixel);
+  XSetForeground(dpy, drw->gc, scheme[SchemeSys][ColBg].pixel);
   XFillRectangle(dpy, systray->win, drw->gc, 0, 0, w, bh);
   XSync(dpy, False);
 }
