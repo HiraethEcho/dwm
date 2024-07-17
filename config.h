@@ -1,12 +1,12 @@
-/* See LICENSE file for copyright and license details. */
 #include "exitdwm.c"
 #include "movestack.c"
 #include <X11/XF86keysym.h>
 /* appearance */
-static const unsigned int borderpx = 3; /* border pixel of windows */
-static const unsigned int snap = 10;    /* snap pixel */
+static const unsigned int borderpx = 2; /* border pixel of windows */
+static const unsigned int snap = 15;    /* snap pixel */
 
-static const unsigned int tabModKey = 0x40;
+// static const unsigned int tabModKey = 0x40; //alt
+static const unsigned int tabModKey = 0x85; //win
 static const unsigned int tabCycleKey = 0x17;
 
 static const unsigned int gappih = 2; /* horiz inner gap between windows */
@@ -31,7 +31,7 @@ static const double inactiveopacity = 0.75f; /* Window opacity when it's inactiv
 static const int focusonwheel = 0;
 
 static const char *fonts[] = {"Maple Mono NF:size=12"};
-static const char dmenufont[] = "Maple Mono NF:size=15";
+static const char dmenufont[] = "Maple Mono NF:size=12";
 
 static const char gray1[] = "#bbbbbb";
 static const char gray2[] = "#88c0d0";
@@ -39,6 +39,24 @@ static const char gray3[] = "#d8dee9";
 static const char cyan[] = "#005577";
 
 static const char *tagsel[][2] = {
+  {"#6080d0", "#fd9016"},
+  {"#5090d0", "#98fb98"},
+  {"#40a0d0", "#8c59ee"},
+  {"#30b0d0", "#ffec8b"},
+  {"#20c0d0", "#ff6a6a"},
+
+  {"#be2952", "#fd9016"},
+  {"#cb5475", "#98fb98"},
+  {"#d87f97", "#8c59ee"},
+  {"#e5a9ba", "#ffec8b"},
+  {"#f2d4dc", "#ff6a6a"},
+
+  {"#be2952", "#88db18"},
+  {"#cb5475", "#88eb48"},
+  {"#d87f97", "#78db58"},
+  {"#e5a9ba", "#68cb68"},
+  {"#f2d4dc", "#58bb78"},
+
   {"#ef616a", "#88db18"},
   {"#de617a", "#88eb48"},
   {"#cd618a", "#78db58"},
@@ -47,11 +65,23 @@ static const char *tagsel[][2] = {
 };
 
 static const char *tagocc[][2] = {
-  {"#302020","#ecb7dc"  },
-  {"#402030","#dcb7dc"  },
-  {"#403040","#ccb7dc"  },
-  {"#404050","#bcb7dc"  },
-  {"#403060","#acb7dc"  },
+  {"#88db18","#ecb7dc"  },
+  {"#88eb48","#dcb7dc"  },
+  {"#78db58","#ccb7dc"  },
+  {"#68cb68","#bcb7dc"  },
+  {"#58bb78","#acb7dc"  },
+
+  {"#fdd016","#ecb7dc"  },
+  {"#98fb98","#dcb7dc"  },
+  {"#a4d3ee","#ccb7dc"  },
+  {"#ffec8b","#bcb7dc"  },
+  {"#ff6a6a","#acb7dc"  },
+
+  {"#6080d0","#ecb7dc"  },
+  {"#5090d0","#dcb7dc"  },
+  {"#40a0d0","#ccb7dc"  },
+  {"#30b0d0","#bcb7dc"  },
+  {"#20c0d0","#acb7dc"  },
 };
 /*
 */
@@ -80,6 +110,7 @@ static const unsigned int ulinevoffset = 2; /* how far above the bottom of the b
  *  WM_CLASS(STRING) = instance, class
  *  WM_NAME(STRING) = title
  */
+
 static const Rule rules[] = {
     /* class      instance    title       tags mask     isfloating focusopacity
        unfocusopacity     monitor */
@@ -91,6 +122,7 @@ static const Rule rules[] = {
     {"st", NULL, "scratchpad", 0, 1, 0.8, 0.7, -1},
     {"st", NULL, "tasks", 0, 1, 0.8, 0.7, -1},
 };
+
 /* layout(s) */
 static const float mfact = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster = 1;    /* number of clients in master area */
@@ -145,29 +177,32 @@ static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40
 static const Key keys[] = {
     /* modifier                     key        function        argument */
     // scratchpads
-    {MODKEY, XK_minus, scratchpad_show, {0}},
-    {MODKEY | ShiftMask, XK_minus, scratchpad_hide, {0}},
-    {MODKEY, XK_equal, scratchpad_remove, {0}},
+    // {MODKEY, XK_minus, scratchpad_show, {0}},
+    // {MODKEY | ShiftMask, XK_minus, scratchpad_hide, {0}},
+    // {MODKEY, XK_equal, scratchpad_remove, {0}},
     {Mod4Mask, XK_grave, togglescratch, {.v = scratchpadcmd}},
 
     // spawn and kill client
     {MODKEY, XK_p, spawn, {.v = dmenucmd}},
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_c, killclient, {0}},
+    // {MODKEY, XK_Escape, killclient, {0}},
 
     // focus and hide clients
-    {MODKEY, XK_j, focusstackvis, {.i = +1}},
-    {MODKEY, XK_k, focusstackvis, {.i = -1}},
-    {MODKEY | ShiftMask, XK_j, focusstackhid, {.i = +1}},
-    {MODKEY | ShiftMask, XK_k, focusstackhid, {.i = -1}},
-    {MODKEY, XK_m, togglehide, {0}},
+    {MODKEY          ,XK_j  ,focusstackvis,{.i = +1}},
+    {MODKEY          ,XK_k  ,focusstackvis,{.i = -1}},
+    {MODKEY          ,XK_Tab,focusstackhid,{.i = +1}},
+    {MODKEY|ShiftMask,XK_Tab,focusstackhid,{.i = -1}},
+    // {MODKEY | ShiftMask, XK_j, focusstackhid, {.i = +1}},
+    // {MODKEY | ShiftMask, XK_k, focusstackhid, {.i = -1}},
+    {MODKEY          ,XK_m  ,togglehide   ,{0}}      ,
+    {MODKEY|ShiftMask,XK_m  ,showall      ,{0}}      ,
     // {MODKEY                     , XK_s                     , show , {0}} ,
-    {MODKEY | ShiftMask         , XK_s                     , showall , {0}} ,
     // {MODKEY                     , XK_h                     , hide , {0}} ,
 
     // choose clients
-    {MODKEY, XK_o, winview, {0}},
-    {Mod1Mask, XK_Tab, alttab, {0}},
+    {MODKEY   , XK_o   , winview , {0}} ,
+    {Mod4Mask , XK_Tab , alttab  , {0}} ,
     // move clients
     {Mod4Mask, XK_j, movestack, {.i = +1}},
     {Mod4Mask, XK_k, movestack, {.i = -1}},
@@ -230,7 +265,14 @@ static const Key keys[] = {
     {MODKEY | ShiftMask, XK_period, tagmon, {.i = +1}},
 
     // tags
-    TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2) TAGKEYS(XK_4, 3) TAGKEYS(XK_5, 4){MODKEY | ShiftMask, XK_0, tag, {.ui = ~0}}, {MODKEY, XK_0, view, {.ui = ~0}},
+    TAGKEYS(XK_1, 0) 
+    TAGKEYS(XK_2, 1) 
+    TAGKEYS(XK_3, 2) 
+    TAGKEYS(XK_4, 3) 
+    TAGKEYS(XK_5, 4)
+
+    {MODKEY | ShiftMask, XK_0, tag, {.ui = ~0}}, 
+    {MODKEY, XK_0, view, {.ui = ~0}},
 
     // quit
     {MODKEY | ShiftMask, XK_q, quit, {0}},

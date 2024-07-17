@@ -425,10 +425,9 @@ struct NumTags { char limitexceeded[LENGTH(tags) > 30 ? -1 : 1]; };
 static void
 alttab(const Arg *arg) {
 
-  // showall(0);
+  showall(0);
   view(&(Arg){ .ui = ~0 });
-  // focusnext(&(Arg){ .i = alt_tab_direction });
-  // focusstackhid(&(Arg){ .i=alt_tab_direction});;
+  focusnext(&(Arg){ .i = alt_tab_direction });
 
   int grabbed = 1;
   int grabbed_keyboard = 1000;
@@ -462,8 +461,7 @@ alttab(const Arg *arg) {
     switch (event.type) {
     case KeyPress:
       if (event.xkey.keycode == tabCycleKey)
-        // focusnext(&(Arg){ .i = alt_tab_direction });
-        focusstackhid(&(Arg){ .i=alt_tab_direction});;
+        focusnext(&(Arg){ .i = alt_tab_direction });
       break;
     case KeyRelease:
       if (event.xkey.keycode == tabModKey) {
@@ -474,7 +472,7 @@ alttab(const Arg *arg) {
         winview(0);
       }
       break;
-    case ButtonPress:
+      case ButtonPress:
       ev = &(event.xbutton);
       if ((m = wintomon(ev->window)) && m != selmon) {
         unfocus(selmon->sel, 1);
@@ -485,13 +483,13 @@ alttab(const Arg *arg) {
         focus(c);
       XAllowEvents(dpy, AsyncBoth, CurrentTime);
       break;
-    // case ButtonRelease:
-    //   XUngrabKeyboard(dpy, CurrentTime);
-    //   XUngrabButton(dpy, AnyButton, AnyModifier, None);
-    //   grabbed = 0;
-    //   alt_tab_direction = !alt_tab_direction;
-    //   winview(0);
-    //   break;
+    case ButtonRelease:
+      XUngrabKeyboard(dpy, CurrentTime);
+      XUngrabButton(dpy, AnyButton, AnyModifier, None);
+      grabbed = 0;
+      alt_tab_direction = !alt_tab_direction;
+      winview(0);
+      break;
     }
   }
   return;
