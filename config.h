@@ -45,24 +45,6 @@ static const char *tagsel[][2] = {
   {"#40a0d0", "#8c59ee"},
   {"#30b0d0", "#ffec8b"},
   {"#20c0d0", "#ff6a6a"},
-
-  {"#be2952", "#fd9016"},
-  {"#cb5475", "#98fb98"},
-  {"#d87f97", "#8c59ee"},
-  {"#e5a9ba", "#ffec8b"},
-  {"#f2d4dc", "#ff6a6a"},
-
-  {"#be2952", "#88db18"},
-  {"#cb5475", "#88eb48"},
-  {"#d87f97", "#78db58"},
-  {"#e5a9ba", "#68cb68"},
-  {"#f2d4dc", "#58bb78"},
-
-  {"#ef616a", "#88db18"},
-  {"#de617a", "#88eb48"},
-  {"#cd618a", "#78db58"},
-  {"#bc619a", "#68cb68"},
-  {"#ab61aa", "#58bb78"},
 };
 
 static const char *tagocc[][2] = {
@@ -71,18 +53,6 @@ static const char *tagocc[][2] = {
   {"#78db58","#ccb7dc"  },
   {"#68cb68","#bcb7dc"  },
   {"#58bb78","#acb7dc"  },
-
-  {"#fdd016","#ecb7dc"  },
-  {"#98fb98","#dcb7dc"  },
-  {"#a4d3ee","#ccb7dc"  },
-  {"#ffec8b","#bcb7dc"  },
-  {"#ff6a6a","#acb7dc"  },
-
-  {"#6080d0","#ecb7dc"  },
-  {"#5090d0","#dcb7dc"  },
-  {"#40a0d0","#ccb7dc"  },
-  {"#30b0d0","#bcb7dc"  },
-  {"#20c0d0","#acb7dc"  },
 };
 /*
 */
@@ -100,6 +70,7 @@ static const char *colors[][3] = {
 
 static const char buttonbar[] = "";
 static const char *tags[] = {"󰋜", "󰗚", "", "󰃨", "󰃥"};
+static const int taglayouts[] = { 0, 0, 0, 0, 0 };
 
 static const unsigned int ulinepad = 6; /* horizontal padding between the underline and tag */
 static const unsigned int ulinestroke = 3; /* thickness / height of the underline */
@@ -113,13 +84,8 @@ static const unsigned int ulinevoffset = 2; /* how far above the bottom of the b
  */
 
 static const Rule rules[] = {
-    /* class      instance    title       tags mask     isfloating focusopacity
-       unfocusopacity     monitor */
+    /* class      instance    title       tags mask     isfloating focusopacity unfocusopacity     monitor */
     {"Gimp", NULL, NULL, 0, 1, 1.0, inactiveopacity, -1},
-    // { "weixin"      , NULL , NULL           , 0 , 1 , 0.8 , inactiveopacity ,
-    // -1 } , { "OneDriveGUI" , NULL , NULL           , 0 , 1 , 0.8 ,
-    // inactiveopacity , -1 } , { "QQ"          , NULL , NULL           , 0 , 1
-    // , 0.8 , inactiveopacity , -1 } ,
     {"st", NULL, "scratchpad", 0, 1, 0.8, 0.7, -1},
     {"st", NULL, "tasks", 0, 1, 0.8, 0.7, -1},
 };
@@ -127,7 +93,7 @@ static const Rule rules[] = {
 /* layout(s) */
 static const float mfact = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster = 1;    /* number of clients in master area */
-static const int resizehints = 1; /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 0; /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 #define FORCE_VSPLIT 1
@@ -136,13 +102,12 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 
 static const Layout layouts[] = {
     /* symbol     arrange function */
-    {"[]=", tile}, /* first entry is default */
+    {":::", gaplessgrid},
     {"H[]", deck},
+    {"---", horizgrid},
+    {"|M|", centeredmaster},
+    {"[]=", tile}, /* first entry is default */
     {"[M]", monocle},
-    {"###", grid},
-    {"TTT", bstack},
-    // {"---", horizgrid},
-    // {"|M|", centeredmaster},
     {"><>", NULL}, /* no layout function means floating behavior */
     {NULL, NULL},
 };
@@ -152,7 +117,9 @@ static const Layout layouts[] = {
     {"[\\]", dwindle},
     {":::", gaplessgrid},
     {"###", nrowgrid},
+    {"###", grid},
     {"===", bstackhoriz},
+    {"---", horizgrid},
 */
 /* key definitions */
 #define MODKEY Mod1Mask
@@ -202,12 +169,13 @@ static const Key keys[] = {
     // {MODKEY                     , XK_h                     , hide , {0}} ,
 
     // choose clients
-    {MODKEY   , XK_o   , winview , {0}} ,
+    // {Mod4Mask , XK_Return   , winview , {0}} ,
     {Mod4Mask , XK_Tab , alttab  , {0}} ,
+
     // move clients
     {Mod4Mask, XK_j, movestack, {.i = +1}},
     {Mod4Mask, XK_k, movestack, {.i = -1}},
-    {MODKEY | ShiftMask, XK_Return, zoom, {0}},
+    {Mod4Mask, XK_Return, zoom, {0}},
     // opacity
     {MODKEY | ShiftMask, XK_a, changefocusopacity, {.f = +0.025}},
     {MODKEY | ShiftMask, XK_s, changefocusopacity, {.f = -0.025}},
@@ -229,10 +197,10 @@ static const Key keys[] = {
 
     // change layouts
     {MODKEY, XK_a, togglefloating, {0}},
-    {MODKEY, XK_s, setlayout, {.v = &layouts[0]}},
+    {MODKEY, XK_s, setlayout, {.v = &layouts[4]}},
     {MODKEY, XK_d, setlayout, {.v = &layouts[1]}},
-    {MODKEY, XK_f, setlayout, {.v = &layouts[2]}},
-    {MODKEY, XK_g, setlayout, {.v = &layouts[3]}},
+    {MODKEY, XK_f, setlayout, {.v = &layouts[5]}},
+    {MODKEY, XK_g, setlayout, {.v = &layouts[0]}},
     // { MODKEY|ShiftMask,          XK_comma,  cyclelayout,    {.i =
     // -1 } }, { MODKEY|ShiftMask,           XK_period, cyclelayout,    {.i = +1
     // } },
@@ -243,20 +211,22 @@ static const Key keys[] = {
     // modify layouts
     {MODKEY | ShiftMask, XK_h, setcfact, {.f = +0.25}},
     {MODKEY | ShiftMask, XK_l, setcfact, {.f = -0.25}},
-    {MODKEY | ShiftMask, XK_o, setcfact, {.f = 0.00}},
+    {MODKEY, XK_h, setmfact, {.f = -0.02}},
+    {MODKEY, XK_l, setmfact, {.f = +0.02}},
+    // {MODKEY | ShiftMask, XK_o, setcfact, {.f = 0.00}},
+    {Mod4Mask, XK_d, setcfact, {.f = 0.00}},
 
-    {MODKEY | Mod4Mask, XK_u, incrgaps, {.i = +1}},
-    {MODKEY | Mod4Mask | ShiftMask, XK_u, incrgaps, {.i = -1}},
-    {MODKEY | Mod4Mask, XK_i, incrigaps, {.i = +1}},
-    {MODKEY | Mod4Mask | ShiftMask, XK_i, incrigaps, {.i = -1}},
-    {MODKEY | Mod4Mask, XK_o, incrogaps, {.i = +1}},
-    {MODKEY | Mod4Mask | ShiftMask, XK_o, incrogaps, {.i = -1}},
-    {MODKEY | Mod4Mask | ShiftMask, XK_0, defaultgaps, {0}},
+    {MODKEY          ,XK_backslash,incrgaps   ,{.i = +1}},
+    {MODKEY|ShiftMask,XK_backslash,incrgaps   ,{.i = -1}},
+    {MODKEY          ,XK_i        ,incrigaps  ,{.i = +1}},
+    {MODKEY|ShiftMask,XK_i        ,incrigaps  ,{.i = -1}},
+    {MODKEY          ,XK_o        ,incrogaps  ,{.i = +1}},
+    {MODKEY|ShiftMask,XK_o        ,incrogaps  ,{.i = -1}},
+    {Mod4Mask        ,XK_d        ,defaultgaps,{0}}      ,
 
-    {MODKEY, XK_i, incnmaster, {.i = +1}},
-    {MODKEY, XK_d, incnmaster, {.i = -1}},
-    {MODKEY, XK_h, setmfact, {.f = -0.05}},
-    {MODKEY, XK_l, setmfact, {.f = +0.05}},
+    {MODKEY, XK_bracketleft, incnmaster, {.i = +1}},
+    {MODKEY, XK_bracketright, incnmaster, {.i = -1}},
+
     {MODKEY, XK_b, togglebar, {0}},
 
     // monitors
@@ -302,11 +272,15 @@ static const Button buttons[] = {
     // {ClkButton, 0, Button3, spawn, {.v = termcmd}},
 
     // {ClkLtSymbol, 0, Button1, setlayout, {0}},
-    {ClkLtSymbol,0,Button1,  setlayout,{.v = &layouts[0]}},
-    {ClkLtSymbol,0,Button2,  setlayout,{.v = &layouts[3]}},
-    {ClkLtSymbol,0,Button3,  setlayout,{.v = &layouts[2]}},
-    {ClkLtSymbol,0,Button4,cyclelayout,         {.i = -1}},
-    {ClkLtSymbol,0,Button5,cyclelayout,         {.i = +1}},
+    // {ClkLtSymbol,0,Button1,  setlayout,{.v = &layouts[0]}},
+    // {ClkLtSymbol,0,Button2,  setlayout,{.v = &layouts[3]}},
+    {ClkLtSymbol,0,Button3,  setlayout,{.v = &layouts[3]}},
+    {ClkLtSymbol,0,Button4,  setlayout,{.v = &layouts[4]}},
+    {ClkLtSymbol,0,Button5,  setlayout,{.v = &layouts[5]}},
+    // {ClkLtSymbol,0,Button4,cyclelayout,         {.i = -1}},
+    // {ClkLtSymbol,0,Button5,cyclelayout,         {.i = +1}},
+    {ClkLtSymbol,0,Button1,cyclelayout,         {.i = -1}},
+    {ClkLtSymbol,0,Button2,cyclelayout,         {.i = +1}},
 
     {ClkWinTitle, 0     , Button1, togglewin           , {0}}          ,
     {ClkWinTitle, 0     , Button2, killclient          , {0}}          ,
