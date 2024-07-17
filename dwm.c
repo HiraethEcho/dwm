@@ -654,9 +654,14 @@ void buttonpress(XEvent *e) {
     }
     else {
       i = 0;
-    do
+      unsigned int occ = 0;
+      for(c = m->clients; c; c=c->next)
+      occ |= c->tags == TAGMASK ? 0 : c->tags;
+    do{
+			if (!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+				continue;
       x += TEXTW(tags[i]);
-    while (ev->x >= x && ++i < LENGTH(tags));
+    } while (ev->x >= x && ++i < LENGTH(tags));
     if (i < LENGTH(tags)) {
       click = ClkTagBar;
       arg.ui = 1 << i;
@@ -1275,7 +1280,8 @@ void drawbar(Monitor *m) {
   for (c = m->clients; c; c = c->next) {
     if (ISVISIBLE(c))
       n++;
-    occ |= c->tags;
+    // occ |= c->tags;
+		occ |= c->tags == TAGMASK ? 0 : c->tags;
     if (c->isurgent)
       urg |= c->tags;
   }
@@ -1287,12 +1293,14 @@ void drawbar(Monitor *m) {
 
   for (i = 0; i < LENGTH(tags); i++) {
     // drw_setscheme(drw, tagscheme[i]);
+		if(!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+			continue;
     w = TEXTW(tags[i]);
 		// drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]); //original
     
-    drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagschemesel[i] : (occ & 1 << i ?  tagschemeocc[i]: scheme[SchemeTag])));
+    // drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagschemesel[i] : (occ & 1 << i ?  tagschemeocc[i]: scheme[SchemeTag])));
 
-		// drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeNorm]));
+		drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagschemesel[i] : tagschemeocc[i]));
 		// if ( occ & 1 << i )
 		// drw_setscheme(drw, m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeTag]);
     // drw->scheme[ColFg] = occ & 1 << i ? tagscheme[i][ColFg] : scheme[SchemeTag][ColFg];
@@ -1304,8 +1312,8 @@ void drawbar(Monitor *m) {
           // drw_clr_create(drw, &drw->scheme[ColFg], tagscheme[i][ColFg]);
 
     drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-    if ( m->tagset[m->seltags] & 1 << i) 
-      drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
+    // if ( m->tagset[m->seltags] & 1 << i) 
+    //   drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
     x += w;
   }
 
