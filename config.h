@@ -30,7 +30,7 @@ static const double inactiveopacity = 0.75f; /* Window opacity when it's inactiv
 
 static const int focusonwheel = 0;
 
-static const char *fonts[] = {"Maple Mono NF:size=10"};
+static const char *fonts[] = {"Maple Mono NF:size=12"};
 static const char dmenufont[] = "Maple Mono NF:size=15";
 
 static const char gray1[] = "#bbbbbb";
@@ -39,19 +39,19 @@ static const char gray3[] = "#d8dee9";
 static const char cyan[] = "#005577";
 
 static const char *tagsel[][2] = {
-  { "#1b85b8", "#D08770"},
-  { "#5a5255", "#A3BE8C"},
-  { "#559e83", "#B48EAD"},
-  { "#ae5a41", "#BF616A"},
-  { "#8f3d00", "#EBCB8B"},
+  {"#ef616a", "#88db18"},
+  {"#de617a", "#88eb48"},
+  {"#cd618a", "#78db58"},
+  {"#bc619a", "#68cb68"},
+  {"#ab61aa", "#58bb78"},
 };
 
 static const char *tagocc[][2] = {
-  {"#ff4e50","#8b8589"  },
-  {"#fc913a","#989898"  },
-  {"#f9d62e","#838996"  },
-  {"#eae374","#979aaa"  },
-  {"#e2f4c7","#4c516d"  },
+  {"#302020","#ecb7dc"  },
+  {"#402030","#dcb7dc"  },
+  {"#403040","#ccb7dc"  },
+  {"#404050","#bcb7dc"  },
+  {"#403060","#acb7dc"  },
 };
 /*
 */
@@ -106,7 +106,7 @@ static const Layout layouts[] = {
     {"[]=", tile}, /* first entry is default */
     {"H[]", deck},
     {"[M]", monocle},
-    {"HHH", grid},
+    {"###", grid},
     {"TTT", bstack},
     // {"---", horizgrid},
     // {"|M|", centeredmaster},
@@ -255,18 +255,21 @@ static const Button buttons[] = {
     /* click                event mask      button          function argument */
     {ClkButton, 0, Button1, spawn, SHCMD("kitty")},
     {ClkButton, 0, Button2, spawn, SHCMD("rofi_powermenu")},
-    {ClkButton, 0, Button3, spawn, {.v = termcmd}},
+    {ClkButton, 0, Button3, spawn, SHCMD("rofi_allapps")},
+    // {ClkButton, 0, Button3, spawn, {.v = termcmd}},
 
     // {ClkLtSymbol, 0, Button1, setlayout, {0}},
-    {ClkLtSymbol, 0, Button2, setlayout, {.v = &layouts[2]}},
-    {ClkLtSymbol, 0, Button1, cyclelayout, {.i = -1}},
-    {ClkLtSymbol, 0, Button3, cyclelayout, {.i = +1}},
+    {ClkLtSymbol,0,Button1,  setlayout,{.v = &layouts[0]}},
+    {ClkLtSymbol,0,Button2,  setlayout,{.v = &layouts[3]}},
+    {ClkLtSymbol,0,Button3,  setlayout,{.v = &layouts[2]}},
+    {ClkLtSymbol,0,Button4,cyclelayout,         {.i = -1}},
+    {ClkLtSymbol,0,Button5,cyclelayout,         {.i = +1}},
 
-    {ClkWinTitle, 0, Button1, togglewin, {0}},
-    {ClkWinTitle, 0, Button2, killclient, {0}},
-    {ClkWinTitle, 0, Button3, zoom, {0}},
-    {ClkWinTitle, 0, Button4, changefocusopacity, {.f = +0.025}},
-    {ClkWinTitle, 0, Button5, changefocusopacity, {.f = -0.025}},
+    {ClkWinTitle, 0     , Button1, togglewin           , {0}}          ,
+    {ClkWinTitle, 0     , Button2, killclient          , {0}}          ,
+    {ClkWinTitle, 0     , Button3, zoom                , {0}}          ,
+    {ClkWinTitle, 0     , Button4, changefocusopacity  , {.f = +0.025}},
+    {ClkWinTitle, 0     , Button5, changefocusopacity  , {.f = -0.025}},
     {ClkWinTitle, MODKEY, Button4, changeunfocusopacity, {.f = +0.025}},
     {ClkWinTitle, MODKEY, Button5, changeunfocusopacity, {.f = -0.025}},
 
@@ -288,4 +291,5 @@ static const Button buttons[] = {
     {ClkTagBar, 0, Button3, toggleview, {0}},
     {ClkTagBar, MODKEY, Button1, tag, {0}},
     {ClkTagBar, MODKEY, Button3, toggletag, {0}},
+    {ClkTagBar, 0, Button2, toggletag, {0}},
 };
