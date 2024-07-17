@@ -4,7 +4,7 @@
 #include <X11/XF86keysym.h>
 /* appearance */
 static const unsigned int borderpx = 3; /* border pixel of windows */
-static const unsigned int snap = 32;    /* snap pixel */
+static const unsigned int snap = 10;    /* snap pixel */
 
 static const unsigned int tabModKey = 0x40;
 static const unsigned int tabCycleKey = 0x17;
@@ -136,7 +136,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = {"dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", gray3, "-nf", gray1, "-sb", cyan, "-sf", gray2, NULL};
+static const char *dmenucmd[] = {"dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", gray1, "-nf", cyan, "-sb", cyan, "-sf", gray1, NULL};
 static const char *termcmd[] = {"kitty", NULL};
 
 static const char scratchpadname[] = "scratchpad";

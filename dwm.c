@@ -1312,8 +1312,12 @@ void drawbar(Monitor *m) {
           // drw_clr_create(drw, &drw->scheme[ColFg], tagscheme[i][ColFg]);
 
     drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-    if ( m->tagset[m->seltags] & 1 << i) 
-      drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
+    // if ( m->tagset[m->seltags] & 1 << i) 
+    //   drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
+    if ( (m->tagset[m->seltags] & 1 << i) && (occ &1 << i)) {
+      drw_rect(drw, x   ,0,w,bh, 0 , urg & 1 << i);
+      drw_rect(drw, x +1  ,1,w-2,bh-2, 0 , urg & 1 << i);
+    }
     x += w;
   }
 
