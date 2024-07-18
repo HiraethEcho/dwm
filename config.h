@@ -25,12 +25,14 @@ static const int showsystray = 1;             /* 0 means no systray */
 static const int showbar = 1;                 /* 0 means no bar */
 static const int topbar = 1;                  /* 0 means bottom bar */
 static const int startontag         = 0;        /* 0 means no tag active on start */
+static const int scalepreview       = 4;        /* preview scaling (display w and h / scalepreview) */
+static const int previewbar         = 1;        /* show the bar in the preview window */
 // ⭘  󰣇 󱓞 󰣇
 
 static const double activeopacity = 0.9f; /* Window opacity when it's focused (0 <= opacity <= 1) */
 static const double inactiveopacity = 0.75f; /* Window opacity when it's inactive (0 <= opacity <= 1) */
 
-static const int focusonwheel = 0;
+static const int focusonwheel = 1;
 
 static const char *fonts[] = {"Maple Mono NF:size=12"};
 static const char dmenufont[] = "Maple Mono NF:size=12";
@@ -42,11 +44,12 @@ static const char cyan[] = "#005577";
 
 
 static const char *tagocc[][2] = {
-  {"#fdc016","#e4d3c8"  },
-  {"#98fb98","#cbb3a1"  },
-  {"#fe6cc3","#dcc2ae"  },
-  {"#f2f457","#bbbbbb"  },
-  {"#cb5475","#aaaaaa"  },
+  {"#7589ce","#ecb7dc"  },
+  {"#98fb98","#dcb7dc"  },
+  {"#fe6cc3","#ccb7dc"  },
+  {"#d7dcb7","#bcb7dc"  },
+  {"#ff6a6a","#acb7dc"  },
+
 };
 
 static const char *tagsel[][2] = {
@@ -59,10 +62,10 @@ static const char *tagsel[][2] = {
 
 static const char *tagoccsel[][2] = {
   {"#fdd016","#8e7cc3" },
-  {"#213131","#61afef" },
+  {"#efa161","#61afef" },
   {"#f3518a","#559e83" },
-  {"#2d72a2","#feb43f" },
-  {"#76a5af","#e06c75" },
+  {"#3f88fe","#feb43f" },
+  {"#6ce0d6","#e06c75" },
 };
 /*
 */
@@ -136,7 +139,8 @@ static const Layout layouts[] = {
 {MODKEY,                           KEY, view,       {.ui = 1 << TAG}}, \
 {MODKEY | ControlMask,             KEY, toggleview, {.ui = 1 << TAG}}, \
 {MODKEY | ShiftMask,               KEY, tag,        {.ui = 1 << TAG}}, \
-{MODKEY | ControlMask | ShiftMask, KEY, toggletag,  {.ui = 1 << TAG}},
+{MODKEY | ControlMask | ShiftMask, KEY, toggletag,  {.ui = 1 << TAG}}, \
+{Mod4Mask, KEY,      previewtag,     {.ui = TAG } }, \
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL } }
