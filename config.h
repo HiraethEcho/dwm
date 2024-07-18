@@ -16,6 +16,7 @@ static const unsigned int gappoh = 2; /* horiz outer gap between windows and scr
 static const unsigned int gappov = 2; /* vert outer gap between windows and screen edge */
 static int smartgaps = 1; /* 1 means no outer gap when there is only one window */
 
+
 static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft = 0; /* 0: systray in the right corner, >0: systray on left of status text */
 static const unsigned int systrayspacing = 2; /* systray spacing */
@@ -61,11 +62,11 @@ static const char *tagsel[][2] = {
 };
 
 static const char *tagoccsel[][2] = {
-  {"#fdd016","#8e7cc3" },
-  {"#efa161","#61afef" },
-  {"#f3518a","#559e83" },
-  {"#3f88fe","#feb43f" },
-  {"#6ce0d6","#e06c75" },
+  {"#efa161","#8e7cc3" },
+  {"#f3518a","#61afef" },
+  {"#3f88fe","#559e83" },
+  {"#6ce0d6","#feb43f" },
+  {"#fdd016","#e06c75" },
 };
 /*
 */
