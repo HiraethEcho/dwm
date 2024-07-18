@@ -24,6 +24,7 @@ systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray = 1;             /* 0 means no systray */
 static const int showbar = 1;                 /* 0 means no bar */
 static const int topbar = 1;                  /* 0 means bottom bar */
+static const int startontag         = 0;        /* 0 means no tag active on start */
 // ⭘  󰣇 󱓞 󰣇
 
 static const double activeopacity = 0.9f; /* Window opacity when it's focused (0 <= opacity <= 1) */
@@ -222,8 +223,9 @@ static const Key keys[] = {
     {MODKEY | ShiftMask, XK_l, setcfact, {.f = -0.25}},
     {MODKEY, XK_h, setmfact, {.f = -0.02}},
     {MODKEY, XK_l, setmfact, {.f = +0.02}},
-    // {MODKEY | ShiftMask, XK_o, setcfact, {.f = 0.00}},
     {Mod4Mask, XK_d, setcfact, {.f = 0.00}},
+    {Mod4Mask, XK_d, view, {0}},
+    // {Mod4Mask|ControlMask, XK_d, view, {.ui=0}},
 
     {MODKEY          ,XK_backslash,incrgaps   ,{.i = +1}},
     {MODKEY|ShiftMask,XK_backslash,incrgaps   ,{.i = -1}},
