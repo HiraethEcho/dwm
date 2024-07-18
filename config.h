@@ -59,7 +59,7 @@ static const char *tagocc[][2] = {
 static const char *colors[][3] = {
     /*               fg         bg         border   */
     [SchemeButton] = { "#61afef" , "#5a5255" , cyan}  ,
-    [SchemeTag]    = { "#83848e" , "#b5c9dd" , cyan}  ,
+    [SchemeTag]    = { "#83848e" , "#213438" , cyan}  ,
     [SchemeSym]    = { "#dfe3ee" , "#3b5998" , cyan}  ,
     [SchemeNorm]   = { "#d8dee9" , "#414868" , "#d8dee9"} ,
     [SchemeSel]    = { "#2a303c" , "#81a1c1" , "#cc241d"} ,

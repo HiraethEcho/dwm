@@ -1305,7 +1305,7 @@ void drawbar(Monitor *m) {
 
     drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
     // if ( m->tagset[m->seltags] & 1 << i) 
-    //   drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
+      // drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
     if ( (m->tagset[m->seltags] & 1 << i) && (occ &1 << i)) {
       drw_rect(drw, x   ,0,w,bh, 0 , urg & 1 << i);
       // drw_rect(drw, x +1  ,1,w-2,bh-2, 0 , urg & 1 << i);
@@ -1341,6 +1341,9 @@ void drawbar(Monitor *m) {
         drw_text(drw, x, 0, tabw, bh, lrpad / 2, c->name, 0);
       if (c->isfloating)
         drw_rect(drw, x + 2 , 4 , 2 , bh -8 , 1, 0);
+      if ((c->mon->hidsel) && (m->sel == c) )
+      // if (HIDDEN(c))
+        drw_rect(drw, x + lrpad / 2 , bh - 4 , tabw - lrpad , 2 , 1, 0);
         // drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel ==c, 0);
       x += tabw;
       }
