@@ -40,36 +40,36 @@ static const char gray3[] = "#d8dee9";
 static const char cyan[] = "#005577";
 
 static const char *tagsel[][2] = {
-  {"#6080d0", "#fd9016"},
-  {"#5090d0", "#98fb98"},
-  {"#40a0d0", "#8c59ee"},
-  {"#30b0d0", "#ffec8b"},
-  {"#20c0d0", "#ff6a6a"},
+  {"#fdd016","#8e7cc3" },
+  {"#213131","#61afef" },
+  {"#f3518a","#559e83" },
+  {"#2d72a2","#feb43f" },
+  {"#76a5af","#e06c75" },
 };
 
 static const char *tagocc[][2] = {
-  {"#88db18","#ecb7dc"  },
-  {"#88eb48","#dcb7dc"  },
-  {"#78db58","#ccb7dc"  },
-  {"#68cb68","#bcb7dc"  },
-  {"#58bb78","#acb7dc"  },
+  {"#fdc016","#91a1c1"  },
+  {"#98fb98","#8798c4"  },
+  {"#fe6cc3","#8395c7"  },
+  {"#f2f457","#7992ca"  },
+  {"#cb5475","#7589ce"  },
 };
 /*
 */
 static const char *colors[][3] = {
     /*               fg         bg         border   */
     [SchemeButton] = { "#61afef" , "#5a5255" , cyan}  ,
-    [SchemeTag]    = { "#ffffff" , "#3a300c" , cyan}  ,
+    [SchemeTag]    = { "#83848e" , "#b5c9dd" , cyan}  ,
     [SchemeSym]    = { "#dfe3ee" , "#3b5998" , cyan}  ,
     [SchemeNorm]   = { "#d8dee9" , "#414868" , "#d8dee9"} ,
     [SchemeSel]    = { "#2a303c" , "#81a1c1" , "#cc241d"} ,
     [SchemeHid]    = { "#81a1c1" , "#24283b" , cyan} ,
-    [SchemeStatus] = { "#ffffff" , "#7e6991" , cyan} ,
+    [SchemeStatus] = { "#ffffff" , "#49688e" , cyan} ,
     [SchemeSys]    = { "#ffffff" , "#ffeaba" , cyan} ,
 };
 
 static const char buttonbar[] = "";
-static const char *tags[] = {"󰋜", "󰗚", "", "󰃨", "󰃥"};
+static const char *tags[] = {"󰋜", "󰗚", "", "", "󰨇"};
 static const int taglayouts[] = { 0, 0, 0, 0, 0 };
 
 static const unsigned int ulinepad = 6; /* horizontal padding between the underline and tag */

@@ -1339,9 +1339,9 @@ void drawbar(Monitor *m) {
         }
         drw_text(drw, x, 0, tabw, bh, lrpad / 2, c->name, 0);
       if (c->isfloating)
-        // drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel ==c, 0);
         drw_rect(drw, x + 2 , 4 , 2 , bh -8 , 1, 0);
-        x += tabw;
+        // drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel ==c, 0);
+      x += tabw;
       }
     }
     else {
