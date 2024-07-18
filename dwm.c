@@ -1383,7 +1383,9 @@ void drawbar(Monitor *m) {
           }
           remainder--;
         }
-        drw_text(drw, x, 0, tabw, bh, lrpad / 2, c->name, 0);
+        int namelength = TEXTW(c->name);
+        int pad = namelength >= tabw  ? lrpad /2 : (tabw - namelength + lrpad) /2 ;
+        drw_text(drw, x, 0, tabw, bh, pad , c->name, 0);
       if (c->isfloating)
         drw_rect(drw, x + 2 , 4 , 2 , bh -8 , 1, 0);
       if ((c->mon->hidsel) && (m->sel == c) )
