@@ -390,8 +390,9 @@ static int restart = 0;
 static int running = 1;
 static Cur *cursor[CurLast];
 static Clr **scheme;
-static Clr **tagschemesel;
 static Clr **tagschemeocc;
+static Clr **tagschemesel;
+static Clr **tagschemeoccsel;
 static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
@@ -1290,7 +1291,24 @@ void drawbar(Monitor *m) {
     w = TEXTW(tags[i]);
 		// drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]); //original
     
-    drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagschemesel[i] : (occ & 1 << i ?  tagschemeocc[i]: scheme[SchemeTag])));
+    drw_setscheme(drw,  m->tagset[m->seltags] & 1 << i 
+                  ? ( occ & 1 << i ?  tagschemeoccsel[i] : tagschemesel[i] ) 
+                  : ( occ & 1 << i ? tagschemeocc[i] : scheme[SchemeTag]));
+
+		// if ( occ & 1 << i )
+  //     if ( m->tagset[m->seltags] & 1 << i )
+  //       drw_setscheme(drw, tagschemeoccsel[i]);
+  //     else
+  //       drw_setscheme(drw, tagschemeocc[i]);
+  //   else
+  //     if ( m->tagset[m->seltags] & 1 << i )
+  //       drw_setscheme(drw, tagschemesel[i]);
+  //     else
+  //       drw_setscheme(drw, scheme[SchemeTag]);
+
+    // drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i 
+    //               ? tagschemesel[i] 
+    //               : (occ & 1 << i ?  tagschemeocc[i]: scheme[SchemeTag])));
 
 		// drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagschemesel[i] : tagschemeocc[i]));
 		// if ( occ & 1 << i )
@@ -1306,10 +1324,10 @@ void drawbar(Monitor *m) {
     drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
     // if ( m->tagset[m->seltags] & 1 << i) 
       // drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
-    if ( (m->tagset[m->seltags] & 1 << i) && (occ &1 << i)) {
-      drw_rect(drw, x   ,0,w,bh, 0 , urg & 1 << i);
+    // if ( (m->tagset[m->seltags] & 1 << i) && (occ &1 << i)) {
+    //   drw_rect(drw, x   ,0,w,bh, 0 , urg & 1 << i);
       // drw_rect(drw, x +1  ,1,w-2,bh-2, 0 , urg & 1 << i);
-    }
+    // }
     x += w;
   }
 
@@ -2571,13 +2589,17 @@ void setup(void) {
   if (LENGTH(tags) > LENGTH(tagocc))
     die("too few color schemes for the tags");
 
+  tagschemesel = ecalloc(LENGTH(tagsel), sizeof(Clr *));
+  for (i = 0; i < LENGTH(tagsel); i++)
+    tagschemesel[i] = drw_scm_create(drw, tagsel[i], 2);
+
   tagschemeocc = ecalloc(LENGTH(tagocc), sizeof(Clr *));
   for (i = 0; i < LENGTH(tagocc); i++)
     tagschemeocc[i] = drw_scm_create(drw, tagocc[i], 2);
 
-  tagschemesel = ecalloc(LENGTH(tagsel), sizeof(Clr *));
+  tagschemeoccsel = ecalloc(LENGTH(tagoccsel), sizeof(Clr *));
   for (i = 0; i < LENGTH(tagocc); i++)
-    tagschemesel[i] = drw_scm_create(drw, tagsel[i], 2);
+    tagschemeoccsel[i] = drw_scm_create(drw, tagoccsel[i], 2);
 
   scheme = ecalloc(LENGTH(colors) + 1, sizeof(Clr *));
   scheme[LENGTH(colors)] = drw_scm_create(drw, colors[0], 3);

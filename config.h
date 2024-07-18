@@ -39,13 +39,6 @@ static const char gray2[] = "#88c0d0";
 static const char gray3[] = "#d8dee9";
 static const char cyan[] = "#005577";
 
-static const char *tagsel[][2] = {
-  {"#fdd016","#8e7cc3" },
-  {"#213131","#61afef" },
-  {"#f3518a","#559e83" },
-  {"#2d72a2","#feb43f" },
-  {"#76a5af","#e06c75" },
-};
 
 static const char *tagocc[][2] = {
   {"#fdc016","#e4d3c8"  },
@@ -53,6 +46,22 @@ static const char *tagocc[][2] = {
   {"#fe6cc3","#dcc2ae"  },
   {"#f2f457","#bbbbbb"  },
   {"#cb5475","#aaaaaa"  },
+};
+
+static const char *tagsel[][2] = {
+  {"#f7f7f7","#8e7cc3" },
+  {"#e7e7f7","#61afef" },
+  {"#e7e7e7","#559e83" },
+  {"#f7e7e7","#feb43f" },
+  {"#e7e7d7","#e06c75" },
+};
+
+static const char *tagoccsel[][2] = {
+  {"#fdd016","#8e7cc3" },
+  {"#213131","#61afef" },
+  {"#f3518a","#559e83" },
+  {"#2d72a2","#feb43f" },
+  {"#76a5af","#e06c75" },
 };
 /*
 */
