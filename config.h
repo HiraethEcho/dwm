@@ -48,11 +48,11 @@ static const char *tagsel[][2] = {
 };
 
 static const char *tagocc[][2] = {
-  {"#fdc016","#91a1c1"  },
-  {"#98fb98","#8798c4"  },
-  {"#fe6cc3","#8395c7"  },
-  {"#f2f457","#7992ca"  },
-  {"#cb5475","#7589ce"  },
+  {"#fdc016","#e4d3c8"  },
+  {"#98fb98","#cbb3a1"  },
+  {"#fe6cc3","#dcc2ae"  },
+  {"#f2f457","#bbbbbb"  },
+  {"#cb5475","#aaaaaa"  },
 };
 /*
 */
