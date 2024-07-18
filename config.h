@@ -70,7 +70,7 @@ static const char *colors[][3] = {
 
 static const char buttonbar[] = "";
 static const char *tags[] = {"󰋜", "󰗚", "", "", "󰨇"};
-static const int taglayouts[] = { 0, 0, 0, 0, 0 };
+static const int taglayouts[] = { 1, 0, 0, 0, 0, 0 }; //first for viewall tags
 
 static const unsigned int ulinepad = 6; /* horizontal padding between the underline and tag */
 static const unsigned int ulinestroke = 3; /* thickness / height of the underline */
@@ -102,13 +102,12 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 
 static const Layout layouts[] = {
     /* symbol     arrange function */
-    {":::", gaplessgrid},
-    {"H[]", deck},
-    {"---", horizgrid},
-    {"|M|", centeredmaster},
-    {"[]=", tile}, /* first entry is default */
     {"[M]", monocle},
+    {":::", gaplessgrid},
+    {"|M|", centeredmaster},
     {"><>", NULL}, /* no layout function means floating behavior */
+    {"[]=", tile}, /* first entry is default */
+    {"H[]", deck},
     {NULL, NULL},
 };
 /*
@@ -196,11 +195,12 @@ static const Key keys[] = {
     { Mod4Mask,           XK_Right,  moveresizeedge, {.v = "r"} },
 
     // change layouts
-    {MODKEY, XK_a, togglefloating, {0}},
+    {MODKEY|ShiftMask, XK_space, togglefloating, {0}},
+    {MODKEY, XK_a, setlayout, {.v = &layouts[2]}},
     {MODKEY, XK_s, setlayout, {.v = &layouts[4]}},
-    {MODKEY, XK_d, setlayout, {.v = &layouts[1]}},
-    {MODKEY, XK_f, setlayout, {.v = &layouts[5]}},
-    {MODKEY, XK_g, setlayout, {.v = &layouts[0]}},
+    {MODKEY, XK_d, setlayout, {.v = &layouts[5]}},
+    {MODKEY, XK_f, setlayout, {.v = &layouts[0]}},
+    {MODKEY, XK_g, setlayout, {.v = &layouts[1]}},
     // { MODKEY|ShiftMask,          XK_comma,  cyclelayout,    {.i =
     // -1 } }, { MODKEY|ShiftMask,           XK_period, cyclelayout,    {.i = +1
     // } },
@@ -274,13 +274,13 @@ static const Button buttons[] = {
     // {ClkLtSymbol, 0, Button1, setlayout, {0}},
     // {ClkLtSymbol,0,Button1,  setlayout,{.v = &layouts[0]}},
     // {ClkLtSymbol,0,Button2,  setlayout,{.v = &layouts[3]}},
-    {ClkLtSymbol,0,Button3,  setlayout,{.v = &layouts[3]}},
+    {ClkLtSymbol,0,Button2,  setlayout,{.v = &layouts[2]}},
     {ClkLtSymbol,0,Button4,  setlayout,{.v = &layouts[4]}},
     {ClkLtSymbol,0,Button5,  setlayout,{.v = &layouts[5]}},
     // {ClkLtSymbol,0,Button4,cyclelayout,         {.i = -1}},
     // {ClkLtSymbol,0,Button5,cyclelayout,         {.i = +1}},
     {ClkLtSymbol,0,Button1,cyclelayout,         {.i = -1}},
-    {ClkLtSymbol,0,Button2,cyclelayout,         {.i = +1}},
+    {ClkLtSymbol,0,Button3,cyclelayout,         {.i = +1}},
 
     {ClkWinTitle, 0     , Button1, togglewin           , {0}}          ,
     {ClkWinTitle, 0     , Button2, killclient          , {0}}          ,
