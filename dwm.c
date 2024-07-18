@@ -853,7 +853,7 @@ void clientmessage(XEvent *e) {
   XSetWindowAttributes swa;
   XClientMessageEvent *cme = &e->xclient;
   Client *c = wintoclient(cme->window);
-  unsigned int i;
+  // unsigned int i;
 
   if (showsystray && cme->window == systray->win &&
       cme->message_type == netatom[NetSystemTrayOP]) {
@@ -920,15 +920,16 @@ void clientmessage(XEvent *e) {
                         || (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ &&
                             !c->isfullscreen)));
   } else if (cme->message_type == netatom[NetActiveWindow]) {
-    for (i = 0; i < LENGTH(tags) && !((1 << i) & c->tags); i++)
-      ;
-    if (i < LENGTH(tags)) {
-      const Arg a = {.ui = 1 << i};
-      selmon = c->mon;
-      view(&a);
-      focus(c);
-      restack(selmon);
-    }
+		if (c != selmon->sel && !c->isurgent)
+			seturgent(c, 1);
+    // for (i = 0; i < LENGTH(tags) && !((1 << i) & c->tags); i++) ;
+    // if (i < LENGTH(tags)) {
+    //   const Arg a = {.ui = 1 << i};
+    //   selmon = c->mon;
+    //   view(&a);
+    //   focus(c);
+    //   restack(selmon);
+    // }
   }
 }
 
@@ -1348,13 +1349,17 @@ void drawbar(Monitor *m) {
   //     drw->scheme[ColBg] = tagscheme[i][ColBg];
           // drw_clr_create(drw, &drw->scheme[ColFg], tagscheme[i][ColFg]);
 
-    drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
+    // drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
+    drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], 0);
     // if ( m->tagset[m->seltags] & 1 << i) 
       // drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
     // if ( (m->tagset[m->seltags] & 1 << i) && (occ &1 << i)) {
     //   drw_rect(drw, x   ,0,w,bh, 0 , urg & 1 << i);
       // drw_rect(drw, x +1  ,1,w-2,bh-2, 0 , urg & 1 << i);
     // }
+    if (urg & 1 << i)
+      drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , 0);
+      // drw_rect(drw, x +1  ,1,w-2,bh-2, 0 , 0);
     x += w;
   }
 
@@ -3324,7 +3329,7 @@ void updatesizehints(Client *c) {
 
 void updatestatus(void) {
   if (!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
-    strcpy(stext, "dwm-" VERSION);
+    strcpy(stext, "dwm");
   drawbar(selmon);
   updatesystray();
 }
@@ -3486,8 +3491,10 @@ void view(const Arg *arg) {
   unsigned int tmptag;
 
   // if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
-	if(arg->ui && (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
+	if(arg->ui && (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags]){
+		view(&((Arg) { .ui = 0 }));
     return;
+  }
 	takepreview();
   selmon->seltags ^= 1; /* toggle sel tagset */
 
