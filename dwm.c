@@ -347,6 +347,7 @@ static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void togglebar(const Arg *arg);
 static void toggleextrabar(const Arg *arg);
+static void toggletopbar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void togglescratch(const Arg *arg);
 static void toggletag(const Arg *arg);
@@ -3054,7 +3055,6 @@ void tagmon(const Arg *arg) {
 void togglebar(const Arg *arg) {
   // selmon->showbar = !selmon->showbar;
   selmon->showbar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showbar;
-  selmon->showextrabar = selmon->pertag->showextrabars[selmon->pertag->curtag] = !selmon->showextrabar;
   updatebarpos(selmon);
   resizebarwin(selmon);
   if (showsystray) {
@@ -3072,9 +3072,27 @@ void togglebar(const Arg *arg) {
 }
 
 void toggleextrabar(const Arg *arg) {
-	selmon->showextrabar = !selmon->showextrabar;
+  selmon->showextrabar = selmon->pertag->showextrabars[selmon->pertag->curtag] = !selmon->showextrabar;
 	updatebarpos(selmon);
-	XMoveResizeWindow(dpy, selmon->extrabarwin, selmon->wx, selmon->eby, selmon->ww, bh);
+  resizebarwin(selmon);
+	arrange(selmon);
+}
+
+void toggletopbar(const Arg *arg) {
+	selmon->topbar = !selmon->topbar;
+	updatebarpos(selmon);
+  resizebarwin(selmon);
+  if (showsystray) {
+    XWindowChanges wc;
+    if (!selmon->showbar)
+      wc.y = -bh;
+    else if (selmon->showbar) {
+      wc.y = 0;
+      if (!selmon->topbar)
+        wc.y = selmon->mh - bh;
+    }
+    XConfigureWindow(dpy, systray->win, CWY, &wc);
+  }
 	arrange(selmon);
 }
 

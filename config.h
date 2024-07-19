@@ -249,6 +249,7 @@ static const Key keys[] = {
 
     {MODKEY, XK_b, togglebar, {0}},
 	{ Mod4Mask,             XK_b,      toggleextrabar, {0} },
+	{ Mod4Mask|ShiftMask,             XK_b,      toggletopbar, {0} },
 
     // monitors
     {MODKEY, XK_comma, focusmon, {.i = -1}},
