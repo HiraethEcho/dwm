@@ -22,9 +22,10 @@ static const unsigned int systrayonleft = 0; /* 0: systray in the right corner, 
 static const unsigned int systrayspacing = 2; /* systray spacing */
 static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display
 systray on the first monitor, False: display systray on the last monitor*/
-static const int showsystray = 1;             /* 0 means no systray */
+static const int showsystray = 3;             /* 0 means no systray */
 static const int showbar = 1;                 /* 0 means no bar */
-static const int topbar = 0;                  /* 0 means bottom bar */
+static const int showextrabar = 1;                 /* 0 means no bar */
+static const int topbar = 1;                  /* 0 means bottom bar */
 static const char statussep         = ';';      /* separator between status bars */
 
 
@@ -247,6 +248,7 @@ static const Key keys[] = {
     {MODKEY, XK_bracketright, incnmaster, {.i = -1}},
 
     {MODKEY, XK_b, togglebar, {0}},
+	{ Mod4Mask,             XK_b,      toggleextrabar, {0} },
 
     // monitors
     {MODKEY, XK_comma, focusmon, {.i = -1}},
@@ -290,6 +292,12 @@ static const Button buttons[] = {
     {ClkButton, 0, Button3, spawn, SHCMD("rofi_allapps")},
     // {ClkButton, 0, Button3, spawn, {.v = termcmd}},
 
+    {ClkTagBar, 0, Button1, view, {0}},
+    {ClkTagBar, 0, Button3, toggleview, {0}},
+    {ClkTagBar, MODKEY, Button1, tag, {0}},
+    {ClkTagBar, MODKEY, Button3, toggletag, {0}},
+    {ClkTagBar, 0, Button2, toggletag, {0}},
+
     // {ClkLtSymbol, 0, Button1, setlayout, {0}},
     // {ClkLtSymbol,0,Button1,  setlayout,{.v = &layouts[0]}},
     // {ClkLtSymbol,0,Button2,  setlayout,{.v = &layouts[3]}},
@@ -323,9 +331,10 @@ static const Button buttons[] = {
     {ClkClientWin, MODKEY, Button3, resizemouse, {0}},
     {ClkClientWin, MODKEY|ShiftMask, Button1, resizemouse, {0}},
 
-    {ClkTagBar, 0, Button1, view, {0}},
-    {ClkTagBar, 0, Button3, toggleview, {0}},
-    {ClkTagBar, MODKEY, Button1, tag, {0}},
-    {ClkTagBar, MODKEY, Button3, toggletag, {0}},
-    {ClkTagBar, 0, Button2, toggletag, {0}},
+
+
+	{ ClkExBarLeftStatus,   0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkExBarMiddle,       0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkExBarRightStatus,  0,              Button1,        spawn,          {.v = termcmd } },
+
 };
