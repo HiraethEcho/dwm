@@ -24,9 +24,12 @@ static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display
 systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray = 1;             /* 0 means no systray */
 static const int showbar = 1;                 /* 0 means no bar */
-static const int topbar = 1;                  /* 0 means bottom bar */
-static const int startontag         = 0;        /* 0 means no tag active on start */
-static const int scalepreview       = 4;        /* preview scaling (display w and h / scalepreview) */
+static const int topbar = 0;                  /* 0 means bottom bar */
+static const char statussep         = ';';      /* separator between status bars */
+
+
+static const int startontag         = 1;        /* 0 means no tag active on start */
+static const int scalepreview       = 2;        /* preview scaling (display w and h / scalepreview) */
 static const int previewbar         = 1;        /* show the bar in the preview window */
 // ⭘  󰣇 󱓞 󰣇
 
@@ -54,11 +57,11 @@ static const char *tagocc[][2] = {
 };
 
 static const char *tagsel[][2] = {
-  {"#f7f7f7","#8e7cc3" },
-  {"#e7e7f7","#61afef" },
-  {"#e7e7e7","#559e83" },
-  {"#f7e7e7","#feb43f" },
-  {"#e7e7d7","#e06c75" },
+  {"#21284b","#8e7cc3" },
+  {"#23284f","#61afef" },
+  {"#272853","#559e83" },
+  {"#282857","#feb43f" },
+  {"#2b285b","#e06c75" },
 };
 
 static const char *tagoccsel[][2] = {

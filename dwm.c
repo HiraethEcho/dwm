@@ -369,7 +369,12 @@ static void previewtag(const Arg *arg);
 /* variables */
 static Systray *systray = NULL;
 static const char broken[] = "broken";
+
 static char stext[1024];
+static char rawstext[1024];
+static char estext[1024];
+static char rawestext[1024];
+
 static int statussig;
 static int statusw;
 static pid_t statuspid = -1;
@@ -816,9 +821,21 @@ void cleanup(void) {
 
   for (i = 0; i < CurLast; i++)
     drw_cur_free(drw, cursor[i]);
+
   for (i = 0; i < LENGTH(colors) + 1; i++)
     free(scheme[i]);
   free(scheme);
+
+  for (i = 0; i < LENGTH(tagocc) ; i++)
+    free(tagschemeocc[i]);
+  free(tagschemeocc);
+  for (i = 0; i < LENGTH(tagsel) ; i++)
+    free(tagschemesel[i]);
+  free(tagschemesel);
+  for (i = 0; i < LENGTH(tagoccsel) ; i++)
+    free(tagschemeoccsel[i]);
+  free(tagschemeoccsel);
+
   XDestroyWindow(dpy, wmcheckwin);
   drw_free(drw);
   XSync(dpy, False);
