@@ -244,7 +244,7 @@ static void attach(Client *c);
 static void attachstack(Client *c);
 
 static void buttonpress(XEvent *e);
-static void click_status(int x, XEvent *e);
+static void click_status(int x, XEvent *e, char *stext);
 static void sigstatusbar(const Arg *arg);
 
 static void changefocusopacity(const Arg *arg);
@@ -679,7 +679,8 @@ void attachstack(Client *c) {
   c->snext = c->mon->stack;
   c->mon->stack = c;
 }
-void click_status(int x, XEvent *e){
+
+void click_status(int x, XEvent *e, char *stext){
   XButtonPressedEvent *ev = &e->xbutton;
   char *text, *s, ch;
   statussig = 0;
@@ -765,7 +766,7 @@ void buttonpress(XEvent *e) {
     else if (ev->x > selmon->ww - statusw - sysw) {
       x = selmon->ww - statusw - sysw;
       click = ClkStatusText;
-      click_status(x,e);
+      click_status(x,e,stext);
     } else {
       x += TEXTW(selmon->ltsymbol);
       c = m->clients;
@@ -785,8 +786,11 @@ void buttonpress(XEvent *e) {
     }
   }
 	} else if (ev->window == selmon->extrabarwin) {
-		if (ev->x > selmon->ww - estatusw )
-		 	click = ClkExBarRightStatus;
+		if (ev->x > selmon->ww - estatusw ){
+      click = ClkStatusText;
+      click_status(x,e,estext);
+    }
+		 	// click = ClkExBarRightStatus;
 		else
 			click = ClkExBarMiddle;
   } else if ((c = wintoclient(ev->window))) {
