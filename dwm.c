@@ -1478,21 +1478,21 @@ void drawbar(Monitor *m) {
   statusw = status2dw(validtext);
   estatusw = status2dw(validetext);
 
-  if (m->showbar){
-  x = systrayonleft ? m->ww - statusw : m->ww - statusw - sysw;
-  drawstatusbar(x,m, bh, validtext);
   resizebarwin(m);
-  x = 0;
-  x = drawbutton(x);
-  x = drawtags(x,m);
-  x = drawsym(x,m);
-  x = drawawesometitle(x,m);
-  drw_map(drw, m->barwin, 0, 0, m->ww - sysw, bh);
+  if (m->showbar){
+    x = systrayonleft ? m->ww - statusw : m->ww - statusw - sysw;
+    drawstatusbar(x,m, bh, validtext);
+    x = 0;
+    x = drawbutton(x);
+    x = drawtags(x,m);
+    x = drawsym(x,m);
+    x = drawawesometitle(x,m);
+    drw_map(drw, m->barwin, 0, 0, m->ww - sysw, bh);
   }
   if (m->showextrabar){
-		drw_setscheme(drw, scheme[SchemeStatus]);
+		// drw_setscheme(drw, scheme[SchemeStatus]);
 		/* clear default bar draw buffer by drawing a blank rectangle */
-		drw_rect(drw, 0, 0, m->ww, bh, 1, 1);
+		// drw_rect(drw, 0, 0, m->ww, bh, 1, 1);
     x = 0;
     x = drawsingletitle(x,m);
     x = m->ww - estatusw;
