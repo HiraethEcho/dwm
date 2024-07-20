@@ -244,7 +244,7 @@ static void attach(Client *c);
 static void attachstack(Client *c);
 
 static void buttonpress(XEvent *e);
-static void click_status(int x, XEvent *e, char *stext);
+static void click_status(int x, XEvent *e, char *text);
 static void sigstatusbar(const Arg *arg);
 
 static void changefocusopacity(const Arg *arg);
@@ -272,7 +272,7 @@ static int drawawesometitle(int x, Monitor *m, int titlew);
 static int drawsingletitle(int x, Monitor *m, int titlew);
 static int status2dw(char *text);
 static int drawbutton(int x);
-static void copyvalidchars(char *text, char *rawtext);
+static void copyvalidchars(char *validtext, char *rawtext);
 
 // static void enternotify(XEvent *e);
 static void expose(XEvent *e);
@@ -680,29 +680,29 @@ void attachstack(Client *c) {
   c->mon->stack = c;
 }
 
-void click_status(int x, XEvent *e, char *stext){
+void click_status(int x, XEvent *e, char *text){
   XButtonPressedEvent *ev = &e->xbutton;
-  char *text, *s, ch;
+  char *tmp, *s, ch;
   statussig = 0;
-  for (text = s = stext; *s && x <= ev->x; s++) {
+  for (tmp = s = text; *s && x <= ev->x; s++) {
     if ((unsigned char)(*s) < ' ') {
       ch = *s;
       *s = '\0';
-      x += TEXTW(text) - lrpad;
+      x += TEXTW(tmp) - lrpad;
       *s = ch;
-      text = s + 1;
+      tmp = s + 1;
       if (x >= ev->x)
         break;
       statussig = ch;
     } else if (*s == '^') {
       *s = '\0';
-      x += TEXTW(text) - lrpad;
+      x += TEXTW(tmp) - lrpad;
       *s = '^';
       if (*(++s) == 'f')
         x += atoi(++s);
       while (*(s++) != '^')
         ;
-      text = s;
+      tmp = s;
       s--;
     }
   }
@@ -787,6 +787,7 @@ void buttonpress(XEvent *e) {
   }
 	} else if (ev->window == selmon->extrabarwin) {
 		if (ev->x > selmon->ww - estatusw ){
+      x = selmon->ww - statusw;
       click = ClkStatusText;
       click_status(x,e,estext);
     }
@@ -1215,12 +1216,12 @@ Monitor *dirtomon(int dir) {
 }
 
 
-void copyvalidchars(char *validtext, char *stext) {
+void copyvalidchars(char *validtext, char *rawtext) {
 	int i = -1, j = 0;
 
-	while (stext[++i]) {
-		if ((unsigned char)stext[i] >= ' ') {
-			validtext[j++] = stext[i];
+	while (rawtext[++i]) {
+		if ((unsigned char)rawtext[i] >= ' ') {
+			validtext[j++] = rawtext[i];
 		}
 	}
 	validtext[j] = '\0';

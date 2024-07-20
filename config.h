@@ -319,6 +319,8 @@ static const Button buttons[] = {
     {ClkWinTitle, MODKEY, Button5, changeunfocusopacity, {.f = -0.025}},
     {ClkEtyTitle, 0, Button1, spawn, SHCMD("wallpaper_change")},
 
+    {ClkExBarMiddle,       0,              Button2,        spawn,          {.v = termcmd } },
+
     {ClkStatusText, 0, Button1, sigstatusbar, {.i = 1}},
     {ClkStatusText, 0, Button2, sigstatusbar, {.i = 2}},
     {ClkStatusText, 0, Button3, sigstatusbar, {.i = 3}},
@@ -335,8 +337,7 @@ static const Button buttons[] = {
 
 
 
-	{ ClkExBarLeftStatus,   0,              Button2,        spawn,          {.v = termcmd } },
-	{ ClkExBarMiddle,       0,              Button2,        spawn,          {.v = termcmd } },
-	{ ClkExBarRightStatus,  0,              Button1,        spawn,          {.v = termcmd } },
+	// { ClkExBarLeftStatus,   0,              Button2,        spawn,          {.v = termcmd } },
+	// { ClkExBarRightStatus,  0,              Button1,        spawn,          {.v = termcmd } },
 
 };
