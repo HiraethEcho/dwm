@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details.
  *
+ *
  * dynamic window manager is designed like any other X client as well. It is
  * driven through handling X events. In contrast to other X clients, a window
  * manager selects for SubstructureRedirectMask on the root window, to receive
@@ -240,7 +241,11 @@ static void arrange(Monitor *m);
 static void arrangemon(Monitor *m);
 static void attach(Client *c);
 static void attachstack(Client *c);
+
 static void buttonpress(XEvent *e);
+static void click_status(int x, XEvent *e);
+static void sigstatusbar(const Arg *arg);
+
 static void changefocusopacity(const Arg *arg);
 static void changeunfocusopacity(const Arg *arg);
 static void checkotherwm(void);
@@ -262,8 +267,8 @@ static void drawbars(void);
 static int drawstatusbar(int x,Monitor *m, int bh, char *text);
 static int drawtags(int x, Monitor *m);
 static int drawsym(int x, Monitor *m);
-static int drawawesometitle(int x, Monitor *m);
-static int drawsingletitle(int x, Monitor *m);
+static int drawawesometitle(int x, Monitor *m, int titlew);
+static int drawsingletitle(int x, Monitor *m, int titlew);
 static int status2dw(char *text);
 static int drawbutton(int x);
 static void copyvalidchars(char *text, char *rawtext);
@@ -339,7 +344,6 @@ static void showhide(Client *c);
 static void togglehide(const Arg *arg);
 static void sighup(int unused);
 static void sigterm(int unused);
-static void sigstatusbar(const Arg *arg);
 // static void sigdwmblocks(const Arg *arg);
 static void spawn(const Arg *arg);
 static Monitor *systraytomon(Monitor *m);
@@ -392,11 +396,17 @@ static char estext[1024];
 static char validtext[1024];
 static char validetext[1024];
 
-static int statussig;
+static int buttonw;
+static int tagsw;
+static int symw;
+static int titlew;
+static int etitlew;
 static int statusw;
 static int estatusw;
 static int sysw;
+
 static pid_t statuspid = -1;
+static int statussig;
 static int screen;
 static int sw, sh; /* X display screen geometry width, height */
 static int bh;     /* bar height */
@@ -668,7 +678,42 @@ void attachstack(Client *c) {
   c->snext = c->mon->stack;
   c->mon->stack = c;
 }
-
+void click_status(int x, XEvent *e){
+  XButtonPressedEvent *ev = &e->xbutton;
+  char *text, *s, ch;
+  statussig = 0;
+  for (text = s = stext; *s && x <= ev->x; s++) {
+    if ((unsigned char)(*s) < ' ') {
+      ch = *s;
+      *s = '\0';
+      x += TEXTW(text) - lrpad;
+      *s = ch;
+      text = s + 1;
+      if (x >= ev->x)
+        break;
+      statussig = ch;
+    } else if (*s == '^') {
+      *s = '\0';
+      x += TEXTW(text) - lrpad;
+      *s = '^';
+      if (*(++s) == 'f')
+        x += atoi(++s);
+      while (*(s++) != '^')
+        ;
+      text = s;
+      s--;
+    }
+  }
+}
+/*
+void click_button
+void click_tags
+void click_awesometitle
+void click_etitle
+void click_sym
+void click_win
+void click_root
+*/
 void buttonpress(XEvent *e) {
   unsigned int i, x, click;
   // int stw;
@@ -677,20 +722,24 @@ void buttonpress(XEvent *e) {
   Monitor *m;
   XButtonPressedEvent *ev = &e->xbutton;
 
+  // init
   click = ClkRootWin;
-  /* focus monitor if necessary */
+
+  // click on focus
   if ((m = wintomon(ev->window)) && m != selmon &&
       (focusonwheel || (ev->button != Button4 && ev->button != Button5))) {
     unfocus(selmon->sel, 1);
     selmon = m;
     focus(NULL);
   }
+
   if (ev->window == selmon->barwin) {
-    x = TEXTW(buttonbar);
-    if(ev->x < x){
+    x = 0;
+    if(ev->x < x + buttonw){
       click = ClkButton;
     }
     else {
+      x +=buttonw;
       i = 0;
       // unsigned int occ = 0;
       // for(c = m->clients; c; c=c->next)
@@ -709,15 +758,18 @@ void buttonpress(XEvent *e) {
 				XUnmapWindow(dpy, selmon->tagwin);
 			}
     } 
+
     else if (ev->x < x + TEXTW(selmon->ltsymbol))
       click = ClkLtSymbol;
     else if (ev->x > selmon->ww - statusw - sysw) {
       x = selmon->ww - statusw - sysw;
+
       click = ClkStatusText;
+      click_status(x,e);
       // else
       // click = ClkWinTitle;
       //
-      char *text, *s, ch;
+      /* char *text, *s, ch;
       statussig = 0;
       for (text = s = stext; *s && x <= ev->x; s++) {
         if ((unsigned char)(*s) < ' ') {
@@ -740,7 +792,7 @@ void buttonpress(XEvent *e) {
           text = s;
           s--;
         }
-      }
+      } */
     } else {
       x += TEXTW(selmon->ltsymbol);
       c = m->clients;
@@ -1392,32 +1444,31 @@ int drawsym(int x, Monitor *m){
   return x;
 }
 
-int drawsingletitle(int x, Monitor *m){
-  int tabw;
-	if ((tabw = m->ww - estatusw - x) > bh) {
+int drawsingletitle(int x, Monitor *m, int etitlew){
+	if (etitlew > bh) {
 		if (m->sel) {
 			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
         int namelength = TEXTW(m->sel->name);
-        int pad = namelength >= tabw  ? lrpad /2 : (tabw - namelength + lrpad) /2 ;
-        drw_text(drw, x, 0, tabw, bh, pad , m->sel->name, 0);
+        int pad = namelength >= etitlew  ? lrpad /2 : (etitlew - namelength + lrpad) /2 ;
+        drw_text(drw, x, 0, etitlew, bh, pad , m->sel->name, 0);
 			if (m->sel->isfloating)
         drw_rect(drw, x + 2 , 4 , 2 , bh -8 , 1, 0);
       if (m->sel->mon->hidsel)
-        drw_rect(drw, x + lrpad / 2 , bh - 4 , tabw - lrpad , 2 , 1, 0);
+        drw_rect(drw, x + lrpad / 2 , bh - 4 , etitlew - lrpad , 2 , 1, 0);
 
 		} else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
-			drw_rect(drw, x, 0, tabw, bh, 1, 1);
+			drw_rect(drw, x, 0, etitlew, bh, 1, 1);
 		}
   } else {
       drw_setscheme(drw, scheme[SchemeNorm]);
-      drw_rect(drw, x, 0, tabw, bh, 1, 1);
+      drw_rect(drw, x, 0, etitlew, bh, 1, 1);
   }
-  x += tabw;
+  x += etitlew;
   return x;
 }
 
-int drawawesometitle(int x, Monitor *m){
+int drawawesometitle(int x, Monitor *m, int titlew){
   Client *c;
   int n = 0;
   int w;
@@ -1470,23 +1521,31 @@ int drawawesometitle(int x, Monitor *m){
 
 void drawbar(Monitor *m) {
   int x= 0;
+  int i;
   // if (showsystray && m == systraytomon(m) && !systrayonleft)
   sysw = getsystraywidth();
   copyvalidchars(validtext,stext);
   copyvalidchars(validetext,estext);
 
+  buttonw = TEXTW(buttonbar);
   statusw = status2dw(validtext);
   estatusw = status2dw(validetext);
+  for (i = tagsw = 0; i < LENGTH(tags); i++) {
+    tagsw += TEXTW(tags[i]);
+  }
+  symw = TEXTW(m->ltsymbol);
 
   resizebarwin(m);
   if (m->showbar){
+
     x = systrayonleft ? m->ww - statusw : m->ww - statusw - sysw;
     drawstatusbar(x,m, bh, validtext);
     x = 0;
     x = drawbutton(x);
     x = drawtags(x,m);
     x = drawsym(x,m);
-    x = drawawesometitle(x,m);
+    titlew= m->ww - buttonw - tagsw - symw - sysw - statusw;
+    x = drawawesometitle(x,m,titlew);
     drw_map(drw, m->barwin, 0, 0, m->ww - sysw, bh);
   }
   if (m->showextrabar){
@@ -1494,7 +1553,8 @@ void drawbar(Monitor *m) {
 		/* clear default bar draw buffer by drawing a blank rectangle */
 		// drw_rect(drw, 0, 0, m->ww, bh, 1, 1);
     x = 0;
-    x = drawsingletitle(x,m);
+    etitlew=m->ww-estatusw;
+    x = drawsingletitle(x,m,etitlew);
     x = m->ww - estatusw;
     drawstatusbar(x,m, bh, validetext);
 		drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
@@ -2496,6 +2556,7 @@ void restack(Monitor *m) {
   if (m->lt[m->sellt]->arrange) {
     wc.stack_mode = Below;
     wc.sibling = m->barwin;
+    wc.sibling = m->extrabarwin;
     for (c = m->stack; c; c = c->snext)
       if (!c->isfloating && ISVISIBLE(c)) {
         XConfigureWindow(dpy, c->win, CWSibling | CWStackMode, &wc);
