@@ -124,8 +124,8 @@ enum {
   ClkButton,
   ClkStatusText,
   ClkWinTitle,
+  ClkSelTitle,
   ClkEtyTitle,
-  ClkExBarLeftStatus, ClkExBarMiddle, ClkExBarRightStatus,
   ClkClientWin,
   ClkRootWin,
   ClkLast
@@ -739,36 +739,12 @@ void buttonpress(XEvent *e) {
     x = 0;
     if(ev->x < x + buttonw){
       click = ClkButton;
-    }
-    else {
-      x +=buttonw;
-      i = 0;
-      // unsigned int occ = 0;
-      // for(c = m->clients; c; c=c->next)
-      // occ |= c->tags == TAGMASK ? 0 : c->tags;
-    do{
-			// if (!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
-			// 	continue;
-      x += TEXTW(tags[i]);
-    } while (ev->x >= x && ++i < LENGTH(tags));
-    if (i < LENGTH(tags)) {
-      click = ClkTagBar;
-      arg.ui = 1 << i;
-			/* hide preview if we click the bar */
-			if (selmon->previewshow) {
-				selmon->previewshow = 0;
-				XUnmapWindow(dpy, selmon->tagwin);
-			}
-    } 
-
-    else if (ev->x < x + TEXTW(selmon->ltsymbol))
-      click = ClkLtSymbol;
-    else if (ev->x > selmon->ww - statusw - sysw) {
+    } else if (ev->x > selmon->ww - statusw - sysw) {
       x = selmon->ww - statusw - sysw;
       click = ClkStatusText;
       click_status(x,e,stext);
     } else {
-      x += TEXTW(selmon->ltsymbol);
+      x = buttonw;
       c = m->clients;
       if (c) {
         do {
@@ -784,16 +760,34 @@ void buttonpress(XEvent *e) {
         click = ClkEtyTitle;
       }
     }
-  }
-	} else if (ev->window == selmon->extrabarwin) {
-		if (ev->x > selmon->ww - estatusw ){
+	}
+  else if (ev->window == selmon->extrabarwin) {
+    if(ev->x < symw){
+      click = ClkLtSymbol;
+    } else if (ev->x < symw + tagsw){
+      click = ClkTagBar;
+      x = symw;
+      i = 0;
+      do{
+        x += TEXTW(tags[i]);
+      } while (ev->x >= x && ++i < LENGTH(tags));
+      if (selmon->previewshow) {
+        selmon->previewshow = 0;
+        XUnmapWindow(dpy, selmon->tagwin);
+      }
+      arg.ui = 1 << i;
+    } else if(ev->x < selmon->ww - estatusw) {
+      if (m->sel) {
+      click = ClkSelTitle;
+      // click = ClkWinTitle;
+      arg.v = m->sel;
+      } else
+      click = ClkEtyTitle;
+    } else if (ev->x > selmon->ww - estatusw ){
       x = selmon->ww - statusw;
       click = ClkStatusText;
       click_status(x,e,estext);
     }
-		 	// click = ClkExBarRightStatus;
-		else
-			click = ClkExBarMiddle;
   } else if ((c = wintoclient(ev->window))) {
     // focus(c);
     // restack(selmon);
@@ -802,6 +796,7 @@ void buttonpress(XEvent *e) {
     XAllowEvents(dpy, ReplayPointer, CurrentTime);
     click = ClkClientWin;
   }
+
   for (i = 0; i < LENGTH(buttons); i++)
     if (click == buttons[i].click && buttons[i].func &&
         buttons[i].button == ev->button &&
@@ -1520,9 +1515,8 @@ void drawbar(Monitor *m) {
     drawstatusbar(x,m, bh, validtext);
     x = 0;
     x = drawbutton(x);
-    x = drawtags(x,m);
-    x = drawsym(x,m);
-    titlew= m->ww - buttonw - tagsw - symw - sysw - statusw;
+    // titlew= m->ww - buttonw - tagsw - symw - sysw - statusw;
+    titlew= m->ww - buttonw - sysw - statusw;
     x = drawawesometitle(x,m,titlew);
     drw_map(drw, m->barwin, 0, 0, m->ww - sysw, bh);
   }
@@ -1531,7 +1525,9 @@ void drawbar(Monitor *m) {
 		/* clear default bar draw buffer by drawing a blank rectangle */
 		// drw_rect(drw, 0, 0, m->ww, bh, 1, 1);
     x = 0;
-    etitlew=m->ww-estatusw;
+    x = drawsym(x,m);
+    x = drawtags(x,m);
+    etitlew=m->ww - estatusw - symw - buttonw;
     x = drawsingletitle(x,m,etitlew);
     x = m->ww - estatusw;
     drawstatusbar(x,m, bh, validetext);

@@ -25,7 +25,7 @@ systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray = 3;             /* 0 means no systray */
 static const int showbar = 1;                 /* 0 means no bar */
 static const int showextrabar = 1;                 /* 0 means no bar */
-static const int topbar = 1;                  /* 0 means bottom bar */
+static const int topbar = 0;                  /* 0 means bottom bar */
 static const char statussep         = ';';      /* separator between status bars */
 
 
@@ -318,8 +318,8 @@ static const Button buttons[] = {
     {ClkWinTitle, MODKEY, Button4, changeunfocusopacity, {.f = +0.025}},
     {ClkWinTitle, MODKEY, Button5, changeunfocusopacity, {.f = -0.025}},
     {ClkEtyTitle, 0, Button1, spawn, SHCMD("wallpaper_change")},
+    {ClkSelTitle, 0, Button1, togglefloating, {0}},
 
-    {ClkExBarMiddle,       0,              Button2,        spawn,          {.v = termcmd } },
 
     {ClkStatusText, 0, Button1, sigstatusbar, {.i = 1}},
     {ClkStatusText, 0, Button2, sigstatusbar, {.i = 2}},
