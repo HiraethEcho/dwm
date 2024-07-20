@@ -317,6 +317,7 @@ static const Button buttons[] = {
     {ClkWinTitle, 0     , Button5, changefocusopacity  , {.f = -0.025}},
     {ClkWinTitle, MODKEY, Button4, changeunfocusopacity, {.f = +0.025}},
     {ClkWinTitle, MODKEY, Button5, changeunfocusopacity, {.f = -0.025}},
+    {ClkEtyTitle, 0, Button1, spawn, SHCMD("wallpaper_change")},
 
     {ClkStatusText, 0, Button1, sigstatusbar, {.i = 1}},
     {ClkStatusText, 0, Button2, sigstatusbar, {.i = 2}},

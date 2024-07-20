@@ -124,6 +124,7 @@ enum {
   ClkButton,
   ClkStatusText,
   ClkWinTitle,
+  ClkEtyTitle,
   ClkExBarLeftStatus, ClkExBarMiddle, ClkExBarRightStatus,
   ClkClientWin,
   ClkRootWin,
@@ -763,36 +764,8 @@ void buttonpress(XEvent *e) {
       click = ClkLtSymbol;
     else if (ev->x > selmon->ww - statusw - sysw) {
       x = selmon->ww - statusw - sysw;
-
       click = ClkStatusText;
       click_status(x,e);
-      // else
-      // click = ClkWinTitle;
-      //
-      /* char *text, *s, ch;
-      statussig = 0;
-      for (text = s = stext; *s && x <= ev->x; s++) {
-        if ((unsigned char)(*s) < ' ') {
-          ch = *s;
-          *s = '\0';
-          x += TEXTW(text) - lrpad;
-          *s = ch;
-          text = s + 1;
-          if (x >= ev->x)
-            break;
-          statussig = ch;
-        } else if (*s == '^') {
-          *s = '\0';
-          x += TEXTW(text) - lrpad;
-          *s = '^';
-          if (*(++s) == 'f')
-            x += atoi(++s);
-          while (*(s++) != '^')
-            ;
-          text = s;
-          s--;
-        }
-      } */
     } else {
       x += TEXTW(selmon->ltsymbol);
       c = m->clients;
@@ -807,7 +780,7 @@ void buttonpress(XEvent *e) {
         click = ClkWinTitle;
         arg.v = c;
       } else
-        click = ClkRootWin;
+        click = ClkEtyTitle;
       }
     }
   }
