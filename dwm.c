@@ -803,8 +803,9 @@ void buttonpress(XEvent *e) {
         buttons[i].button == ev->button &&
         CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state)){
       if (click == ClkWinTitle || click == ClkSelTitle){
-        // arg.i= buttons[i].arg.i;
+        arg.i = buttons[i].arg.i;
         arg.f = buttons[i].arg.f;
+        arg.ui = buttons[i].arg.ui;
         // arg.i = buttons[i].arg.i;
         // buttons[i].func(&buttons[i].arg);
         buttons[i].func(&arg);
@@ -816,32 +817,27 @@ void buttonpress(XEvent *e) {
 }
 
 void changefocusopacity(const Arg *arg) {
-  Client *c;
-  c = selmon->sel;
-  // c = arg->i ? (Client *)arg->v : selmon->sel;
-  // Client *c = (Client *)arg->v;
-
+  Client *c = arg ? (Client *)arg->v : selmon->sel;
   if (!c)
     return;
   c->opacity += arg->f;
   if (c->opacity > 1.0)
     c->opacity = 1.0;
-
   if (c->opacity < 0.1)
     c->opacity = 0.1;
-
   opacity(c, c->opacity);
 }
 
 void changeunfocusopacity(const Arg *arg) {
-  if (!selmon->sel)
+  Client *c = arg ? (Client *)arg->v : selmon->sel;
+  if (!c)
     return;
-  selmon->sel->unfocusopacity += arg->f;
-  if (selmon->sel->unfocusopacity > 1.0)
-    selmon->sel->unfocusopacity = 1.0;
-  if (selmon->sel->unfocusopacity < 0.1)
-    selmon->sel->unfocusopacity = 0.1;
-  opacity(selmon->sel, selmon->sel->unfocusopacity);
+  c->unfocusopacity += arg->f;
+  if (c->unfocusopacity > 1.0)
+    c->unfocusopacity = 1.0;
+  if (c->unfocusopacity < 0.1)
+    c->unfocusopacity = 0.1;
+  opacity(c, c->unfocusopacity);
 }
 
 void checkotherwm(void) {
@@ -3232,7 +3228,6 @@ void toggleview(const Arg *arg) {
 
 void togglewin(const Arg *arg) {
   Client *c = (Client *)arg->v;
-
   if (c == selmon->sel) {
     hidewin(c);
     focus(NULL);
@@ -3848,11 +3843,7 @@ Monitor *systraytomon(Monitor *m) {
 }
 
 void zoom(const Arg *arg) {
-  Client *c;
-  // if (arg)
-  //   c = (Client *)arg->v;
-  // else 
-    c = selmon->sel;
+  Client *c = arg ? (Client *)arg->v : selmon->sel;
   if (!selmon->lt[selmon->sellt]->arrange || !c || c->isfloating)
     return;
   if (c == nexttiled(selmon->clients) && !(c = nexttiled(c->next)))
