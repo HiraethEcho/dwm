@@ -119,6 +119,7 @@ enum {
   WMLast
 }; /* default atoms */
 enum {
+  ClkRootWin,
   ClkTagBar,
   ClkLtSymbol,
   ClkButton,
@@ -127,11 +128,10 @@ enum {
   ClkSelTitle,
   ClkEtyTitle,
   ClkClientWin,
-  ClkRootWin,
   ClkLast
 }; /* clicks */
 
-typedef union {
+typedef struct {
   int i;
   unsigned int ui;
   float f;
@@ -296,6 +296,7 @@ static void hidewin(Client *c);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
+// static void killclick(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
 static void maprequest(XEvent *e);
@@ -800,24 +801,36 @@ void buttonpress(XEvent *e) {
   for (i = 0; i < LENGTH(buttons); i++)
     if (click == buttons[i].click && buttons[i].func &&
         buttons[i].button == ev->button &&
-        CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
-      buttons[i].func((click == ClkTagBar || click == ClkWinTitle || click == ClkSelTitle) &&
-                              buttons[i].arg.i == 0
-                          ? &arg
-                          : &buttons[i].arg);
+        CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state)){
+      if (click == ClkWinTitle || click == ClkSelTitle){
+        // arg.i= buttons[i].arg.i;
+        arg.f = buttons[i].arg.f;
+        // arg.i = buttons[i].arg.i;
+        // buttons[i].func(&buttons[i].arg);
+        buttons[i].func(&arg);
+      } else if (click == ClkTagBar)
+        buttons[i].func(&arg);
+      else 
+      buttons[i].func(&buttons[i].arg);
+    }
 }
 
 void changefocusopacity(const Arg *arg) {
-  if (!selmon->sel)
+  Client *c;
+  c = selmon->sel;
+  // c = arg->i ? (Client *)arg->v : selmon->sel;
+  // Client *c = (Client *)arg->v;
+
+  if (!c)
     return;
-  selmon->sel->opacity += arg->f;
-  if (selmon->sel->opacity > 1.0)
-    selmon->sel->opacity = 1.0;
+  c->opacity += arg->f;
+  if (c->opacity > 1.0)
+    c->opacity = 1.0;
 
-  if (selmon->sel->opacity < 0.1)
-    selmon->sel->opacity = 0.1;
+  if (c->opacity < 0.1)
+    c->opacity = 0.1;
 
-  opacity(selmon->sel, selmon->sel->opacity);
+  opacity(c, c->opacity);
 }
 
 void changeunfocusopacity(const Arg *arg) {
@@ -826,10 +839,8 @@ void changeunfocusopacity(const Arg *arg) {
   selmon->sel->unfocusopacity += arg->f;
   if (selmon->sel->unfocusopacity > 1.0)
     selmon->sel->unfocusopacity = 1.0;
-
   if (selmon->sel->unfocusopacity < 0.1)
     selmon->sel->unfocusopacity = 0.1;
-
   opacity(selmon->sel, selmon->sel->unfocusopacity);
 }
 
@@ -1225,7 +1236,6 @@ void copyvalidchars(char *validtext, char *rawtext) {
 int status2dw(char *text){
   int w,i;
   short isCode=0;
-  char *p;
   w = 0;
   i = -1;
   while (text[++i]) {
@@ -1248,8 +1258,6 @@ int status2dw(char *text){
     w += TEXTW(text) - lrpad;
   else
     isCode = 0;
-  text = p;
-
   w += lrpad; /* 1px padding on both sides */
   return w;
 }
@@ -1873,10 +1881,12 @@ void keypress(XEvent *e) {
 }
 
 void killclient(const Arg *arg) {
-  if (!selmon->sel)
+  Client *c = (Client *)arg->v;
+  if (c)
+    XKillClient(dpy, c->win);
+  else if (!selmon->sel)
     return;
-
-  if (!sendevent(selmon->sel->win, wmatom[WMDelete], NoEventMask,
+  else if (!sendevent(selmon->sel->win, wmatom[WMDelete], NoEventMask,
                  wmatom[WMDelete], CurrentTime, 0, 0, 0)) {
     XGrabServer(dpy);
     XSetErrorHandler(xerrordummy);
@@ -1887,6 +1897,12 @@ void killclient(const Arg *arg) {
     XUngrabServer(dpy);
   }
 }
+
+/* void killclick(const Arg *arg){
+  Client *c = (Client *)arg->v;
+  focus (c);
+  killclient(NULL);
+} */
 
 void manage(Window w, XWindowAttributes *wa) {
   Client *c, *t = NULL;
@@ -3832,8 +3848,11 @@ Monitor *systraytomon(Monitor *m) {
 }
 
 void zoom(const Arg *arg) {
-  Client *c = selmon->sel;
-
+  Client *c;
+  // if (arg)
+  //   c = (Client *)arg->v;
+  // else 
+    c = selmon->sel;
   if (!selmon->lt[selmon->sellt]->arrange || !c || c->isfloating)
     return;
   if (c == nexttiled(selmon->clients) && !(c = nexttiled(c->next)))

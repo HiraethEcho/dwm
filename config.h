@@ -312,6 +312,7 @@ static const Button buttons[] = {
 
     {ClkWinTitle, 0     , Button1, togglewin           , {0}}          ,
     {ClkWinTitle, 0     , Button2, killclient          , {0}}          ,
+    // {ClkWinTitle, 0     , Button2, killclick          , {0}}          ,
     {ClkWinTitle, 0     , Button3, zoom                , {0}}          ,
     {ClkWinTitle, 0, Button4, changeunfocusopacity, {.f = +0.025}},
     {ClkWinTitle, 0, Button5, changeunfocusopacity, {.f = -0.025}},
