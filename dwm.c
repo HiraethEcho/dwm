@@ -801,7 +801,7 @@ void buttonpress(XEvent *e) {
     if (click == buttons[i].click && buttons[i].func &&
         buttons[i].button == ev->button &&
         CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
-      buttons[i].func((click == ClkTagBar || click == ClkWinTitle) &&
+      buttons[i].func((click == ClkTagBar || click == ClkWinTitle || click == ClkSelTitle) &&
                               buttons[i].arg.i == 0
                           ? &arg
                           : &buttons[i].arg);

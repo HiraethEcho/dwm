@@ -313,12 +313,18 @@ static const Button buttons[] = {
     {ClkWinTitle, 0     , Button1, togglewin           , {0}}          ,
     {ClkWinTitle, 0     , Button2, killclient          , {0}}          ,
     {ClkWinTitle, 0     , Button3, zoom                , {0}}          ,
-    {ClkWinTitle, 0     , Button4, changefocusopacity  , {.f = +0.025}},
-    {ClkWinTitle, 0     , Button5, changefocusopacity  , {.f = -0.025}},
-    {ClkWinTitle, MODKEY, Button4, changeunfocusopacity, {.f = +0.025}},
-    {ClkWinTitle, MODKEY, Button5, changeunfocusopacity, {.f = -0.025}},
-    {ClkEtyTitle, 0, Button1, spawn, SHCMD("wallpaper_change")},
+    {ClkWinTitle, 0, Button4, changeunfocusopacity, {.f = +0.025}},
+    {ClkWinTitle, 0, Button5, changeunfocusopacity, {.f = -0.025}},
+
     {ClkSelTitle, 0, Button1, togglefloating, {0}},
+    {ClkSelTitle, 0, Button2, killclient          , {0}}          ,
+    {ClkSelTitle, 0, Button3, togglewin           , {0}}          ,
+    {ClkSelTitle, 0, Button4, changefocusopacity  , {.f = +0.025}},
+    {ClkSelTitle, 0, Button5, changefocusopacity  , {.f = -0.025}},
+
+    {ClkEtyTitle, 0, Button1, spawn, SHCMD("kitty")},
+    {ClkEtyTitle, 0, Button2, spawn, SHCMD("wallpaper_change")},
+    {ClkEtyTitle, 0, Button3, spawn, SHCMD("microsoft-edge-stable")},
 
 
     {ClkStatusText, 0, Button1, sigstatusbar, {.i = 1}},
