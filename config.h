@@ -5,8 +5,8 @@
 static const unsigned int borderpx = 2; /* border pixel of windows */
 static const unsigned int snap = 15;    /* snap pixel */
 
-static const unsigned int tabModKey = 0x40; //alt
-static const unsigned int wintabModKey = 0x85; //win
+static const unsigned int altModKey = 0x40; //alt
+static const unsigned int winModKey = 0x85; //win
 static const unsigned int tabCycleKey = 0x17;
 static const unsigned int tabCycleKeyInv = 0x32;
 
@@ -131,6 +131,7 @@ static const Layout layouts[] = {
     {"H[]", deck},
     {NULL, NULL},
 };
+static const Layout tablayout = {":::", gaplessgrid};
 
 /*
 static const BarBlock blocksl[] = {
@@ -193,8 +194,8 @@ static const Key keys[] = {
     // focus and hide clients
     {MODKEY          ,XK_j  ,focusstackvis,{.i = +1}},
     {MODKEY          ,XK_k  ,focusstackvis,{.i = -1}},
-    {MODKEY          ,XK_Tab,focusstackhid,{.i = +1}},
-    {MODKEY|ShiftMask,XK_Tab,focusstackhid,{.i = -1}},
+    // {MODKEY          ,XK_Tab,focusstackhid,{.i = +1}},
+    // {MODKEY|ShiftMask,XK_Tab,focusstackhid,{.i = -1}},
     // {MODKEY | ShiftMask, XK_j, focusstackhid, {.i = +1}},
     // {MODKEY | ShiftMask, XK_k, focusstackhid, {.i = -1}},
     {MODKEY          ,XK_m  ,togglehide   ,{0}}      ,
@@ -205,6 +206,7 @@ static const Key keys[] = {
     // choose clients
     // {Mod4Mask , XK_Return   , winview , {0}} ,
     {Mod4Mask , XK_Tab , wintab  , {0}} ,
+    {MODKEY , XK_Tab , alttab  , {0}} ,
 
     // move clients
     {Mod4Mask, XK_j, movestack, {.i = +1}},

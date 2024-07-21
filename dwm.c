@@ -250,6 +250,7 @@ struct Systray {
 
 /* function declarations */
 static void wintab(const Arg *arg);
+static void alttab(const Arg *arg);
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h,
                           int interact);
@@ -496,6 +497,80 @@ struct Pertag {
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 30 ? -1 : 1]; };
 
+static void alttab(const Arg *arg) {
+  Layout *l = selmon->lt[selmon->sellt];
+  setlayout(&((Arg) {.v = &tablayout}));
+  // view(&(Arg){ .ui = ~0 });
+
+  int grabbed = 1;
+  int grabbed_keyboard = 1000;
+  for (int i = 0; i < 100; i += 1) {
+    struct timespec ts;
+    ts.tv_sec = 0;
+    ts.tv_nsec = 1000000;
+
+    if (grabbed_keyboard != GrabSuccess) {
+      grabbed_keyboard = XGrabKeyboard(dpy, DefaultRootWindow(dpy), True,
+                       GrabModeAsync, GrabModeAsync, CurrentTime);
+    }
+    if (grabbed_keyboard == GrabSuccess) {
+      XGrabButton(dpy, AnyButton, AnyModifier, None, False,
+            BUTTONMASK, GrabModeAsync, GrabModeAsync,
+            None, None);
+      break;
+    }
+    nanosleep(&ts, NULL);
+    if (i == 100 - 1)
+      grabbed = 0;
+  }
+
+  XEvent event;
+  Client *c;
+  Monitor *m;
+  XButtonPressedEvent *ev;
+
+  while (grabbed) {
+    XNextEvent(dpy, &event);
+    switch (event.type) {
+    case KeyPress:
+      if (event.xkey.keycode == tabCycleKey)
+        focusstackhid(&(Arg){ .i=tab_direction});;
+      if (event.xkey.keycode == tabCycleKeyInv)
+        tab_direction = 0;
+      break;
+    case KeyRelease:
+      if (event.xkey.keycode == altModKey) {
+        XUngrabKeyboard(dpy, CurrentTime);
+        XUngrabButton(dpy, AnyButton, AnyModifier, None);
+        grabbed = 0;
+        setlayout(&((Arg) {.v = l}));
+      }
+      if (event.xkey.keycode == tabCycleKeyInv)
+        tab_direction = 1;
+      break;
+    case ButtonPress:
+      ev = &(event.xbutton);
+      if ((m = wintomon(ev->window)) && m != selmon) {
+        unfocus(selmon->sel, 1);
+        selmon = m;
+        focus(NULL);
+      }
+      if ((c = wintoclient(ev->window)))
+        focus(c);
+      XAllowEvents(dpy, AsyncBoth, CurrentTime);
+      break;
+    // case ButtonRelease:
+    //   XUngrabKeyboard(dpy, CurrentTime);
+    //   XUngrabButton(dpy, AnyButton, AnyModifier, None);
+    //   grabbed = 0;
+    //   alt_tab_direction = !alt_tab_direction;
+    //   winview(0);
+    //   break;
+    }
+  }
+  return;
+}
+
 static void wintab(const Arg *arg) {
 
   view(&(Arg){ .ui = ~0 });
@@ -537,7 +612,7 @@ static void wintab(const Arg *arg) {
         tab_direction = 0;
       break;
     case KeyRelease:
-      if (event.xkey.keycode == wintabModKey) {
+      if (event.xkey.keycode == winModKey) {
         XUngrabKeyboard(dpy, CurrentTime);
         XUngrabButton(dpy, AnyButton, AnyModifier, None);
         grabbed = 0;
@@ -856,6 +931,7 @@ void buttonpress(XEvent *e) {
     if (click == buttons[i].click && buttons[i].func &&
         buttons[i].button == ev->button &&
         CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state)){
+    // FIXME: modify if condition, what arg to use?
       if (click == ClkTab || click == ClkTitle){
         arg.i = buttons[i].arg.i;
         arg.f = buttons[i].arg.f;
@@ -3322,6 +3398,8 @@ void toggleview(const Arg *arg) {
 
     if (selmon->showbar != selmon->pertag->showbars[selmon->pertag->curtag])
       togglebar(NULL);
+    if (selmon->showextrabar != selmon->pertag->showextrabars[selmon->pertag->curtag])
+      toggleextrabar(NULL);
     focus(NULL);
     arrange(selmon);
   // }
