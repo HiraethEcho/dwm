@@ -19,13 +19,14 @@ static int smartgaps = 1; /* 1 means no outer gap when there is only one window 
 
 static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft = 0; /* 0: systray in the right corner, >0: systray on left of status text */
-static const unsigned int systrayspacing = 2; /* systray spacing */
-static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display
-systray on the first monitor, False: display systray on the last monitor*/
-static const int showsystray = 3;             /* 0 means no systray */
+static const unsigned int systrayspacing = 4; /* systray spacing */
+static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
+static const int showsystray = 1;             /* 0 means no systray */
+
 static const int showbar = 1;                 /* 0 means no bar */
 static const int showextrabar = 1;                 /* 0 means no bar */
 static const int topbar = 0;                  /* 0 means bottom bar */
+
 static const char statussep         = ';';      /* separator between status bars */
 
 
@@ -86,7 +87,9 @@ static const char *colors[][3] = {
     [SchemeSys]    = { "#ffffff" , "#ffeaba" , cyan} ,
 };
 
-static const char buttonbar[] = "";
+static const char *launchers[] = {""} ;
+// static const char *launchercmds[][] = {"kitty", NULL};
+
 static const char *tags[] = {"󰋜", "󰗚", "", "", "󰨇"};
 static const int taglayouts[] = { 1, 0, 0, 0, 0, 0 }; //first for viewall tags
 
@@ -128,6 +131,19 @@ static const Layout layouts[] = {
     {"H[]", deck},
     {NULL, NULL},
 };
+
+/*
+static const BarBlock blocksl[] = {
+
+}
+static const BarBlock blocksr[] = {}
+static const BarBlock blockm[] = {}
+
+static const BarBlock eblocksl[] = {}
+static const BarBlock eblocksr[] = {}
+static const BarBlock eblockm[] = {}
+*/
+
 /*
     {">M>", centeredfloatingmaster},
     {"[@]", spiral},
@@ -288,9 +304,10 @@ static const Key keys[] = {
  * ClkClientWin, or ClkRootWin */
 static const Button buttons[] = {
     /* click                event mask      button          function argument */
-    {ClkButton, 0, Button1, spawn, SHCMD("kitty")},
-    {ClkButton, 0, Button2, spawn, SHCMD("rofi_powermenu")},
-    {ClkButton, 0, Button3, spawn, SHCMD("rofi_allapps")},
+    {ClkLancher, 0, Button1, spawn, SHCMD("kitty")},
+    {ClkLancher, 0, Button2, spawn, SHCMD("rofi_powermenu")},
+    {ClkLancher, 0, Button3, spawn, SHCMD("rofi_allapps")},
+
     // {ClkButton, 0, Button3, spawn, {.v = termcmd}},
 
     {ClkTagBar, 0, Button1, view, {0}},
@@ -310,22 +327,22 @@ static const Button buttons[] = {
     {ClkLtSymbol,0,Button1,cyclelayout,         {.i = -1}},
     {ClkLtSymbol,0,Button3,cyclelayout,         {.i = +1}},
 
-    {ClkWinTitle, 0     , Button1, togglewin           , {0}}          ,
-    {ClkWinTitle, 0     , Button2, killclient          , {0}}          ,
-    // {ClkWinTitle, 0     , Button2, killclick          , {0}}          ,
-    {ClkWinTitle, 0     , Button3, zoom                , {0}}          ,
-    {ClkWinTitle, 0, Button4, changefocusopacity, {.f = +0.025}},
-    {ClkWinTitle, 0, Button5, changefocusopacity, {.f = -0.025}},
+    {ClkTab, 0     , Button1, togglewin           , {0}}          ,
+    {ClkTab, 0     , Button2, killclient          , {0}}          ,
+    // {ClkTab, 0     , Button2, killclick          , {0}}          ,
+    {ClkTab, 0     , Button3, zoom                , {0}}          ,
+    {ClkTab, 0, Button4, changefocusopacity, {.f = +0.025}},
+    {ClkTab, 0, Button5, changefocusopacity, {.f = -0.025}},
 
-    {ClkSelTitle, 0, Button1, togglefloating, {0}},
-    {ClkSelTitle, 0, Button2, killclient          , {0}}          ,
-    {ClkSelTitle, 0, Button3, togglewin           , {0}}          ,
-    {ClkSelTitle, 0, Button4, changefocusopacity  , {.f = +0.025}},
-    {ClkSelTitle, 0, Button5, changefocusopacity  , {.f = -0.025}},
+    {ClkTitle, 0, Button1, togglefloating, {0}},
+    {ClkTitle, 0, Button2, killclient          , {0}}          ,
+    {ClkTitle, 0, Button3, togglewin           , {0}}          ,
+    {ClkTitle, 0, Button4, changefocusopacity  , {.f = +0.025}},
+    {ClkTitle, 0, Button5, changefocusopacity  , {.f = -0.025}},
 
-    {ClkEtyTitle, 0, Button1, spawn, SHCMD("kitty")},
-    {ClkEtyTitle, 0, Button2, spawn, SHCMD("wallpaper_change")},
-    {ClkEtyTitle, 0, Button3, spawn, SHCMD("microsoft-edge-stable")},
+    {ClkEty, 0, Button1, spawn, SHCMD("kitty")},
+    {ClkEty, 0, Button2, spawn, SHCMD("wallpaper_change")},
+    {ClkEty, 0, Button3, spawn, SHCMD("microsoft-edge-stable")},
 
 
     {ClkStatusText, 0, Button1, sigstatusbar, {.i = 1}},

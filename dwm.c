@@ -67,6 +67,7 @@
 #define TEXTW(X) (drw_fontset_getwidth(drw, (X)) + lrpad)
 #define TTEXTW(X) (drw_fontset_getwidth(drw, (X)))
 
+#define BARBLOCK     5 
 
 #define SYSTEM_TRAY_REQUEST_DOCK 0
 /* XEMBED messages */
@@ -122,14 +123,21 @@ enum {
   ClkRootWin,
   ClkTagBar,
   ClkLtSymbol,
-  ClkButton,
+  ClkLancher,
   ClkStatusText,
-  ClkWinTitle,
-  ClkSelTitle,
-  ClkEtyTitle,
+  ClkTab,
+  ClkTitle,
+  ClkEty,
   ClkClientWin,
-  ClkLast
+  ClkLast,
 }; /* clicks */
+enum {
+  left,
+  mid,
+  right,
+  wheelup,
+  wheeldown,
+};
 
 typedef struct {
   int i;
@@ -145,6 +153,13 @@ typedef struct {
   void (*func)(const Arg *arg);
   const Arg arg;
 } Button;
+
+typedef struct {
+  void (*draw)(const Arg *arg);
+  void (*click)(const Arg *arg);
+  void (*motion)(const Arg *arg);
+  void (*width)(const Arg *arg);
+} BarBlock;
 
 typedef struct Monitor Monitor;
 typedef struct Client Client;
@@ -263,16 +278,23 @@ static void detach(Client *c);
 static void detachstack(Client *c);
 static Monitor *dirtomon(int dir);
 
+// drawbar
 static void drawbar(Monitor *m);
 static void drawbars(void);
+
+// draw barblck function
 static int drawstatusbar(int x,Monitor *m, int bh, char *text);
 static int drawtags(int x, Monitor *m);
 static int drawsym(int x, Monitor *m);
-static int drawawesometitle(int x, Monitor *m, int titlew);
-static int drawsingletitle(int x, Monitor *m, int titlew);
-static int status2dw(char *text);
+static int drawtabs(int x, Monitor *m, int titlew);
+static int drawtitle(int x, Monitor *m, int titlew);
 static int drawbutton(int x);
+
+// width functions
 static void copyvalidchars(char *validtext, char *rawtext);
+static int status2dw(char *text);
+
+// click functions
 
 // static void enternotify(XEvent *e);
 static void expose(XEvent *e);
@@ -398,7 +420,7 @@ static char estext[1024];
 static char validtext[1024];
 static char validetext[1024];
 
-static int buttonw;
+static int launchersw;
 static int tagsw;
 static int symw;
 static int titlew;
@@ -406,6 +428,7 @@ static int etitlew;
 static int statusw;
 static int estatusw;
 static int sysw;
+static int barblockw[BARBLOCK];
 
 static pid_t statuspid = -1;
 static int statussig;
@@ -737,14 +760,18 @@ void buttonpress(XEvent *e) {
 
   if (ev->window == selmon->barwin) {
     x = 0;
-    if(ev->x < x + buttonw){
-      click = ClkButton;
-    } else if (ev->x > selmon->ww - statusw - sysw) {
+    if(ev->x < launchersw){
+      click = ClkLancher;
+    } else 
+    // if (ev->x < buttonw + tagsw){
+    //
+    // }
+    if (ev->x > selmon->ww - statusw - sysw) {
       x = selmon->ww - statusw - sysw;
       click = ClkStatusText;
       click_status(x,e,stext);
     } else {
-      x = buttonw;
+      x = launchersw;
       c = m->clients;
       if (c) {
         do {
@@ -754,10 +781,10 @@ void buttonpress(XEvent *e) {
             x += (1.0 / (double)m->bt) * m->btw;
         } while (ev->x > x && (c = c->next));
       if (m->bt > 0){
-        click = ClkWinTitle;
+        click = ClkTab;
         arg.v = c;
       } else
-        click = ClkEtyTitle;
+        click = ClkEty;
       }
     }
   }
@@ -778,11 +805,10 @@ void buttonpress(XEvent *e) {
       arg.ui = 1 << i;
     } else if(ev->x < selmon->ww - estatusw) {
       if (m->sel) {
-      click = ClkSelTitle;
-      // click = ClkWinTitle;
+      click = ClkTitle;
       arg.v = m->sel;
       } else
-      click = ClkEtyTitle;
+      click = ClkEty;
     } else if (ev->x > selmon->ww - estatusw ){
       x = selmon->ww - statusw;
       click = ClkStatusText;
@@ -801,7 +827,7 @@ void buttonpress(XEvent *e) {
     if (click == buttons[i].click && buttons[i].func &&
         buttons[i].button == ev->button &&
         CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state)){
-      if (click == ClkWinTitle || click == ClkSelTitle){
+      if (click == ClkTab || click == ClkTitle){
         arg.i = buttons[i].arg.i;
         arg.f = buttons[i].arg.f;
         arg.ui = buttons[i].arg.ui;
@@ -1334,10 +1360,13 @@ int drawstatusbar(int x, Monitor *m, int bh, char *text) {
 }
 
 int drawbutton(int x){
-  int w;
-  w = TEXTW(buttonbar);
-  drw_setscheme(drw, scheme[SchemeButton]);
-  x = drw_text(drw, x, 0, w, bh, lrpad / 2, buttonbar, 0);
+  int i,w;
+  for ( i = w = 0 ; i < LENGTH(launchers);i++){
+  w = TEXTW(launchers[i]);
+  drw_setscheme(drw, tagschemeoccsel[i]);
+  drw_text(drw, x, 0, w, bh, lrpad / 2, launchers[i], 0);
+  x += w;
+  }
   return x;
 }
 
@@ -1418,7 +1447,7 @@ int drawsym(int x, Monitor *m){
   return x;
 }
 
-int drawsingletitle(int x, Monitor *m, int etitlew){
+int drawtitle(int x, Monitor *m, int etitlew){
   if (etitlew > bh) {
     if (m->sel) {
       drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
@@ -1442,7 +1471,7 @@ int drawsingletitle(int x, Monitor *m, int etitlew){
   return x;
 }
 
-int drawawesometitle(int x, Monitor *m, int titlew){
+int drawtabs(int x, Monitor *m, int titlew){
   Client *c;
   int n = 0;
   int w;
@@ -1494,18 +1523,20 @@ int drawawesometitle(int x, Monitor *m, int titlew){
 }
 
 void drawbar(Monitor *m) {
-  int x= 0;
+  int x = 0;
   int i;
   // if (showsystray && m == systraytomon(m) && !systrayonleft)
   sysw = getsystraywidth();
   copyvalidchars(validtext,stext);
   copyvalidchars(validetext,estext);
 
-  buttonw = TEXTW(buttonbar);
   statusw = status2dw(validtext);
   estatusw = status2dw(validetext);
   for (i = tagsw = 0; i < LENGTH(tags); i++) {
     tagsw += TEXTW(tags[i]);
+  }
+  for (i = launchersw = 0; i < LENGTH(launchers); i++) {
+    launchersw += TEXTW(launchers[i]);
   }
   symw = TEXTW(m->ltsymbol);
 
@@ -1517,8 +1548,8 @@ void drawbar(Monitor *m) {
     x = 0;
     x = drawbutton(x);
     // titlew= m->ww - buttonw - tagsw - symw - sysw - statusw;
-    titlew= m->ww - buttonw - sysw - statusw;
-    x = drawawesometitle(x,m,titlew);
+    titlew= m->ww - launchersw - sysw - statusw;
+    x = drawtabs(x,m,titlew);
     drw_map(drw, m->barwin, 0, 0, m->ww - sysw, bh);
   }
   if (m->showextrabar){
@@ -1528,8 +1559,8 @@ void drawbar(Monitor *m) {
     x = 0;
     x = drawsym(x,m);
     x = drawtags(x,m);
-    etitlew=m->ww - estatusw - symw - buttonw;
-    x = drawsingletitle(x,m,etitlew);
+    etitlew=m->ww - estatusw - symw - launchersw;
+    x = drawtitle(x,m,etitlew);
     x = m->ww - estatusw;
     drawstatusbar(x,m, bh, validetext);
     drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
@@ -2014,9 +2045,9 @@ void motionnotify(XEvent *e) {
 
   unsigned int i, x;
 
-  if (ev->window == selmon->barwin) {
+  if (ev->window == selmon->extrabarwin) {
     i = 0;
-    x = TEXTW(buttonbar);
+    x = symw;
     do
       x += TEXTW(tags[i]);
     while (ev->x >= x && ++i < LENGTH(tags));
@@ -2168,7 +2199,7 @@ takepreview(void)
     imlib_context_set_visual(DefaultVisual(dpy, screen));
     imlib_context_set_drawable(root);
 
-    if (previewbar)
+    if (!previewbar)
       imlib_copy_drawable_to_image(0, selmon->wx, selmon->wy, selmon->ww, selmon->wh, 0, 0, 1);
     else
       imlib_copy_drawable_to_image(0, selmon->mx, selmon->my, selmon->mw ,selmon->mh, 0, 0, 1);
@@ -3303,7 +3334,7 @@ void updatebars(void) {
   XClassHint ch = {"dwm", "dwm"};
   for (m = mons; m; m = m->next) {
     if (!m->tagwin) {
-      m->tagwin = XCreateWindow(dpy, root, m->wx, m->by + bh, m->mw / scalepreview,
+      m->tagwin = XCreateWindow(dpy, root, m->wx, m->wy, m->mw / scalepreview,
         m->mh / scalepreview, 0, DefaultDepth(dpy, screen), CopyFromParent,
         DefaultVisual(dpy, screen), CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
       XDefineCursor(dpy, m->tagwin, cursor[CurNormal]->cursor);
@@ -3568,13 +3599,13 @@ void updatesystray(void) {
   unsigned int x = m->mx + m->mw;
 // FIX: length stext
   // unsigned int sw = TEXTW(stext) - lrpad + systrayspacing;
-  unsigned int sw = statusw + systrayspacing;
+  // unsigned int sw = statusw + systrayspacing;
   unsigned int w = 1;
 
   if (!showsystray)
     return;
-  if (systrayonleft)
-    x -= sw + lrpad / 2;
+  // if (systrayonleft)
+  //   x -= sw + lrpad / 2;
   if (!systray) {
     /* init systray */
     if (!(systray = (Systray *)calloc(1, sizeof(Systray))))
