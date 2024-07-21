@@ -5,8 +5,8 @@
 static const unsigned int borderpx = 2; /* border pixel of windows */
 static const unsigned int snap = 15;    /* snap pixel */
 
-// static const unsigned int tabModKey = 0x40; //alt
-static const unsigned int tabModKey = 0x85; //win
+static const unsigned int tabModKey = 0x40; //alt
+static const unsigned int wintabModKey = 0x85; //win
 static const unsigned int tabCycleKey = 0x17;
 static const unsigned int tabCycleKeyInv = 0x32;
 
@@ -188,7 +188,7 @@ static const Key keys[] = {
 
     // choose clients
     // {Mod4Mask , XK_Return   , winview , {0}} ,
-    {Mod4Mask , XK_Tab , alttab  , {0}} ,
+    {Mod4Mask , XK_Tab , wintab  , {0}} ,
 
     // move clients
     {Mod4Mask, XK_j, movestack, {.i = +1}},
@@ -314,8 +314,8 @@ static const Button buttons[] = {
     {ClkWinTitle, 0     , Button2, killclient          , {0}}          ,
     // {ClkWinTitle, 0     , Button2, killclick          , {0}}          ,
     {ClkWinTitle, 0     , Button3, zoom                , {0}}          ,
-    {ClkWinTitle, 0, Button4, changeunfocusopacity, {.f = +0.025}},
-    {ClkWinTitle, 0, Button5, changeunfocusopacity, {.f = -0.025}},
+    {ClkWinTitle, 0, Button4, changefocusopacity, {.f = +0.025}},
+    {ClkWinTitle, 0, Button5, changefocusopacity, {.f = -0.025}},
 
     {ClkSelTitle, 0, Button1, togglefloating, {0}},
     {ClkSelTitle, 0, Button2, killclient          , {0}}          ,
@@ -341,10 +341,6 @@ static const Button buttons[] = {
     // {ClkClientWin, MODKEY, Button2, togglefloating, {0}},
     {ClkClientWin, MODKEY, Button3, resizemouse, {0}},
     {ClkClientWin, MODKEY|ShiftMask, Button1, resizemouse, {0}},
-
-
-
 	// { ClkExBarLeftStatus,   0,              Button2,        spawn,          {.v = termcmd } },
 	// { ClkExBarRightStatus,  0,              Button1,        spawn,          {.v = termcmd } },
-
 };
