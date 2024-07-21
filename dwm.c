@@ -259,7 +259,11 @@ static void attach(Client *c);
 static void attachstack(Client *c);
 
 static void buttonpress(XEvent *e);
-static void click_status(int x, XEvent *e, char *text);
+static void click_lancher(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
+static void click_sym(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
+static void click_tabs(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
+static void click_status(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
+static void click_tag(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
 static void sigstatusbar(const Arg *arg);
 
 static void changefocusopacity(const Arg *arg);
@@ -288,7 +292,7 @@ static int drawtags(int x, Monitor *m);
 static int drawsym(int x, Monitor *m);
 static int drawtabs(int x, Monitor *m, int titlew);
 static int drawtitle(int x, Monitor *m, int titlew);
-static int drawbutton(int x);
+static int drawlaunchers(int x);
 
 // width functions
 static void copyvalidchars(char *validtext, char *rawtext);
@@ -703,9 +707,49 @@ void attachstack(Client *c) {
   c->mon->stack = c;
 }
 
-void click_status(int x, XEvent *e, char *text){
-  XButtonPressedEvent *ev = &e->xbutton;
-  char *tmp, *s, ch;
+void click_sym(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev){
+  *click = ClkLtSymbol;
+}
+
+void click_lancher(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev){
+  *click = ClkLancher;
+}
+
+void click_tag(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev){
+  *click =  ClkTagBar;
+  int i = 0;
+  do{
+    x += TEXTW(tags[i]);
+  } while (ev->x >= x && ++i < LENGTH(tags));
+    if (selmon->previewshow) {
+      selmon->previewshow = 0;
+      XUnmapWindow(dpy, selmon->tagwin);
+    }
+    arg->ui = 1 << i;
+}
+
+void click_tabs(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev){
+  Client *c;
+  c = m->clients;
+  if (c) {
+    do {
+      if (!ISVISIBLE(c))
+        continue;
+      else
+        x += (1.0 / (double)m->bt) * m->btw;
+    } while (ev->x > x && (c = c->next));
+  if (m->bt > 0){
+    *click = ClkTab;
+    arg->v = c;
+  } else
+    *click = ClkEty;
+  }
+}
+
+void click_status(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev){
+  char *tmp, *s, ch, *text ;
+  text = arg->ui ? stext : estext ;
+  *click = ClkStatusText;
   statussig = 0;
   for (tmp = s = text; *s && x <= ev->x; s++) {
     if ((unsigned char)(*s) < ' ') {
@@ -723,8 +767,7 @@ void click_status(int x, XEvent *e, char *text){
       *s = '^';
       if (*(++s) == 'f')
         x += atoi(++s);
-      while (*(s++) != '^')
-        ;
+      while (*(s++) != '^') ;
       tmp = s;
       s--;
     }
@@ -740,7 +783,8 @@ void click_win
 void click_root
 */
 void buttonpress(XEvent *e) {
-  unsigned int i, x, click;
+  unsigned int i,  click;
+  int x=0;
   // int stw;
   Arg arg = {0};
   Client *c;
@@ -759,50 +803,33 @@ void buttonpress(XEvent *e) {
   }
 
   if (ev->window == selmon->barwin) {
-    x = 0;
     if(ev->x < launchersw){
-      click = ClkLancher;
+      x = 0;
+      // click = ClkLancher;
+      click_lancher(x,&click,&arg,m,ev);
     } else 
     // if (ev->x < buttonw + tagsw){
     //
     // }
     if (ev->x > selmon->ww - statusw - sysw) {
       x = selmon->ww - statusw - sysw;
-      click = ClkStatusText;
-      click_status(x,e,stext);
+      // click = ClkStatusText;
+      // click_status(x,e,stext);
+      arg.ui=1;
+      click_status(x,&click,&arg,m,ev);
     } else {
       x = launchersw;
-      c = m->clients;
-      if (c) {
-        do {
-          if (!ISVISIBLE(c))
-            continue;
-          else
-            x += (1.0 / (double)m->bt) * m->btw;
-        } while (ev->x > x && (c = c->next));
-      if (m->bt > 0){
-        click = ClkTab;
-        arg.v = c;
-      } else
-        click = ClkEty;
-      }
+      click_tabs(x,&click,&arg,m,ev);
     }
   }
+
   else if (ev->window == selmon->extrabarwin) {
     if(ev->x < symw){
-      click = ClkLtSymbol;
+      x = 0;
+      click_sym(x,&click,&arg,m,ev);
     } else if (ev->x < symw + tagsw){
-      click = ClkTagBar;
-      x = symw;
-      i = 0;
-      do{
-        x += TEXTW(tags[i]);
-      } while (ev->x >= x && ++i < LENGTH(tags));
-      if (selmon->previewshow) {
-        selmon->previewshow = 0;
-        XUnmapWindow(dpy, selmon->tagwin);
-      }
-      arg.ui = 1 << i;
+      x += symw;
+      click_tag(x,&click,&arg,m,ev);
     } else if(ev->x < selmon->ww - estatusw) {
       if (m->sel) {
       click = ClkTitle;
@@ -810,9 +837,11 @@ void buttonpress(XEvent *e) {
       } else
       click = ClkEty;
     } else if (ev->x > selmon->ww - estatusw ){
-      x = selmon->ww - statusw;
-      click = ClkStatusText;
-      click_status(x,e,estext);
+      x = selmon->ww - estatusw;
+      // click = ClkStatusText;
+      // click_status(x,e,estext);
+      arg.ui = 0;
+      click_status(x,&click,&arg,m,ev);
     }
   } else if ((c = wintoclient(ev->window))) {
     // focus(c);
@@ -1281,9 +1310,21 @@ int status2dw(char *text){
   return w;
 }
 
-int drawstatusbar(int x, Monitor *m, int bh, char *text) {
-  int  i, j, w;
+int drawstatusbar(int x, Monitor *m, int bh, char *rawtext) {
+  int  i, j, w, width;
+  int len;
   short isCode = 0;
+  char *text;
+
+	len = strlen(stext) + 1 ;
+ 	if (!(text = (char*) malloc(sizeof(char)*len)))
+ 		die("malloc");
+  copyvalidchars(text,rawtext);
+
+  width = status2dw(text);
+  x -=width;
+
+
   drw_setscheme(drw, scheme[LENGTH(colors)]);
   drw->scheme[ColFg] = scheme[SchemeStatus][ColFg];
   drw->scheme[ColBg] = scheme[SchemeStatus][ColBg];
@@ -1356,18 +1397,19 @@ int drawstatusbar(int x, Monitor *m, int bh, char *text) {
   drw_setscheme(drw, scheme[SchemeNorm]);
   x+=lrpad/2;
 
-  return x;
+  return width;
 }
 
-int drawbutton(int x){
-  int i,w;
-  for ( i = w = 0 ; i < LENGTH(launchers);i++){
+int drawlaunchers(int l){
+  int i,w,width;
+  for ( i = w = width = 0 ; i < LENGTH(launchers);i++){
   w = TEXTW(launchers[i]);
+  width +=w;
   drw_setscheme(drw, tagschemeoccsel[i]);
-  drw_text(drw, x, 0, w, bh, lrpad / 2, launchers[i], 0);
-  x += w;
+  drw_text(drw, l, 0, w, bh, lrpad / 2, launchers[i], 0);
+  l +=w;
   }
-  return x;
+  return width;
 }
 
 
@@ -1377,6 +1419,7 @@ int drawtags(int x, Monitor *m){
   Client *c;
   int n = 0;
   int w = 0;
+  int width = 0;
   unsigned int i, occ = 0, urg = 0;
 
   for (c = m->clients; c; c = c->next) {
@@ -1391,6 +1434,7 @@ int drawtags(int x, Monitor *m){
     // if(!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
     //  continue;
     w = TEXTW(tags[i]);
+    width +=w;
     // drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]); //original
     
     drw_setscheme(drw,  m->tagset[m->seltags] & 1 << i 
@@ -1436,7 +1480,7 @@ int drawtags(int x, Monitor *m){
       // drw_rect(drw, x +1  ,1,w-2,bh-2, 0 , 0);
     x += w;
   }
-  return x;
+  return width;
 }
 
 int drawsym(int x, Monitor *m){
@@ -1444,7 +1488,7 @@ int drawsym(int x, Monitor *m){
   w = TEXTW(m->ltsymbol);
   drw_setscheme(drw, scheme[SchemeSym]);
   x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
-  return x;
+  return w;
 }
 
 int drawtitle(int x, Monitor *m, int etitlew){
@@ -1525,44 +1569,61 @@ int drawtabs(int x, Monitor *m, int titlew){
 void drawbar(Monitor *m) {
   int x = 0;
   int i;
+  int l,r;
+  unsigned int w = m->ww;
   // if (showsystray && m == systraytomon(m) && !systrayonleft)
   sysw = getsystraywidth();
-  copyvalidchars(validtext,stext);
   copyvalidchars(validetext,estext);
 
-  statusw = status2dw(validtext);
-  estatusw = status2dw(validetext);
+  // statusw = status2dw(validtext);
+  // estatusw = status2dw(validetext);
   for (i = tagsw = 0; i < LENGTH(tags); i++) {
     tagsw += TEXTW(tags[i]);
   }
-  for (i = launchersw = 0; i < LENGTH(launchers); i++) {
-    launchersw += TEXTW(launchers[i]);
-  }
   symw = TEXTW(m->ltsymbol);
 
-  resizebarwin(m);
+  // resizebarwin(m);
   if (m->showbar){
+    l = 0;
+    launchersw = drawlaunchers(l);
+    l +=launchersw;
 
     x = systrayonleft ? m->ww - statusw : m->ww - statusw - sysw;
-    drawstatusbar(x,m, bh, validtext);
-    x = 0;
-    x = drawbutton(x);
+
+    r = m->ww;
+
+    r -= sysw;
+
+    statusw = drawstatusbar(r,m, bh, stext);
+
+    r -= statusw;
     // titlew= m->ww - buttonw - tagsw - symw - sysw - statusw;
-    titlew= m->ww - launchersw - sysw - statusw;
-    x = drawtabs(x,m,titlew);
+    titlew= r - l;
+
+    x = drawtabs(l,m,titlew);
+
+    XMoveResizeWindow(dpy, m->barwin, m->wx, m->by, w, bh);
     drw_map(drw, m->barwin, 0, 0, m->ww - sysw, bh);
   }
+
   if (m->showextrabar){
     // drw_setscheme(drw, scheme[SchemeStatus]);
     /* clear default bar draw buffer by drawing a blank rectangle */
     // drw_rect(drw, 0, 0, m->ww, bh, 1, 1);
-    x = 0;
-    x = drawsym(x,m);
-    x = drawtags(x,m);
-    etitlew=m->ww - estatusw - symw - launchersw;
-    x = drawtitle(x,m,etitlew);
-    x = m->ww - estatusw;
-    drawstatusbar(x,m, bh, validetext);
+    l = 0;
+    symw = drawsym(l,m);
+    l += symw;
+    tagsw = drawtags(l,m);
+    l +=tagsw;
+
+    r = m->ww;
+    estatusw = drawstatusbar(r,m, bh, estext);
+    r -=estatusw;
+
+
+    etitlew= r - l;
+    drawtitle(l,m,etitlew);
+    XMoveResizeWindow(dpy, m->extrabarwin, m->wx, m->eby, m->ww, bh);
     drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
   }
 }
@@ -3083,6 +3144,19 @@ void spawn(const Arg *arg) {
   }
 }
 
+/*
+void launch(const Arg *arg){
+  Arg *a;
+  arg->i;
+char *termcmd[] = {"kitty", NULL};
+    {MODKEY, XK_Return, spawn, {.v = termcmd}},
+a={.v = termcmd};
+  spawn(&a)
+      keys[i].func(&(keys[i].arg));
+// #define SHCMD(cmd) { .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL } }
+    execvp(((char **)arg->v)[0], (char **)arg->v);
+}
+*/
 void tag(const Arg *arg) {
   if (selmon->sel && arg->ui & TAGMASK) {
     selmon->sel->tags = arg->ui & TAGMASK;
