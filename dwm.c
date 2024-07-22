@@ -155,10 +155,9 @@ typedef struct {
 } Button;
 
 typedef struct {
-  void (*draw)(const Arg *arg);
+  int (*draw)(const Arg *arg);
   void (*click)(const Arg *arg);
   void (*motion)(const Arg *arg);
-  void (*width)(const Arg *arg);
 } BarBlock;
 
 typedef struct Monitor Monitor;
@@ -500,7 +499,7 @@ struct NumTags { char limitexceeded[LENGTH(tags) > 30 ? -1 : 1]; };
 static void alttab(const Arg *arg) {
   Layout *l = selmon->lt[selmon->sellt];
   setlayout(&((Arg) {.v = &tablayout}));
-  // view(&(Arg){ .ui = ~0 });
+  focusstackhid(&(Arg){ .i=tab_direction});;
 
   int grabbed = 1;
   int grabbed_keyboard = 1000;
