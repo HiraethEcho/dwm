@@ -945,19 +945,23 @@ void buttonpress(XEvent *e) {
 }
 
 void changefocusopacity(const Arg *arg) {
-  Client *c = arg ? (Client *)arg->v : selmon->sel;
+  Client *c = arg->v ? (Client *)arg->v : selmon->sel;
   if (!c)
     return;
-  c->opacity += arg->f;
-  if (c->opacity > 1.0)
-    c->opacity = 1.0;
-  if (c->opacity < 0.1)
-    c->opacity = 0.1;
-  opacity(c, c->opacity);
+  if ( c == selmon->sel ){
+    c->opacity += arg->f;
+    if (c->opacity > 1.0)
+      c->opacity = 1.0;
+    if (c->opacity < 0.1)
+      c->opacity = 0.1;
+    opacity(c, c->opacity);
+  } else {
+    changeunfocusopacity(arg);
+  }
 }
 
 void changeunfocusopacity(const Arg *arg) {
-  Client *c = arg ? (Client *)arg->v : selmon->sel;
+  Client *c = arg->v ? (Client *)arg->v : selmon->sel;
   if (!c)
     return;
   c->unfocusopacity += arg->f;
