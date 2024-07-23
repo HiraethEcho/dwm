@@ -47,7 +47,12 @@
 
 #include "drw.h"
 #include "util.h"
-
+//X11:
+// #define Button1			1
+// #define Button2			2
+// #define Button3			3
+// #define Button4			4
+// #define Button5			5
 /* macros */
 #define BUTTONMASK (ButtonPressMask | ButtonReleaseMask)
 #define CLEANMASK(mask)                                                        \
@@ -131,13 +136,6 @@ enum {
   ClkClientWin,
   ClkLast,
 }; /* clicks */
-enum {
-  left,
-  mid,
-  right,
-  wheelup,
-  wheeldown,
-};
 
 typedef struct {
   int i;
@@ -155,6 +153,7 @@ typedef struct {
 } Button;
 
 typedef struct {
+  int show;
   int (*draw)(const Arg *arg);
   void (*click)(const Arg *arg);
   void (*motion)(const Arg *arg);
@@ -496,7 +495,7 @@ struct Pertag {
 struct NumTags { char limitexceeded[LENGTH(tags) > 30 ? -1 : 1]; };
 
 static void alttab(const Arg *arg) {
-  Layout *l = selmon->lt[selmon->sellt];
+  Layout l = *(selmon->lt[selmon->sellt]);
   setlayout(&((Arg) {.v = &tablayout}));
   focusstackhid(&(Arg){ .i=tab_direction});;
 
@@ -541,7 +540,7 @@ static void alttab(const Arg *arg) {
         XUngrabKeyboard(dpy, CurrentTime);
         XUngrabButton(dpy, AnyButton, AnyModifier, None);
         grabbed = 0;
-        setlayout(&((Arg) {.v = l}));
+        setlayout(&((Arg) {.v = &l}));
       }
       if (event.xkey.keycode == tabCycleKeyInv)
         tab_direction = 1;
@@ -3711,13 +3710,13 @@ void updatesystray(void) {
   unsigned int x = m->mx + m->mw;
 // FIX: length stext
   // unsigned int sw = TEXTW(stext) - lrpad + systrayspacing;
-  // unsigned int sw = statusw + systrayspacing;
+  unsigned int sw = statusw - lrpad + systrayspacing;
   unsigned int w = 1;
 
   if (!showsystray)
     return;
-  // if (systrayonleft)
-  //   x -= sw + lrpad / 2;
+  if (systrayonleft)
+    x -= sw + lrpad / 2;
   if (!systray) {
     /* init systray */
     if (!(systray = (Systray *)calloc(1, sizeof(Systray))))
