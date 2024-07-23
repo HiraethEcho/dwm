@@ -85,7 +85,7 @@
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
 enum {
-  SchemeButton,
+  SchemeLauncher,
   SchemeTag,
   SchemeSym,
   SchemeNorm,
@@ -463,9 +463,8 @@ static int restart = 0;
 static int running = 1;
 static Cur *cursor[CurLast];
 static Clr **scheme;
-static Clr **tagschemeocc;
-static Clr **tagschemesel;
-static Clr **tagschemeoccsel;
+static Clr **tagschemey;
+static Clr **tagschemen;
 static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
@@ -1008,15 +1007,12 @@ void cleanup(void) {
     free(scheme[i]);
   free(scheme);
 
-  for (i = 0; i < LENGTH(tagocc) ; i++)
-    free(tagschemeocc[i]);
-  free(tagschemeocc);
-  for (i = 0; i < LENGTH(tagsel) ; i++)
-    free(tagschemesel[i]);
-  free(tagschemesel);
-  for (i = 0; i < LENGTH(tagoccsel) ; i++)
-    free(tagschemeoccsel[i]);
-  free(tagschemeoccsel);
+  for (i = 0; i < LENGTH(tagy) ; i++)
+    free(tagschemey[i]);
+  free(tagschemey);
+  for (i = 0; i < LENGTH(tagn) ; i++)
+    free(tagschemen[i]);
+  free(tagschemen);
 
   XDestroyWindow(dpy, wmcheckwin);
   drw_free(drw);
@@ -1481,16 +1477,16 @@ int drawstatusbar(int x, Monitor *m, int bh, char *rawtext) {
 
 int drawlaunchers(int l){
   int i,w,width;
+  drw_setscheme(drw, scheme[SchemeLauncher]);
   for ( i = w = width = 0 ; i < LENGTH(launchers);i++){
   w = TEXTW(launchers[i]);
   width +=w;
-  drw_setscheme(drw, tagschemeoccsel[i]);
+  // drw_setscheme(drw, tagschemey[i]);
   drw_text(drw, l, 0, w, bh, lrpad / 2, launchers[i], 0);
   l +=w;
   }
   return width;
 }
-
 
 int drawtags(int x, Monitor *m){
   // int boxs = drw->fonts->h / 9;
@@ -1508,6 +1504,7 @@ int drawtags(int x, Monitor *m){
       urg |= c->tags;
   }
 
+  drw_setscheme(drw, scheme[LENGTH(colors)]);
   for (i = 0; i < LENGTH(tags); i++) {
     // drw_setscheme(drw, tagscheme[i]);
     // if(!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
@@ -1515,44 +1512,21 @@ int drawtags(int x, Monitor *m){
     w = TEXTW(tags[i]);
     width +=w;
     // drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]); //original
-    
+    /* 
     drw_setscheme(drw,  m->tagset[m->seltags] & 1 << i 
                   ? ( occ & 1 << i ?  tagschemeoccsel[i] : tagschemesel[i] ) 
                   : ( occ & 1 << i ? tagschemeocc[i] : scheme[SchemeTag]));
-
-    // if ( occ & 1 << i )
-  //     if ( m->tagset[m->seltags] & 1 << i )
-  //       drw_setscheme(drw, tagschemeoccsel[i]);
-  //     else
-  //       drw_setscheme(drw, tagschemeocc[i]);
-  //   else
-  //     if ( m->tagset[m->seltags] & 1 << i )
-  //       drw_setscheme(drw, tagschemesel[i]);
-  //     else
-  //       drw_setscheme(drw, scheme[SchemeTag]);
-
-    // drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i 
-    //               ? tagschemesel[i] 
-    //               : (occ & 1 << i ?  tagschemeocc[i]: scheme[SchemeTag])));
-
-    // drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagschemesel[i] : tagschemeocc[i]));
-    // if ( occ & 1 << i )
-    // drw_setscheme(drw, m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeTag]);
-    // drw->scheme[ColFg] = occ & 1 << i ? tagscheme[i][ColFg] : scheme[SchemeTag][ColFg];
-    // drw->scheme[ColBg] = m->tagset[m->seltags] & 1 << i ? tagscheme[i][ColBg] : scheme[SchemeTag][ColBg];
-    // drw_setscheme(drw, (occ & 1 << i ? tagscheme[i] : scheme[SchemeTag]));
-
-    // if ( m->tagset[m->seltags] & 1 << i )
-  //     drw->scheme[ColBg] = tagscheme[i][ColBg];
-          // drw_clr_create(drw, &drw->scheme[ColFg], tagscheme[i][ColFg]);
+*/
+    drw->scheme[ColFg] = occ & 1 << i ? tagschemey[i][ColFg] : tagschemen[i][ColFg];
+    drw->scheme[ColBg] = m->tagset[m->seltags] & 1 << i ? tagschemey[i][ColBg] : tagschemen[i][ColBg];
 
     // drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
     drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], 0);
     // if ( m->tagset[m->seltags] & 1 << i) 
-      // drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
+    // drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
     // if ( (m->tagset[m->seltags] & 1 << i) && (occ &1 << i)) {
     //   drw_rect(drw, x   ,0,w,bh, 0 , urg & 1 << i);
-      // drw_rect(drw, x +1  ,1,w-2,bh-2, 0 , urg & 1 << i);
+    // drw_rect(drw, x +1  ,1,w-2,bh-2, 0 , urg & 1 << i);
     // }
     if (urg & 1 << i)
       drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , 0);
@@ -1653,32 +1627,21 @@ void drawbar(Monitor *m) {
   // if (showsystray && m == systraytomon(m) && !systrayonleft)
   sysw = getsystraywidth();
   copyvalidchars(validetext,estext);
-
-  // statusw = status2dw(validtext);
-  // estatusw = status2dw(validetext);
-  for (i = tagsw = 0; i < LENGTH(tags); i++) {
-    tagsw += TEXTW(tags[i]);
-  }
-  symw = TEXTW(m->ltsymbol);
-
   // resizebarwin(m);
   if (m->showbar){
     l = 0;
     launchersw = drawlaunchers(l);
     l +=launchersw;
 
-    x = systrayonleft ? m->ww - statusw : m->ww - statusw - sysw;
+    // x = systrayonleft ? m->ww - statusw : m->ww - statusw - sysw;
 
     r = m->ww;
-
     r -= sysw;
-
     statusw = drawstatusbar(r,m, bh, stext);
-
     r -= statusw;
     // titlew= m->ww - buttonw - tagsw - symw - sysw - statusw;
-    titlew= r - l;
 
+    titlew= r - l;
     x = drawtabs(l,m,titlew);
 
     XMoveResizeWindow(dpy, m->barwin, m->wx, m->by, w, bh);
@@ -1686,9 +1649,6 @@ void drawbar(Monitor *m) {
   }
 
   if (m->showextrabar){
-    // drw_setscheme(drw, scheme[SchemeStatus]);
-    /* clear default bar draw buffer by drawing a blank rectangle */
-    // drw_rect(drw, 0, 0, m->ww, bh, 1, 1);
     l = 0;
     symw = drawsym(l,m);
     l += symw;
@@ -1697,7 +1657,7 @@ void drawbar(Monitor *m) {
 
     r = m->ww;
     estatusw = drawstatusbar(r,m, bh, estext);
-    r -=estatusw;
+    r -= estatusw;
 
 
     etitlew= r - l;
@@ -1709,7 +1669,6 @@ void drawbar(Monitor *m) {
 
 void drawbars(void) {
   Monitor *m;
-
   for (m = mons; m; m = m->next)
     drawbar(m);
 }
@@ -3037,15 +2996,13 @@ void setup(void) {
   /* init appearance */
   // if (LENGTH(tags) > LENGTH(tagocc))
   //   die("too few color schemes for the tags");
-  tagschemesel = ecalloc(LENGTH(tagsel), sizeof(Clr *));
-  for (i = 0; i < LENGTH(tagsel); i++)
-    tagschemesel[i] = drw_scm_create(drw, tagsel[i], 2);
-  tagschemeocc = ecalloc(LENGTH(tagocc), sizeof(Clr *));
-  for (i = 0; i < LENGTH(tagocc); i++)
-    tagschemeocc[i] = drw_scm_create(drw, tagocc[i], 2);
-  tagschemeoccsel = ecalloc(LENGTH(tagoccsel), sizeof(Clr *));
-  for (i = 0; i < LENGTH(tagocc); i++)
-    tagschemeoccsel[i] = drw_scm_create(drw, tagoccsel[i], 2);
+  tagschemey = ecalloc(LENGTH(tagy), sizeof(Clr *));
+  for (i = 0; i < LENGTH(tagy); i++)
+    tagschemey[i] = drw_scm_create(drw, tagy[i], 2);
+  tagschemen = ecalloc(LENGTH(tagn), sizeof(Clr *));
+  for (i = 0; i < LENGTH(tagn); i++)
+    tagschemen[i] = drw_scm_create(drw, tagn[i], 2);
+
   scheme = ecalloc(LENGTH(colors) + 1, sizeof(Clr *));
   scheme[LENGTH(colors)] = drw_scm_create(drw, colors[0], 3);
   for (i = 0; i < LENGTH(colors); i++)

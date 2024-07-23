@@ -49,21 +49,20 @@ static const char gray3[] = "#d8dee9";
 static const char cyan[] = "#005577";
 
 
-static const char *tagocc[][2] = {
-  {"#7589ce", "#ecb7dc"},
-  {"#98fb98", "#dcb7dc"},
-  {"#fe6cc3", "#ccb7dc"},
-  {"#d7dcb7", "#bcb7dc"},
-  {"#ff6a6a", "#acb7dc"},
-
+static const char *tagn[][2] = {
+  {"#21284b", "#ecb7dc"},
+  {"#23284f", "#dcb7dc"},
+  {"#272853", "#ccb7dc"},
+  {"#282857", "#bcb7dc"},
+  {"#2b285b", "#acb7dc"},
 };
 
-static const char *tagsel[][2] = {
-  {"#21284b","#8e7cc3" },
-  {"#23284f","#61afef" },
-  {"#272853","#559e83" },
-  {"#282857","#feb43f" },
-  {"#2b285b","#e06c75" },
+static const char *tagy[][2] = {
+  {"#7589ce","#8e7cc3" },
+  {"#98fb98","#61afef" },
+  {"#fe6cc3","#559e83" },
+  {"#d7dcb7","#feb43f" },
+  {"#ff6a6a","#e06c75" },
 };
 
 static const char *tagoccsel[][2] = {
@@ -77,14 +76,14 @@ static const char *tagoccsel[][2] = {
 */
 static const char *colors[][3] = {
     /*               fg         bg         border   */
-    [SchemeButton] = { "#61afef" , "#5a5255" , cyan}  ,
-    [SchemeTag]    = { "#83848e" , "#213438" , cyan}  ,
-    [SchemeSym]    = { "#dfe3ee" , "#3b5998" , cyan}  ,
-    [SchemeNorm]   = { "#d8dee9" , "#414868" , "#d8dee9"} ,
-    [SchemeSel]    = { "#2a303c" , "#81a1c1" , "#cc241d"} ,
-    [SchemeHid]    = { "#81a1c1" , "#24283b" , cyan} ,
-    [SchemeStatus] = { "#ffffff" , "#49688e" , cyan} ,
-    [SchemeSys]    = { "#ffffff" , "#ffeaba" , cyan} ,
+    [SchemeLauncher] = { "#61afef", "#5a5255", cyan},
+    [SchemeTag]      = { "#83848e", "#213438", cyan},
+    [SchemeSym]      = { "#dfe3ee", "#3b5998", cyan},
+    [SchemeNorm]     = { "#d8dee9", "#414868", "#d8dee9"},
+    [SchemeSel]      = { "#2a303c", "#81a1c1", "#cc241d"},
+    [SchemeHid]      = { "#81a1c1", "#24283b", cyan},
+    [SchemeStatus]   = { "#ffffff", "#49688e", cyan},
+    [SchemeSys]      = { "#ffffff", "#ffeaba", cyan},
 };
 
 static const char *launchers[] = {""} ;
@@ -105,10 +104,10 @@ static const unsigned int ulinevoffset = 2; /* how far above the bottom of the b
  */
 
 static const Rule rules[] = {
-    /* class   , instance , title        , tags mask , isfloating , focusopacity , unfocusopacity  , monitor */
-    // {"Gimp" , NULL     , NULL         , 0         , 1          , 1.0          , inactiveopacity , -1},
-    {"st"      , NULL     , "scratchpad" , 0         , 1          , 0.8          , 0.7             , -1},
-    {"st"      , NULL     , "tasks"      , 0         , 1          , 0.8          , 0.7             , -1},
+    /* class, instance, title,        tags mask, isfloating, focusopacity, unfocusopacity,  monitor */
+    {"st",    NULL,     "scratchpad", 0,         1,          0.8,          0.7,             -1},
+    {"st",    NULL,     "tasks",      0,         1,          0.8,          0.7,             -1},
+    // {"Gimp",  NULL,     NULL,         0,         1,          1.0,          inactiveopacity, -1},
 };
 
 /* layout(s) */
@@ -121,18 +120,6 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 /* nrowgrid layout: force two clients to always split vertically */
 #include "vanitygaps.c"
 
-static const Layout layouts[] = {
-    /* symbol     arrange function */
-    {"[M]", monocle},
-    {":::", gaplessgrid},
-    {"|M|", centeredmaster},
-    {"><>", NULL}, /* no layout function means floating behavior */
-    {"[]=", tile}, /* first entry is default */
-    {"H[]", deck},
-    {NULL, NULL},
-};
-static const Layout tablayout = {":::", gaplessgrid};
-
 /*
 static const BarBlock blocksl[] = {
 
@@ -144,6 +131,19 @@ static const BarBlock eblocksl[] = {}
 static const BarBlock eblocksr[] = {}
 static const BarBlock eblockm[] = {}
 */
+static const Layout layouts[] = {
+    /* symbol     arrange function */
+    {"[M]", monocle},
+    {":::", gaplessgrid},
+    {"|M|", centeredmaster},
+    {"><>", NULL}, /* no layout function means floating behavior */
+    {"[]=", tile}, /* first entry is default */
+    {"H[]", deck},
+    {NULL, NULL},
+};
+
+static const Layout tablayout = {"---", horizgrid};
+
 
 /*
     {">M>", centeredfloatingmaster},
