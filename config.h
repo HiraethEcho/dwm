@@ -50,30 +50,21 @@ static const char cyan[] = "#005577";
 
 
 static const char *tagn[][2] = {
-  {"#21284b", "#ecb7dc"},
-  {"#23284f", "#dcb7dc"},
-  {"#272853", "#ccb7dc"},
-  {"#282857", "#bcb7dc"},
-  {"#2b285b", "#acb7dc"},
+  {"#91a1c1", "#ecb7dc"},
+  {"#8798c4", "#dcb7dc"},
+  {"#8395c7", "#ccb7dc"},
+  {"#7992ca", "#bcb7dc"},
+  {"#7589ce", "#acb7dc"},
 };
 
 static const char *tagy[][2] = {
-  {"#7589ce","#8e7cc3" },
-  {"#98fb98","#61afef" },
-  {"#fe6cc3","#559e83" },
-  {"#d7dcb7","#feb43f" },
-  {"#ff6a6a","#e06c75" },
+  {"#ef616a","#ffb966" },
+  {"#de617a","#98fb98" },
+  {"#cd618a","#9c8eff" },
+  {"#bc619a","#ffec2b" },
+  {"#ab61aa","#6ce0d6" },
 };
 
-static const char *tagoccsel[][2] = {
-  {"#efa161","#8e7cc3" },
-  {"#f3518a","#61afef" },
-  {"#3f88fe","#559e83" },
-  {"#6ce0d6","#feb43f" },
-  {"#fdd016","#e06c75" },
-};
-/*
-*/
 static const char *colors[][3] = {
     /*               fg         bg         border   */
     [SchemeLauncher] = { "#61afef", "#5a5255", cyan},

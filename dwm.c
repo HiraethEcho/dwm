@@ -3710,13 +3710,13 @@ void updatesystray(void) {
   unsigned int x = m->mx + m->mw;
 // FIX: length stext
   // unsigned int sw = TEXTW(stext) - lrpad + systrayspacing;
-  unsigned int sw = statusw - lrpad + systrayspacing;
+  // unsigned int sw = statusw - lrpad + systrayspacing;
   unsigned int w = 1;
 
   if (!showsystray)
     return;
-  if (systrayonleft)
-    x -= sw + lrpad / 2;
+  // if (systrayonleft)
+  //   x -= sw + lrpad / 2;
   if (!systray) {
     /* init systray */
     if (!(systray = (Systray *)calloc(1, sizeof(Systray))))
