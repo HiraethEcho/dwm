@@ -873,7 +873,6 @@ void buttonpress(XEvent *e) {
     selmon = m;
     focus(NULL);
   }
-
   if (ev->window == selmon->barwin) {
     if(ev->x < launchersw){
       x = 0;
@@ -883,18 +882,18 @@ void buttonpress(XEvent *e) {
     // if (ev->x < buttonw + tagsw){
     //
     // }
-    if (ev->x > selmon->ww - statusw - sysw) {
-      x = selmon->ww - statusw - sysw;
+    // if (ev->x > selmon->ww - statusw - sysw) {
+    if (ev->x > selmon->ww - statusw ) {
+      x = selmon->ww - statusw;
       // click = ClkStatusText;
       // click_status(x,e,stext);
       arg.ui=1;
       click_status(x,&click,&arg,m,ev);
-    } else {
+    } else if(ev->x < selmon->ww - statusw - sysw){
       x = launchersw;
       click_tabs(x,&click,&arg,m,ev);
     }
   }
-
   else if (ev->window == selmon->extrabarwin) {
     if(ev->x < symw){
       x = 0;
@@ -1625,7 +1624,6 @@ void drawbar(Monitor *m) {
   unsigned int w = m->ww;
   // if (showsystray && m == systraytomon(m) && !systrayonleft)
   sysw = getsystraywidth();
-  copyvalidchars(validetext,estext);
   // resizebarwin(m);
   if (m->showbar){
     l = 0;
@@ -1635,9 +1633,10 @@ void drawbar(Monitor *m) {
     // x = systrayonleft ? m->ww - statusw : m->ww - statusw - sysw;
 
     r = m->ww;
-    r -= sysw;
+    // r -= sysw;
     statusw = drawstatusbar(r,m, bh, stext);
     r -= statusw;
+    r -= sysw;
     // titlew= m->ww - buttonw - tagsw - symw - sysw - statusw;
 
     titlew= r - l;
@@ -2560,8 +2559,8 @@ void resize(Client *c, int x, int y, int w, int h, int interact) {
 
 void resizebarwin(Monitor *m) {
   unsigned int w = m->ww;
-  if (showsystray && m == systraytomon(m) && !systrayonleft)
-    w -= getsystraywidth();
+  // if (showsystray && m == systraytomon(m) && !systrayonleft)
+  //   w -= getsystraywidth();
   XMoveResizeWindow(dpy, m->barwin, m->wx, m->by, w, bh);
   XMoveResizeWindow(dpy, m->extrabarwin, m->wx, m->eby, m->ww, bh);
 }
@@ -3710,13 +3709,13 @@ void updatesystray(void) {
   unsigned int x = m->mx + m->mw;
 // FIX: length stext
   // unsigned int sw = TEXTW(stext) - lrpad + systrayspacing;
-  // unsigned int sw = statusw - lrpad + systrayspacing;
+  unsigned int xsys = statusw - lrpad + systrayspacing;
   unsigned int w = 1;
 
   if (!showsystray)
     return;
   // if (systrayonleft)
-  //   x -= sw + lrpad / 2;
+  x -= xsys + lrpad / 2;
   if (!systray) {
     /* init systray */
     if (!(systray = (Systray *)calloc(1, sizeof(Systray))))
