@@ -288,13 +288,16 @@ static void drawbar(Monitor *m);
 static void drawbars(void);
 
 // draw barblck function
-static int drawstatusbar(int x,Monitor *m, int bh, char *text);
+static int drawonestatusbar(int x,Monitor *m, char *rawtext);
+static int drawstatusbar(int x,Monitor *m );
+static int drawestatusbar(int x,Monitor *m);
 static int drawtags(int x, Monitor *m);
 static int drawsym(int x, Monitor *m);
 static int drawsystray(int x, Monitor *m);
+static int drawlaunchers(int x, Monitor *m);
+
 static int drawtabs(int x, Monitor *m, int midw);
 static int drawtitle(int x, Monitor *m, int emidw);
-static int drawlaunchers(int x);
 
 // width functions
 static void copyvalidchars(char *validtext, char *rawtext);
@@ -1378,7 +1381,7 @@ int status2dw(char *text){
   return w;
 }
 
-int drawstatusbar(int x, Monitor *m, int bh, char *rawtext) {
+int drawonestatusbar(int x, Monitor *m,  char *rawtext) {
   int  i, j, w, width;
   int len;
   short isCode = 0;
@@ -1468,7 +1471,17 @@ int drawstatusbar(int x, Monitor *m, int bh, char *rawtext) {
   return width;
 }
 
-int drawlaunchers(int l){
+int drawstatusbar(int x,Monitor *m ){
+  int width = drawonestatusbar(x,m,stext);
+  return width;
+}
+
+int drawestatusbar(int x,Monitor *m ){
+  int width = drawonestatusbar(x,m,estext);
+  return width;
+}
+
+int drawlaunchers(int l, Monitor *m){
   int i,w,width;
   drw_setscheme(drw, scheme[SchemeLauncher]);
   for ( i = w = width = 0 ; i < LENGTH(launchers);i++){
@@ -1632,14 +1645,14 @@ void drawbar(Monitor *m) {
     drw_setscheme(drw, scheme[SchemeEty]);
     drw_rect(drw, x, 0, m->ww, bh, 1, 1);
     l = 0;
-    launchersw = drawlaunchers(l);
+    launchersw = drawlaunchers(l,m);
     l +=launchersw;
 
     // x = systrayonleft ? m->ww - statusw : m->ww - statusw - sysw;
 
     r = m->ww;
     // r -= sysw;
-    statusw = drawstatusbar(r,m, bh, stext);
+    statusw = drawstatusbar(r,m);
     r -= statusw;
     sysw = drawsystray(r,m);
     r -= sysw;
@@ -1660,7 +1673,7 @@ void drawbar(Monitor *m) {
     l +=tagsw;
 
     r = m->ww;
-    estatusw = drawstatusbar(r,m, bh, estext);
+    estatusw = drawestatusbar(r,m);
     r -= estatusw;
 
 
