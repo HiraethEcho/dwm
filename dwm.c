@@ -631,13 +631,6 @@ static void wintab(const Arg *arg) {
         focus(c);
       XAllowEvents(dpy, AsyncBoth, CurrentTime);
       break;
-    // case ButtonRelease:
-    //   XUngrabKeyboard(dpy, CurrentTime);
-    //   XUngrabButton(dpy, AnyButton, AnyModifier, None);
-    //   grabbed = 0;
-    //   alt_tab_direction = !alt_tab_direction;
-    //   winview(0);
-    //   break;
     }
   }
   return;
@@ -1577,10 +1570,8 @@ int drawtitle(int x, Monitor *m, int emidw){
 int drawtabs(int x, Monitor *m, int emidw){
   Client *c;
   int n = 0;
-  // int w;
-  int tabw = TEXTW(taskWidth);
+  int tabw = TEXTW(tabWidth);
   int scm;
-  int taskw = TEXTW(taskWidth);
   for (c = m->clients; c; c = c->next) {
     if (ISVISIBLE(c))
       n++;
@@ -1588,7 +1579,7 @@ int drawtabs(int x, Monitor *m, int emidw){
 
   if (( emidw > bh) && ( n > 0)) {
       int remainder = emidw % n;
-      if (tabw * n >= emidw)
+      if (tabw * n >= emidw || !isfixedtabwidth )
         tabw = (1.0 / (double)n) * emidw + 1;
       for (c = m->clients; c; c = c->next) {
         if (!ISVISIBLE(c))

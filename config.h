@@ -27,7 +27,8 @@ static const int showbar = 1;                 /* 0 means no bar */
 static const int showextrabar = 1;                 /* 0 means no bar */
 static const int topbar = 0;                  /* 0 means bottom bar */
 
-static const char *taskWidth = "                ";
+static const char *tabWidth = "                ";
+static const int isfixedtabwidth = 0;             /* 0 means no systray */
 
 static const char statussep         = ';';      /* separator between status bars */
 
