@@ -289,6 +289,7 @@ static void drawbars(void);
 static int drawstatusbar(int x,Monitor *m, int bh, char *text);
 static int drawtags(int x, Monitor *m);
 static int drawsym(int x, Monitor *m);
+static int drawsystray(int x, Monitor *m);
 static int drawtabs(int x, Monitor *m, int titlew);
 static int drawtitle(int x, Monitor *m, int titlew);
 static int drawlaunchers(int x);
@@ -431,6 +432,8 @@ static int etitlew;
 static int statusw;
 static int estatusw;
 static int sysw;
+static int bsysw;
+
 static int barblockw[BARBLOCK];
 
 static pid_t statuspid = -1;
@@ -1533,6 +1536,12 @@ int drawtags(int x, Monitor *m){
   }
   return width;
 }
+int drawsystray(int x, Monitor *m){
+  sysw = getsystraywidth();
+  bsysw = m->ww - x;
+  updatesystray();
+  return sysw;
+}
 
 int drawsym(int x, Monitor *m){
   int w;
@@ -1636,6 +1645,7 @@ void drawbar(Monitor *m) {
     // r -= sysw;
     statusw = drawstatusbar(r,m, bh, stext);
     r -= statusw;
+    sysw = drawsystray(r,m);
     r -= sysw;
     // titlew= m->ww - buttonw - tagsw - symw - sysw - statusw;
 
@@ -3709,22 +3719,24 @@ void updatesystray(void) {
   unsigned int x = m->mx + m->mw;
 // FIX: length stext
   // unsigned int sw = TEXTW(stext) - lrpad + systrayspacing;
-  unsigned int xsys = statusw - lrpad + systrayspacing;
+  // unsigned int xsys = statusw - lrpad + systrayspacing;
   unsigned int w = 1;
 
   if (!showsystray)
     return;
   // if (systrayonleft)
-  x -= xsys + lrpad / 2;
+  // x -= xsys + lrpad / 2;
+  x -= bsysw;
+
   if (!systray) {
     /* init systray */
     if (!(systray = (Systray *)calloc(1, sizeof(Systray))))
       die("fatal: could not malloc() %u bytes\n", sizeof(Systray));
     systray->win = XCreateSimpleWindow(dpy, root, x, m->by, w, bh, 0, 0,
-                                       scheme[SchemeSel][ColBg].pixel);
+                                       scheme[SchemeSys][ColBg].pixel);
     wa.event_mask = ButtonPressMask | ExposureMask;
     wa.override_redirect = True;
-    wa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
+    wa.background_pixel = scheme[SchemeSys][ColBg].pixel;
     XSelectInput(dpy, systray->win, SubstructureNotifyMask);
     XChangeProperty(dpy, systray->win, netatom[NetSystemTrayOrientation],
                     XA_CARDINAL, 32, PropModeReplace,
@@ -3751,14 +3763,14 @@ void updatesystray(void) {
     XMapRaised(dpy, i->win);
     w += systrayspacing;
     i->x = w;
-    XMoveResizeWindow(dpy, i->win, i->x, 0, i->w, i->h);
+    XMoveResizeWindow(dpy, i->win, i->x, 0, i->w, i->h); // position of each window of systray icons
     w += i->w;
     if (i->mon != m)
       i->mon = m;
   }
   w = w ? w + systrayspacing : 1;
   x -= w;
-  XMoveResizeWindow(dpy, systray->win, x, m->by, w, bh);
+  XMoveResizeWindow(dpy, systray->win, x, m->by, w, bh); // position of the whole systray window
   wc.x = x;
   wc.y = m->by;
   wc.width = w;
