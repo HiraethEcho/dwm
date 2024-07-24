@@ -576,7 +576,9 @@ static void alttab(const Arg *arg) {
 
 static void wintab(const Arg *arg) {
 
+  Layout l = *(selmon->lt[selmon->sellt]);
   view(&(Arg){ .ui = ~0 });
+  setlayout(&((Arg) {.v = &tablayout}));
 
   int grabbed = 1;
   int grabbed_keyboard = 1000;
@@ -620,6 +622,7 @@ static void wintab(const Arg *arg) {
         XUngrabButton(dpy, AnyButton, AnyModifier, None);
         grabbed = 0;
         winview(0);
+        setlayout(&((Arg) {.v = &l}));
       }
       if (event.xkey.keycode == tabCycleKeyInv)
         tab_direction = 1;
