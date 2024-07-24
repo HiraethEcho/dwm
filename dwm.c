@@ -546,7 +546,7 @@ static void alttab(const Arg *arg) {
         XUngrabKeyboard(dpy, CurrentTime);
         XUngrabButton(dpy, AnyButton, AnyModifier, None);
         grabbed = 0;
-        setlayout(&((Arg) {.v = &l}));
+        // setlayout(&((Arg) {.v = &l}));
       }
       if (event.xkey.keycode == tabCycleKeyInv)
         tab_direction = 1;
@@ -562,13 +562,6 @@ static void alttab(const Arg *arg) {
         focus(c);
       XAllowEvents(dpy, AsyncBoth, CurrentTime);
       break;
-    // case ButtonRelease:
-    //   XUngrabKeyboard(dpy, CurrentTime);
-    //   XUngrabButton(dpy, AnyButton, AnyModifier, None);
-    //   grabbed = 0;
-    //   alt_tab_direction = !alt_tab_direction;
-    //   winview(0);
-    //   break;
     }
   }
   return;
@@ -576,7 +569,7 @@ static void alttab(const Arg *arg) {
 
 static void wintab(const Arg *arg) {
 
-  Layout l = *(selmon->lt[selmon->sellt]);
+  // Layout l = *(selmon->lt[selmon->sellt]);
   view(&(Arg){ .ui = ~0 });
   setlayout(&((Arg) {.v = &tablayout}));
 
@@ -622,7 +615,7 @@ static void wintab(const Arg *arg) {
         XUngrabButton(dpy, AnyButton, AnyModifier, None);
         grabbed = 0;
         winview(0);
-        setlayout(&((Arg) {.v = &l}));
+        // setlayout(&((Arg) {.v = &l}));
       }
       if (event.xkey.keycode == tabCycleKeyInv)
         tab_direction = 1;
