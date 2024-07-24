@@ -3981,7 +3981,7 @@ Monitor *systraytomon(Monitor *m) {
 }
 
 void zoom(const Arg *arg) {
-  Client *c = arg ? (Client *)arg->v : selmon->sel;
+  Client *c = arg->v ? (Client *)arg->v : selmon->sel;
   if (!selmon->lt[selmon->sellt]->arrange || !c || c->isfloating)
     return;
   if (c == nexttiled(selmon->clients) && !(c = nexttiled(c->next)))
