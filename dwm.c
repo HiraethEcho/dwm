@@ -155,13 +155,22 @@ typedef struct {
 } Button;
 
 typedef struct {
-  int show;
-  int (*draw)(const Arg *arg);
-  void (*click)(const Arg *arg);
-  void (*motion)(const Arg *arg);
-} BarBlock;
+  unsigned int mod;
+  KeySym keysym;
+  void (*func)(const Arg *);
+  const Arg arg;
+} Key;
+
 
 typedef struct Monitor Monitor;
+typedef struct {
+  // int show;
+  // void (*motion)(const Arg *arg);
+  // int align; // 0 left, 1 mid, 2 right
+  int (*draw)(int x, Monitor *m);
+  void (*click)(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
+} BarBlock;
+
 typedef struct Client Client;
 struct Client {
   char name[256];
@@ -181,12 +190,6 @@ struct Client {
   Window win;
 };
 
-typedef struct {
-  unsigned int mod;
-  KeySym keysym;
-  void (*func)(const Arg *);
-  const Arg arg;
-} Key;
 
 typedef struct {
   const char *symbol;
@@ -433,14 +436,16 @@ static int launchersw;
 static int tagsw;
 static int symw;
 static int midw;
-// static int tabw;
 static int emidw;
 static int statusw;
 static int estatusw;
 static int sysw;
 static int bsysw;
 
-static int barblockw[BARBLOCK];
+static int ebarrw;
+static int ebarlw;
+static int barrw;
+static int barlw;
 
 static pid_t statuspid = -1;
 static int statussig;
@@ -1638,7 +1643,7 @@ void drawbar(Monitor *m) {
   int l,r;
   unsigned int w = m->ww;
   // if (showsystray && m == systraytomon(m) && !systrayonleft)
-  sysw = getsystraywidth();
+  // sysw = getsystraywidth();
   // resizebarwin(m);
   if (m->showbar){
     // clean
@@ -1648,15 +1653,11 @@ void drawbar(Monitor *m) {
     launchersw = drawlaunchers(l,m);
     l +=launchersw;
 
-    // x = systrayonleft ? m->ww - statusw : m->ww - statusw - sysw;
-
     r = m->ww;
-    // r -= sysw;
     statusw = drawstatusbar(r,m);
     r -= statusw;
     sysw = drawsystray(r,m);
     r -= sysw;
-    // titlew= m->ww - buttonw - tagsw - symw - sysw - statusw;
 
     midw= r - l;
     x = drawtabs(l,m,midw);
@@ -2169,7 +2170,6 @@ void motionnotify(XEvent *e) {
     while (ev->x >= x && ++i < LENGTH(tags));
   /* FIXME when hovering the mouse over the tags and we view the tag,
    *       the preview window get's in the preview shot */
-
         if (i < LENGTH(tags)) {
       if (selmon->previewshow != (i + 1)
       && !(selmon->tagset[selmon->seltags] & 1 << i)) {

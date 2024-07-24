@@ -27,8 +27,8 @@ static const int showbar = 1;                 /* 0 means no bar */
 static const int showextrabar = 1;                 /* 0 means no bar */
 static const int topbar = 0;                  /* 0 means bottom bar */
 
-static const char *tabWidth = "                ";
-static const int isfixedtabwidth = 0;             /* 0 means no systray */
+static const int isfixedtabwidth = 1; 
+static const char *tabWidth = "                           ";
 
 static const char statussep         = ';';      /* separator between status bars */
 
@@ -116,15 +116,23 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 /* nrowgrid layout: force two clients to always split vertically */
 #include "vanitygaps.c"
 
-/*
 static const BarBlock blocksl[] = {
+  {drawlaunchers,click_lancher},
+  // {1,drawlaunchers,click_lancher},
+};
 
-}
-static const BarBlock blocksr[] = {}
+static const BarBlock ebarblocksl[] = {
+  {drawsym,click_sym},
+  {drawtags,click_tag},
+};
+
+static const BarBlock ebarblocksr[] = {
+  {drawestatusbar,click_status},
+};
+// static const BarBlock blocksr[] = {}
+/*
 static const BarBlock blockm[] = {}
 
-static const BarBlock eblocksl[] = {}
-static const BarBlock eblocksr[] = {}
 static const BarBlock eblockm[] = {}
 */
 static const Layout layouts[] = {
