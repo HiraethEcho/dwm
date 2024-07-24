@@ -4,6 +4,7 @@
 /* appearance */
 static const unsigned int borderpx = 2; /* border pixel of windows */
 static const unsigned int snap = 15;    /* snap pixel */
+static const  int barpad   = 4;
 
 static const unsigned int altModKey = 0x40; //alt
 static const unsigned int winModKey = 0x85; //win
@@ -18,7 +19,6 @@ static int smartgaps = 1; /* 1 means no outer gap when there is only one window 
 
 
 static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
-static const unsigned int systrayonleft = 0; /* 0: systray in the right corner, >0: systray on left of status text */
 static const unsigned int systrayspacing = 4; /* systray spacing */
 static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray = 1;             /* 0 means no systray */
@@ -26,6 +26,8 @@ static const int showsystray = 1;             /* 0 means no systray */
 static const int showbar = 1;                 /* 0 means no bar */
 static const int showextrabar = 1;                 /* 0 means no bar */
 static const int topbar = 0;                  /* 0 means bottom bar */
+
+static const char *taskWidth = "                ";
 
 static const char statussep         = ';';      /* separator between status bars */
 
@@ -70,6 +72,7 @@ static const char *colors[][3] = {
     [SchemeLauncher] = { "#61afef", "#5a5255", cyan},
     [SchemeTag]      = { "#83848e", "#213438", cyan},
     [SchemeSym]      = { "#dfe3ee", "#3b5998", cyan},
+    [SchemeEty]      = { "#d8dee9", "#ffffff", "#d8dee9"},
     [SchemeNorm]     = { "#d8dee9", "#414868", "#d8dee9"},
     [SchemeSel]      = { "#2a303c", "#81a1c1", "#cc241d"},
     [SchemeHid]      = { "#81a1c1", "#24283b", cyan},
@@ -82,6 +85,7 @@ static const char *launchers[] = {""} ;
 
 static const char *tags[] = {"󰋜", "󰗚", "", "", "󰨇"};
 static const int taglayouts[] = { 1, 0, 0, 0, 0, 0 }; //first for viewall tags
+                                                      //
 
 static const unsigned int ulinepad = 6; /* horizontal padding between the underline and tag */
 static const unsigned int ulinestroke = 3; /* thickness / height of the underline */
@@ -323,9 +327,11 @@ static const Button buttons[] = {
     {ClkTitle,      0,                Button4, changefocusopacity, {.f = +0.025}},
     {ClkTitle,      0,                Button5, changefocusopacity, {.f = -0.025}},
 
-    {ClkEty,        0,                Button1, spawn,              SHCMD("kitty")},
-    {ClkEty,        0,                Button2, spawn,              SHCMD("wallpaper_change")},
-    {ClkEty,        0,                Button3, spawn,              SHCMD("microsoft-edge-stable")},
+    {ClkEtyTitle,        0,                Button1, spawn,              SHCMD("kitty")},
+    {ClkEtyTitle,        0,                Button2, spawn,              SHCMD("wallpaper_change")},
+    {ClkEtyTitle,        0,                Button3, spawn,              SHCMD("microsoft-edge-stable")},
+
+    {ClkEtyTab,        0,                Button1, spawn,              SHCMD("wallpaper_change")},
 
 
     {ClkStatusText, 0,                Button1, sigstatusbar,       {.i = 1}},

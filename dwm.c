@@ -93,6 +93,7 @@ enum {
   SchemeLauncher,
   SchemeTag,
   SchemeSym,
+  SchemeEty,
   SchemeNorm,
   SchemeSel,
   SchemeHid,
@@ -132,7 +133,8 @@ enum {
   ClkStatusText,
   ClkTab,
   ClkTitle,
-  ClkEty,
+  ClkEtyTitle,
+  ClkEtyTab,
   ClkClientWin,
   ClkLast,
 }; /* clicks */
@@ -290,8 +292,8 @@ static int drawstatusbar(int x,Monitor *m, int bh, char *text);
 static int drawtags(int x, Monitor *m);
 static int drawsym(int x, Monitor *m);
 static int drawsystray(int x, Monitor *m);
-static int drawtabs(int x, Monitor *m, int titlew);
-static int drawtitle(int x, Monitor *m, int titlew);
+static int drawtabs(int x, Monitor *m, int midw);
+static int drawtitle(int x, Monitor *m, int emidw);
 static int drawlaunchers(int x);
 
 // width functions
@@ -427,8 +429,9 @@ static char validetext[1024];
 static int launchersw;
 static int tagsw;
 static int symw;
-static int titlew;
-static int etitlew;
+static int midw;
+// static int tabw;
+static int emidw;
 static int statusw;
 static int estatusw;
 static int sysw;
@@ -806,18 +809,18 @@ void click_tag(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedE
 void click_tabs(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev){
   Client *c;
   c = m->clients;
-  if (c) {
+  if (ev->x - x < m->bt * m->btw){
     do {
       if (!ISVISIBLE(c))
         continue;
       else
-        x += (1.0 / (double)m->bt) * m->btw;
+        // x += (1.0 / (double)m->bt) * m->btw;
+      x += m->btw;
     } while (ev->x > x && (c = c->next));
-  if (m->bt > 0){
     *click = ClkTab;
     arg->v = c;
-  } else
-    *click = ClkEty;
+  } else {
+    *click = ClkEtyTab;
   }
 }
 
@@ -909,7 +912,7 @@ void buttonpress(XEvent *e) {
       click = ClkTitle;
       arg.v = m->sel;
       } else
-      click = ClkEty;
+      click = ClkEtyTitle;
     } else if (ev->x > selmon->ww - estatusw ){
       x = selmon->ww - estatusw;
       // click = ClkStatusText;
@@ -1551,43 +1554,46 @@ int drawsym(int x, Monitor *m){
   return w;
 }
 
-int drawtitle(int x, Monitor *m, int etitlew){
-  if (etitlew > bh) {
+int drawtitle(int x, Monitor *m, int emidw){
+  if (emidw > bh) {
     if (m->sel) {
       drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
         int namelength = TEXTW(m->sel->name);
-        int pad = namelength >= etitlew  ? lrpad /2 : (etitlew - namelength + lrpad) /2 ;
-        drw_text(drw, x, 0, etitlew, bh, pad , m->sel->name, 0);
+        int pad = namelength >= emidw  ? lrpad /2 : (emidw - namelength + lrpad) /2 ;
+        drw_text(drw, x, 0, emidw, bh, pad , m->sel->name, 0);
       if (m->sel->isfloating)
         drw_rect(drw, x + 2 , 4 , 2 , bh -8 , 1, 0);
       if (m->sel->mon->hidsel)
-        drw_rect(drw, x + lrpad / 2 , bh - 4 , etitlew - lrpad , 2 , 1, 0);
+        drw_rect(drw, x + lrpad / 2 , bh - 4 , emidw - lrpad , 2 , 1, 0);
 
     } else {
       drw_setscheme(drw, scheme[SchemeNorm]);
-      drw_rect(drw, x, 0, etitlew, bh, 1, 1);
+      drw_rect(drw, x, 0, emidw, bh, 1, 1);
     }
   } else {
       drw_setscheme(drw, scheme[SchemeNorm]);
-      drw_rect(drw, x, 0, etitlew, bh, 1, 1);
+      drw_rect(drw, x, 0, emidw, bh, 1, 1);
   }
-  x += etitlew;
+  x += emidw;
   return x;
 }
 
-int drawtabs(int x, Monitor *m, int titlew){
+int drawtabs(int x, Monitor *m, int emidw){
   Client *c;
   int n = 0;
-  int w;
+  // int w;
+  int tabw = TEXTW(taskWidth);
   int scm;
+  int taskw = TEXTW(taskWidth);
   for (c = m->clients; c; c = c->next) {
     if (ISVISIBLE(c))
       n++;
   }
 
-  if (((w = m->ww - statusw - sysw - x) > bh) && (n>0)) {
-      int remainder = w % n;
-      int tabw = (1.0 / (double)n) * w + 1;
+  if (( emidw > bh) && ( n > 0)) {
+      int remainder = emidw % n;
+      if (tabw * n >= emidw)
+        tabw = (1.0 / (double)n) * emidw + 1;
       for (c = m->clients; c; c = c->next) {
         if (!ISVISIBLE(c))
           continue;
@@ -1618,11 +1624,11 @@ int drawtabs(int x, Monitor *m, int titlew){
       }
     } else {
       drw_setscheme(drw, scheme[SchemeNorm]);
-      drw_rect(drw, x, 0, w, bh, 1, 1);
-      x +=w;
+      drw_rect(drw, x, 0, emidw, bh, 1, 1);
+      x +=emidw;
   }
   m->bt = n;
-  m->btw = w;
+  m->btw = tabw;
   return x;
 }
 
@@ -1635,6 +1641,9 @@ void drawbar(Monitor *m) {
   sysw = getsystraywidth();
   // resizebarwin(m);
   if (m->showbar){
+    // clean
+    drw_setscheme(drw, scheme[SchemeEty]);
+    drw_rect(drw, x, 0, m->ww, bh, 1, 1);
     l = 0;
     launchersw = drawlaunchers(l);
     l +=launchersw;
@@ -1649,8 +1658,8 @@ void drawbar(Monitor *m) {
     r -= sysw;
     // titlew= m->ww - buttonw - tagsw - symw - sysw - statusw;
 
-    titlew= r - l;
-    x = drawtabs(l,m,titlew);
+    midw= r - l;
+    x = drawtabs(l,m,midw);
 
     XMoveResizeWindow(dpy, m->barwin, m->wx, m->by, w, bh);
     drw_map(drw, m->barwin, 0, 0, m->ww - sysw, bh);
@@ -1668,8 +1677,8 @@ void drawbar(Monitor *m) {
     r -= estatusw;
 
 
-    etitlew= r - l;
-    drawtitle(l,m,etitlew);
+    emidw= r - l;
+    drawtitle(l,m,emidw);
     XMoveResizeWindow(dpy, m->extrabarwin, m->wx, m->eby, m->ww, bh);
     drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
   }
