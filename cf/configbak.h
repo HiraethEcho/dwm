@@ -19,7 +19,7 @@ static const double inactiveopacity = 0.7f;     /* Window opacity when it's inac
 static const char *fonts[]          = { "Maple Mono NF:size=10" };
 static const char dmenufont[]       = "Maple Mono NF:size=15";
 
-#include "themes/tokyonight.h"
+// #include "themes/tokyonight.h"
 static const char col_gray0[] = "#111111";
 static const char col_gray1[] = "#222222";
 static const char col_gray2[] = "#444444";

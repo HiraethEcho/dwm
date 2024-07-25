@@ -46,6 +46,13 @@ static const int focusonwheel = 1;
 static const char *fonts[] = {"Maple Mono NF:size=12"};
 static const char dmenufont[] = "Maple Mono NF:size=12";
 
+
+#define OPAQUE                  0xffU
+// static const unsigned int baralpha = 0xd0;
+// static const unsigned int baralpha = OPAQUE*0.3;
+static const unsigned int baralpha = 0.5*0xffU;
+static const unsigned int borderalpha = OPAQUE;
+
 static const char gray1[] = "#bbbbbb";
 static const char gray2[] = "#88c0d0";
 static const char gray3[] = "#d8dee9";
@@ -68,6 +75,14 @@ static const char *tagy[][2] = {
   {"#ab61aa","#6ce0d6" },
 };
 
+static const unsigned int tagalphas[][2]      = {
+	/*               fg      bg        border     */
+  { OPAQUE, baralpha },
+  { OPAQUE, baralpha },
+  { OPAQUE, baralpha },
+  { OPAQUE, baralpha },
+  { OPAQUE, baralpha },
+};
 static const char *colors[][3] = {
     /*               fg         bg         border   */
     [SchemeLauncher] = { "#61afef", "#5a5255", cyan},
@@ -79,6 +94,20 @@ static const char *colors[][3] = {
     [SchemeHid]      = { "#81a1c1", "#24283b", cyan},
     [SchemeStatus]   = { "#ffffff", "#49688e", cyan},
     [SchemeSys]      = { "#ffffff", "#ffeaba", cyan},
+};
+
+
+static const unsigned int alphas[][3]      = {
+	/*               fg      bg        border     */
+	[SchemeLauncher]  = { OPAQUE, baralpha, borderalpha },
+	[SchemeTag]       = { OPAQUE, baralpha, borderalpha },
+	[SchemeSym]       = { OPAQUE, baralpha, borderalpha },
+	[SchemeEty]       = { OPAQUE, baralpha, borderalpha },
+	[SchemeNorm]      = { OPAQUE, baralpha, borderalpha },
+	[SchemeSel]       = { OPAQUE, baralpha, borderalpha },
+	[SchemeHid]       = { OPAQUE, baralpha, borderalpha },
+	[SchemeStatus]    = { OPAQUE, baralpha, borderalpha },
+	[SchemeSys]       = { OPAQUE, baralpha, borderalpha },
 };
 
 static const char *launchers[] = {""} ;
