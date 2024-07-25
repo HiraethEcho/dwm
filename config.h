@@ -19,7 +19,7 @@ static int smartgaps = 1; /* 1 means no outer gap when there is only one window 
 
 
 static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
-static const unsigned int systrayspacing = 4; /* systray spacing */
+static const unsigned int systrayspacing = 0; /* systray spacing */
 static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray = 1;             /* 0 means no systray */
 
@@ -50,7 +50,17 @@ static const char dmenufont[] = "Maple Mono NF:size=12";
 #define OPAQUE                  0xffU
 // static const unsigned int baralpha = 0xd0;
 // static const unsigned int baralpha = OPAQUE*0.3;
-static const unsigned int baralpha = 0.9*0xffU;
+static const unsigned int launcheralpha = 0.6*0xffU;
+static const unsigned int selalpha = 0.9*0xffU;
+static const unsigned int normalpha = 0.8*0xffU;
+static const unsigned int hidealpha = 0.5*0xffU;
+static const unsigned int etyalpha = 0.1*0xffU;
+static const unsigned int sysalpha = 0.9*0xffU;
+static const unsigned int statusalpha = 0.7*0xffU;
+
+static const unsigned int symalpha = 0.8*0xffU;
+static const unsigned int tagalpha = 0.9*0xffU;
+static const unsigned int titlealpha = 0.6*0xffU;
 static const unsigned int borderalpha = OPAQUE;
 
 static const char gray1[] = "#bbbbbb";
@@ -77,37 +87,38 @@ static const char *tagy[][2] = {
 
 static const unsigned int tagalphas[][2]      = {
 	/*               fg      bg        border     */
-  { OPAQUE, baralpha },
-  { OPAQUE, baralpha },
-  { OPAQUE, baralpha },
-  { OPAQUE, baralpha },
-  { OPAQUE, baralpha },
+  { OPAQUE, tagalpha },
+  { OPAQUE, tagalpha },
+  { OPAQUE, tagalpha },
+  { OPAQUE, tagalpha },
+  { OPAQUE, tagalpha },
 };
 static const char *colors[][3] = {
     /*               fg         bg         border   */
     [SchemeLauncher] = { "#61afef", "#5a5255", cyan},
-    [SchemeTag]      = { "#83848e", "#213438", cyan},
-    [SchemeSym]      = { "#dfe3ee", "#3b5998", cyan},
-    [SchemeEty]      = { "#d8dee9", "#ffffff", "#d8dee9"},
-    [SchemeNorm]     = { "#d8dee9", "#414868", "#d8dee9"},
     [SchemeSel]      = { "#2a303c", "#81a1c1", "#cc241d"},
+    [SchemeNorm]     = { "#d8dee9", "#414868", "#d8dee9"},
     [SchemeHid]      = { "#81a1c1", "#24283b", cyan},
-    [SchemeStatus]   = { "#ffffff", "#49688e", cyan},
+    [SchemeEty]      = { "#d8dee9", "#000000", "#d8dee9"},
     [SchemeSys]      = { "#ffffff", "#ffeaba", cyan},
+    [SchemeStatus]   = { "#ffffff", "#49688e", cyan},
+    [SchemeSym]      = { "#dfe3ee", "#3b5998", cyan},
+    [SchemeTag]      = { "#83848e", "#213438", cyan},
+    [SchemeTitle]    = { "#3b5998", "#ffeaba", "#d8dee9"},
 };
-
 
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
-	[SchemeLauncher]  = { OPAQUE, baralpha, borderalpha },
-	[SchemeTag]       = { OPAQUE, baralpha, borderalpha },
-	[SchemeSym]       = { OPAQUE, baralpha, borderalpha },
-	[SchemeEty]       = { OPAQUE, baralpha, borderalpha },
-	[SchemeNorm]      = { OPAQUE, baralpha, borderalpha },
-	[SchemeSel]       = { OPAQUE, baralpha, borderalpha },
-	[SchemeHid]       = { OPAQUE, baralpha, borderalpha },
-	[SchemeStatus]    = { OPAQUE, baralpha, borderalpha },
-	[SchemeSys]       = { OPAQUE, baralpha, borderalpha },
+	[SchemeLauncher]  = { OPAQUE, launcheralpha, borderalpha },
+	[SchemeSel]       = { OPAQUE, selalpha,      borderalpha },
+	[SchemeNorm]      = { OPAQUE, normalpha,     borderalpha },
+	[SchemeHid]       = { OPAQUE, hidealpha,     borderalpha },
+	[SchemeEty]       = { OPAQUE, etyalpha,      borderalpha },
+	[SchemeSys]       = { OPAQUE, sysalpha,      borderalpha },
+	[SchemeStatus]    = { OPAQUE, statusalpha,   borderalpha },
+	[SchemeSym]       = { OPAQUE, symalpha,      borderalpha },
+	[SchemeTag]       = { OPAQUE, tagalpha,      borderalpha },
+	[SchemeTitle]     = { OPAQUE, titlealpha,    borderalpha },
 };
 
 static const char *launchers[] = {""} ;

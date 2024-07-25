@@ -87,14 +87,15 @@
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
 enum {
   SchemeLauncher,
-  SchemeTag,
-  SchemeSym,
-  SchemeEty,
-  SchemeNorm,
   SchemeSel,
+  SchemeNorm,
   SchemeHid,
-  SchemeStatus, 
+  SchemeEty,
   SchemeSys, 
+  SchemeStatus, 
+  SchemeSym,
+  SchemeTag,
+  SchemeTitle,
 };       /* color schemes */
 enum {
   NetSupported,
@@ -434,8 +435,8 @@ static const char broken[] = "broken";
 
 static char stext[1024];
 static char estext[1024];
-static char validtext[1024];
-static char validetext[1024];
+// static char validtext[1024];
+// static char validetext[1024];
 
 static int launchersw;
 static int tagsw;
@@ -1394,7 +1395,7 @@ int drawonestatusbar(int x, Monitor *m,  char *rawtext) {
   x -=width;
 
 
-  drw_setscheme(drw, scheme[LENGTH(colors)]);
+  drw_setscheme(drw, scheme[SchemeStatus]);
   drw->scheme[ColFg] = scheme[SchemeStatus][ColFg];
   drw->scheme[ColBg] = scheme[SchemeStatus][ColBg];
   drw_rect(drw, x, 0, statusw, bh, 1, 1);
@@ -1463,7 +1464,7 @@ int drawonestatusbar(int x, Monitor *m,  char *rawtext) {
     x += w ;
   }
 
-  drw_setscheme(drw, scheme[SchemeNorm]);
+  drw_setscheme(drw, scheme[SchemeEty]);
   x+=lrpad/2;
 
   return width;
@@ -1508,7 +1509,7 @@ int drawtags(int x, Monitor *m){
       urg |= c->tags;
   }
 
-  drw_setscheme(drw, scheme[LENGTH(colors)]);
+  drw_setscheme(drw, scheme[SchemeTag]);
   for (i = 0; i < LENGTH(tags); i++) {
     // drw_setscheme(drw, tagscheme[i]);
     // if(!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
@@ -1556,9 +1557,9 @@ int drawsym(int x, Monitor *m){
 }
 
 int drawtitle(int x, Monitor *m, int emidw){
-  if (emidw > bh) {
+  // if (emidw > bh) {
     if (m->sel) {
-      drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
+      drw_setscheme(drw, scheme[m == selmon ? SchemeTitle : SchemeNorm]);
         int namelength = TEXTW(m->sel->name);
         int pad = namelength >= emidw  ? lrpad /2 : (emidw - namelength + lrpad) /2 ;
         drw_text(drw, x, 0, emidw, bh, pad , m->sel->name, 0);
@@ -1568,18 +1569,18 @@ int drawtitle(int x, Monitor *m, int emidw){
         drw_rect(drw, x + lrpad / 2 , bh - 4 , emidw - lrpad , 2 , 1, 0);
 
     } else {
-      drw_setscheme(drw, scheme[SchemeNorm]);
+      drw_setscheme(drw, scheme[SchemeEty]);
       drw_rect(drw, x, 0, emidw, bh, 1, 1);
     }
-  } else {
-      drw_setscheme(drw, scheme[SchemeNorm]);
-      drw_rect(drw, x, 0, emidw, bh, 1, 1);
-  }
+  // } else {
+  //     drw_setscheme(drw, scheme[SchemeEty]);
+  //     drw_rect(drw, x, 0, emidw, bh, 1, 1);
+  // }
   x += emidw;
   return x;
 }
 
-int drawtabs(int x, Monitor *m, int emidw){
+int drawtabs(int x, Monitor *m, int midw){
   Client *c;
   int n = 0;
   int tabw = TEXTW(tabWidth);
@@ -1588,8 +1589,7 @@ int drawtabs(int x, Monitor *m, int emidw){
     if (ISVISIBLE(c))
       n++;
   }
-
-  if (( emidw > bh) && ( n > 0)) {
+  if (( midw > bh) && ( n > 0)) {
       int remainder = emidw % n;
       if (tabw * n >= emidw || !isfixedtabwidth )
         tabw = (1.0 / (double)n) * emidw + 1;
@@ -1622,9 +1622,9 @@ int drawtabs(int x, Monitor *m, int emidw){
       x += tabw;
       }
     } else {
-      drw_setscheme(drw, scheme[SchemeNorm]);
-      drw_rect(drw, x, 0, emidw, bh, 1, 1);
-      x +=emidw;
+      drw_setscheme(drw, scheme[SchemeEty]);
+      drw_rect(drw, x, 0, midw, bh, 1, 1);
+      x +=midw;
   }
   m->bt = n;
   m->btw = tabw;
@@ -1887,8 +1887,7 @@ unsigned int getsystraywidth() {
   unsigned int w = 0;
   Client *i;
   if (showsystray)
-    for (i = systray->icons; i; w += i->w + systrayspacing, i = i->next)
-      ;
+    for (i = systray->icons; i; w += i->w + systrayspacing, i = i->next) ;
   return w ? w + systrayspacing : 1;
 }
 
@@ -2996,8 +2995,8 @@ void setup(void) {
   for (i = 0; i < LENGTH(tagn); i++)
     tagschemen[i] = drw_scm_create(drw, tagn[i],tagalphas[i], 2);
 
-  scheme = ecalloc(LENGTH(colors) + 1, sizeof(Clr *));
-  scheme[LENGTH(colors)] = drw_scm_create(drw, colors[0], alphas[0],3);
+  scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
+  // scheme[LENGTH(colors)] = drw_scm_create(drw, colors[0], alphas[0],3);
   for (i = 0; i < LENGTH(colors); i++)
     scheme[i] = drw_scm_create(drw, colors[i], alphas[i], 3);
     // scheme[i] = drw_scm_create(drw, colors[i], 3);
