@@ -509,7 +509,7 @@ struct Pertag {
 struct NumTags { char limitexceeded[LENGTH(tags) > 30 ? -1 : 1]; };
 
 static void alttab(const Arg *arg) {
-  Layout l = *(selmon->lt[selmon->sellt]);
+  Layout *l = (selmon->lt[selmon->sellt]);
   setlayout(&((Arg) {.v = &tablayout}));
   focusstackhid(&(Arg){ .i=tab_direction});;
 
@@ -554,7 +554,7 @@ static void alttab(const Arg *arg) {
         XUngrabKeyboard(dpy, CurrentTime);
         XUngrabButton(dpy, AnyButton, AnyModifier, None);
         grabbed = 0;
-        // setlayout(&((Arg) {.v = &l}));
+        setlayout(&((Arg) {.v = l}));
       }
       if (event.xkey.keycode == tabCycleKeyInv)
         tab_direction = 1;
@@ -577,7 +577,7 @@ static void alttab(const Arg *arg) {
 
 static void wintab(const Arg *arg) {
 
-  // Layout l = *(selmon->lt[selmon->sellt]);
+  Layout *l = (selmon->lt[selmon->sellt]);
   view(&(Arg){ .ui = ~0 });
   setlayout(&((Arg) {.v = &tablayout}));
 
@@ -623,7 +623,7 @@ static void wintab(const Arg *arg) {
         XUngrabButton(dpy, AnyButton, AnyModifier, None);
         grabbed = 0;
         winview(0);
-        // setlayout(&((Arg) {.v = &l}));
+        setlayout(&((Arg) {.v = l}));
       }
       if (event.xkey.keycode == tabCycleKeyInv)
         tab_direction = 1;
