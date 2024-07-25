@@ -2182,7 +2182,7 @@ void motionnotify(XEvent *e) {
       if (selmon->previewshow != (i + 1)
       && !(selmon->tagset[selmon->seltags] & 1 << i)) {
         selmon->previewshow = i + 1;
-        showtagpreview(i);
+        // showtagpreview(i);
       } else if (selmon->tagset[selmon->seltags] & 1 << i) {
         selmon->previewshow = 0;
         XUnmapWindow(dpy, selmon->tagwin);
@@ -2284,28 +2284,27 @@ showtagpreview(unsigned int i)
   XMapRaised(dpy, selmon->tagwin);
 }
 
-void
-takepreview(void)
-{
+void takepreview(void) {
   Client *c;
   Imlib_Image image;
   unsigned int occ = 0, i;
 
   for (c = selmon->clients; c; c = c->next)
     occ |= c->tags;
-    //occ |= c->tags == 255 ? 0 : c->tags; /* hide vacants */
+    //occ |= c->tags == 255 ? 0 : c->tags;
 
   for (i = 0; i < LENGTH(tags); i++) {
-    /* searching for tags that are occupied && selected */
+    // searching for tags that are occupied && selected 
     if (!(occ & 1 << i) || !(selmon->tagset[selmon->seltags] & 1 << i))
       continue;
 
-    if (selmon->tagmap[i]) { /* tagmap exist, clean it */
+      // tagmap exist, clean it
+    if (selmon->tagmap[i]) { 
       XFreePixmap(dpy, selmon->tagmap[i]);
       selmon->tagmap[i] = 0;
     }
 
-    /* try to unmap the window so it doesn't show the preview on the preview */
+    // try to unmap the window so it doesn't show the preview on the preview 
     selmon->previewshow = 0;
     XUnmapWindow(dpy, selmon->tagwin);
     XSync(dpy, False);
@@ -2316,10 +2315,10 @@ takepreview(void)
     }
     imlib_context_set_image(image);
     imlib_context_set_display(dpy);
-    /* uncomment if using alpha patch */
-    //imlib_image_set_has_alpha(1);
-    //imlib_context_set_blend(0);
-    //imlib_context_set_visual(visual);
+    // uncomment if using alpha patch 
+    imlib_image_set_has_alpha(1);
+    imlib_context_set_blend(0);
+    imlib_context_set_visual(visual);
     imlib_context_set_visual(DefaultVisual(dpy, screen));
     imlib_context_set_drawable(root);
 
