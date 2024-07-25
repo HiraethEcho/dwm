@@ -50,7 +50,7 @@ static const char dmenufont[] = "Maple Mono NF:size=12";
 #define OPAQUE                  0xffU
 // static const unsigned int baralpha = 0xd0;
 // static const unsigned int baralpha = OPAQUE*0.3;
-static const unsigned int baralpha = 0.5*0xffU;
+static const unsigned int baralpha = 0.9*0xffU;
 static const unsigned int borderalpha = OPAQUE;
 
 static const char gray1[] = "#bbbbbb";

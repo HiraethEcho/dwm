@@ -1309,9 +1309,9 @@ void destroynotify(XEvent *e) {
     unmanage(c, 1);
   else if ((c = wintosystrayicon(ev->window))) {
     removesystrayicon(c);
-    resizebarwin(selmon);
+    // resizebarwin(selmon);
     // updatesystray();
-		updatesystray(1);
+    updatesystray(1);
   }
 }
 
@@ -1696,8 +1696,8 @@ void drawbars(void) {
   Monitor *m;
   for (m = mons; m; m = m->next)
     drawbar(m);
-	if (showsystray && !systraypinning)
-		updatesystray(0);
+  // if (showsystray && !systraypinning)
+    // updatesystray(0);
 }
 
 void enternotify(XEvent *e) {
@@ -1724,10 +1724,10 @@ void expose(XEvent *e) {
 
   if (ev->count == 0 && (m = wintomon(ev->window))) {
     drawbar(m);
-    // if (m == selmon)
-    //   updatesystray();
-		if (showsystray && m == systraytomon(m))
-			updatesystray(0);
+    if (m == selmon)
+      updatesystray(0);
+    // if (showsystray && m == systraytomon(m))
+      // updatesystray(0);
   }
 }
 
@@ -2139,9 +2139,9 @@ void maprequest(XEvent *e) {
   Client *i;
   if ((i = wintosystrayicon(ev->window))) {
     sendevent(i->win, netatom[Xembed], StructureNotifyMask, CurrentTime, XEMBED_WINDOW_ACTIVATE, 0, systray->win, XEMBED_EMBEDDED_VERSION);
-    resizebarwin(selmon);
+    // resizebarwin(selmon);
     // updatesystray();
-		updatesystray(1);
+    updatesystray(1);
   }
 
   if (!XGetWindowAttributes(dpy, ev->window, &wa) || wa.override_redirect)
@@ -2505,9 +2505,9 @@ void propertynotify(XEvent *e) {
       updatesystrayicongeom(c, c->w, c->h);
     } else
       updatesystrayiconstate(c, ev);
-    resizebarwin(selmon);
+    // resizebarwin(selmon);
     // updatesystray();
-		updatesystray(1);
+    updatesystray(1);
   }
 
   if ((ev->window == root) && (ev->atom == XA_WM_NAME))
@@ -2678,7 +2678,7 @@ void resizerequest(XEvent *e) {
     updatesystrayicongeom(i, ev->width, ev->height);
     resizebarwin(selmon);
     // updatesystray();
-		updatesystray(1);
+    updatesystray(1);
   }
 }
 
@@ -3000,13 +3000,13 @@ void setup(void) {
   netatom[NetSystemTrayOP] = XInternAtom(dpy, "_NET_SYSTEM_TRAY_OPCODE", False);
   netatom[NetSystemTrayOrientation] = XInternAtom(dpy, "_NET_SYSTEM_TRAY_ORIENTATION", False);
   netatom[NetSystemTrayOrientationHorz] = XInternAtom(dpy, "_NET_SYSTEM_TRAY_ORIENTATION_HORZ", False);
-	netatom[NetSystemTrayVisual] = XInternAtom(dpy, "_NET_SYSTEM_TRAY_VISUAL", False);
+  netatom[NetSystemTrayVisual] = XInternAtom(dpy, "_NET_SYSTEM_TRAY_VISUAL", False);
   netatom[NetWMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
   netatom[NetWMState] = XInternAtom(dpy, "_NET_WM_STATE", False);
   netatom[NetWMCheck] = XInternAtom(dpy, "_NET_SUPPORTING_WM_CHECK", False);
   netatom[NetWMFullscreen] = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
   netatom[NetWMWindowType] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False);
-	netatom[NetWMWindowTypeDock] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DOCK", False);
+  netatom[NetWMWindowTypeDock] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DOCK", False);
   netatom[NetWMWindowTypeDialog] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
   netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
   netatom[NetWMWindowsOpacity] = XInternAtom(dpy, "_NET_WM_WINDOW_OPACITY", False);
@@ -3034,8 +3034,9 @@ void setup(void) {
     // scheme[i] = drw_scm_create(drw, colors[i], 3);
 
   /* init system tray */
-	if (showsystray)
-		updatesystray(0);
+  if (showsystray)
+    updatesystray(0);
+  /*  init bars */
   updatebars();
   updatestatus();
   /* supporting window for NetWMCheck */
@@ -3711,8 +3712,8 @@ void updatesystrayicongeom(Client *i, int w, int h) {
         i->w = (int)((float)bh * ((float)i->w / (float)i->h));
       i->h = bh;
     }
-		if (i->w > 2*bh)
-			i->w = bh;
+    if (i->w > 2*bh)
+      i->w = bh;
   }
 }
 
@@ -3761,22 +3762,25 @@ void updatesystray(int updatebar) {
     /* init systray */
     if (!(systray = (Systray *)calloc(1, sizeof(Systray))))
       die("fatal: could not malloc() %u bytes\n", sizeof(Systray));
-    systray->win = XCreateSimpleWindow(dpy, root, x, m->by, w, bh, 0, 0,
-                                       scheme[SchemeSys][ColBg].pixel);
-    wa.event_mask = ButtonPressMask | ExposureMask;
     wa.override_redirect = True;
-    wa.background_pixel = scheme[SchemeSys][ColBg].pixel;
+    wa.event_mask = ButtonPressMask|ExposureMask;
+    wa.background_pixel = 0;
+    wa.border_pixel = 0;
+    wa.colormap = cmap;
+
+    systray->win = XCreateWindow(dpy, root, x, m->by, w, bh, 0, depth, InputOutput, visual, CWOverrideRedirect|CWBackPixel|CWBorderPixel|CWColormap|CWEventMask, &wa);
     XSelectInput(dpy, systray->win, SubstructureNotifyMask);
-    XChangeProperty(dpy, systray->win, netatom[NetSystemTrayOrientation],
-                    XA_CARDINAL, 32, PropModeReplace,
-                    (unsigned char *)&netatom[NetSystemTrayOrientationHorz], 1);
-    XChangeWindowAttributes(
-        dpy, systray->win, CWEventMask | CWOverrideRedirect | CWBackPixel, &wa);
+    XChangeProperty(dpy, systray->win, netatom[NetSystemTrayOrientation], XA_CARDINAL, 32,
+        PropModeReplace, (unsigned char *)&systrayorientation, 1);
+    XChangeProperty(dpy, systray->win, netatom[NetSystemTrayVisual], XA_VISUALID, 32,
+        PropModeReplace, (unsigned char *)&visual->visualid, 1);
+    XChangeProperty(dpy, systray->win, netatom[NetWMWindowType], XA_ATOM, 32,
+        PropModeReplace, (unsigned char *)&netatom[NetWMWindowTypeDock], 1);
+/* systray->win = XCreateSimpleWindow(dpy, root, x, m->by, w, bh, 0, 0, scheme[SchemeSys][ColBg].pixel); */
     XMapRaised(dpy, systray->win);
     XSetSelectionOwner(dpy, netatom[NetSystemTray], systray->win, CurrentTime);
     if (XGetSelectionOwner(dpy, netatom[NetSystemTray]) == systray->win) {
-      sendevent(root, xatom[Manager], StructureNotifyMask, CurrentTime,
-                netatom[NetSystemTray], systray->win, 0, 0);
+      sendevent(root, xatom[Manager], StructureNotifyMask, CurrentTime, netatom[NetSystemTray], systray->win, 0, 0);
       XSync(dpy, False);
     } else {
       fprintf(stderr, "dwm: unable to obtain system tray.\n");
@@ -3815,8 +3819,8 @@ void updatesystray(int updatebar) {
   XSetForeground(dpy, drw->gc, scheme[SchemeSys][ColBg].pixel);
   XFillRectangle(dpy, systray->win, drw->gc, 0, 0, w, bh);
   XSync(dpy, False);
-	if (updatebar)
-		drawbar(m);
+  if (updatebar)
+    drawbar(m);
 }
 
 void updatetitle(Client *c) {
