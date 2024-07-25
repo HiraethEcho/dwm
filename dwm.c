@@ -2030,16 +2030,14 @@ void keypress(XEvent *e) {
 }
 
 void killclient(const Arg *arg) {
-  Client *c = (Client *)arg->v;
-  if (c)
-    XKillClient(dpy, c->win);
-  else if (!selmon->sel)
+  Client *c = arg->v ? (Client *)arg->v : selmon->sel;
+  if (!c)
     return;
-  else if (!sendevent(selmon->sel->win, wmatom[WMDelete], NoEventMask, wmatom[WMDelete], CurrentTime, 0, 0, 0)) {
+  else if (!sendevent(c->win, wmatom[WMDelete], NoEventMask, wmatom[WMDelete], CurrentTime, 0, 0, 0)) {
     XGrabServer(dpy);
     XSetErrorHandler(xerrordummy);
     XSetCloseDownMode(dpy, DestroyAll);
-    XKillClient(dpy, selmon->sel->win);
+    XKillClient(dpy, c->win);
     XSync(dpy, False);
     XSetErrorHandler(xerror);
     XUngrabServer(dpy);
