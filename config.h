@@ -4,7 +4,8 @@
 /* appearance */
 static const unsigned int borderpx = 2; /* border pixel of windows */
 static const unsigned int snap = 15;    /* snap pixel */
-static const  int barpad   = 4;
+static const  int ebarpad   = 6;
+static const  int barpad   = 6;
 
 static const unsigned int altModKey = 0x40; //alt
 static const unsigned int winModKey = 0x85; //win
