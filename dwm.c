@@ -1591,9 +1591,9 @@ int drawtabs(int x, Monitor *m, int midw){
       n++;
   }
   if (( midw > bh) && ( n > 0)) {
-      int remainder = emidw % n;
-      if (tabw * n >= emidw || !isfixedtabwidth )
-        tabw = (1.0 / (double)n) * emidw + 1;
+      int remainder = midw % n;
+      if (tabw * n >= midw || !isfixedtabwidth )
+        tabw = (1.0 / (double)n) * midw + 1;
       for (c = m->clients; c; c = c->next) {
         if (!ISVISIBLE(c))
           continue;
@@ -1649,7 +1649,7 @@ void drawbar(Monitor *m) {
     launchersw = drawlaunchers(l,m);
     l +=launchersw;
 
-    r = m->ww;
+    r = m->bw;
     statusw = drawstatusbar(r,m);
     r -= statusw;
     sysw = drawsystray(r,m);
