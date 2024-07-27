@@ -957,8 +957,8 @@ void changefocusopacity(const Arg *arg) {
     c->opacity += arg->f;
     if (c->opacity > 1.0)
       c->opacity = 1.0;
-    if (c->opacity < 0.00)
-      c->opacity = 0.01;
+    if (c->opacity < 0.1)
+      c->opacity = 0.1;
     opacity(c, c->opacity);
   } else {
     changeunfocusopacity(arg);
@@ -972,8 +972,8 @@ void changeunfocusopacity(const Arg *arg) {
   c->unfocusopacity += arg->f;
   if (c->unfocusopacity > 1.0)
     c->unfocusopacity = 1.0;
-  if (c->unfocusopacity < 0.01)
-    c->unfocusopacity = 0.01;
+  if (c->unfocusopacity < 0.1)
+    c->unfocusopacity = 0.1;
   opacity(c, c->unfocusopacity);
 }
 
@@ -1527,15 +1527,15 @@ int drawtags(int x, Monitor *m){
     drw->scheme[ColBg] = m->tagset[m->seltags] & 1 << i ? tagschemey[i][ColBg] : tagschemen[i][ColBg];
 
     // drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-    drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], 0);
+    drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
     // if ( m->tagset[m->seltags] & 1 << i) 
     // drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , urg & 1 << i);
     // if ( (m->tagset[m->seltags] & 1 << i) && (occ &1 << i)) {
     //   drw_rect(drw, x   ,0,w,bh, 0 , urg & 1 << i);
     // drw_rect(drw, x +1  ,1,w-2,bh-2, 0 , urg & 1 << i);
     // }
-    if (urg & 1 << i)
-      drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , 0);
+    // if (urg & 1 << i)
+    //   drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, occ & 1 << i , 0);
       // drw_rect(drw, x +1  ,1,w-2,bh-2, 0 , 0);
     x += w;
   }
