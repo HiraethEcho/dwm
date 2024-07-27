@@ -1614,6 +1614,7 @@ int drawtabs(int x, Monitor *m, int midw){
         int namelength = TEXTW(c->name);
         int pad = namelength >= tabw  ? lrpad /2 : (tabw - namelength + lrpad) /2 ;
         drw_text(drw, x, 0, tabw, bh, pad , c->name, 0);
+        drw_rect(drw, x ,0, tabw, bh, 0, 0);
       if (c->isfloating)
         drw_rect(drw, x + 2 , 4 , 2 , bh -8 , 1, 0);
       if ((c->mon->hidsel) && (m->sel == c) )
