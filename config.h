@@ -371,18 +371,23 @@ static const Button buttons[] = {
     {ClkTab,        0,                Button4, changefocusopacity, {.f = +0.025}},
     {ClkTab,        0,                Button5, changefocusopacity, {.f = -0.025}},
 
-    {ClkTitle,      0,                Button1, togglefloating,     {0}},
+    {ClkTitle,      0,                Button3, togglefloating,     {0}},
     {ClkTitle,      0,                Button2, killclient,         {0}},
-    {ClkTitle,      0,                Button3, togglewin,          {0}},
+    // {ClkTitle,   0,                Button3, togglewin,          {0}},
     {ClkTitle,      0,                Button4, changefocusopacity, {.f = +0.025}},
     {ClkTitle,      0,                Button5, changefocusopacity, {.f = -0.025}},
 
-    {ClkEtyTitle,        0,                Button1, spawn,              SHCMD("kitty")},
-    {ClkEtyTitle,        0,                Button2, spawn,              SHCMD("wallpaper_change")},
-    {ClkEtyTitle,        0,                Button3, spawn,              SHCMD("microsoft-edge-stable")},
+    {ClkEtyTitle,   0,                Button1, spawn,              SHCMD("kitty")},
+    {ClkEtyTitle,   0,                Button3, spawn,              SHCMD("rofi_quickapps")},
+    {ClkEtyTitle,   0,                Button2, spawn,              SHCMD("rofi_allapps")},
+    {ClkEtyTitle,   0,                Button4, spawn,              SHCMD("xbacklight -inc 5; pkill -SIGUSR1 dwmblocks")},
+    {ClkEtyTitle,   0,                Button5, spawn,              SHCMD("xbacklight -dec 5; pkill -SIGUSR1 dwmblocks")},
 
-    {ClkEtyTab,        0,                Button1, spawn,              SHCMD("wallpaper_change")},
-
+    {ClkEtyTab,     0,                Button1, spawn,              SHCMD("wallpaper_change")},
+    {ClkEtyTab,     0,                Button2, spawn,              SHCMD("rofi_allapps")},
+    {ClkEtyTab,     0,                Button3, spawn,              SHCMD("rofi_quickapps")},
+    {ClkEtyTab,     0,                Button4, spawn,              SHCMD("xbacklight -inc 5; pkill -SIGUSR1 dwmblocks")},
+    {ClkEtyTab,     0,                Button5, spawn,              SHCMD("xbacklight -dec 5; pkill -SIGUSR1 dwmblocks")},
 
     {ClkStatusText, 0,                Button1, sigstatusbar,       {.i = 1}},
     {ClkStatusText, 0,                Button2, sigstatusbar,       {.i = 2}},
@@ -391,7 +396,11 @@ static const Button buttons[] = {
     {ClkStatusText, 0,                Button5, sigstatusbar,       {.i = 5}},
     {ClkStatusText, MODKEY,           Button1, sigstatusbar,       {.i = 6}},
 
-    {ClkRootWin,    0,                Button2, spawn,              SHCMD("wallpaper_change")},
+    {ClkRootWin,    0,                Button3, spawn,              SHCMD("rofi_quickapps")},
+    // {ClkRootWin, 0,                Button3, spawn,              SHCMD("wallpaper_change")},
+    {ClkRootWin,    0,                Button2, spawn,              SHCMD("pamixer -t; pkill -SIGUSR1 dwmblocks")},
+    {ClkRootWin,    0,                Button4, spawn,              SHCMD("pamixer -i 5; pkill -SIGUSR1 dwmblocks")},
+    {ClkRootWin,    0,                Button5, spawn,              SHCMD("pamixer -d 5; pkill -SIGUSR1 dwmblocks")},
 
     {ClkClientWin,  MODKEY,           Button1, movemouse,          {0}},
     {ClkClientWin,  MODKEY,           Button3, resizemouse,        {0}},
