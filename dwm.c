@@ -957,8 +957,8 @@ void changefocusopacity(const Arg *arg) {
     c->opacity += arg->f;
     if (c->opacity > 1.0)
       c->opacity = 1.0;
-    if (c->opacity < 0.1)
-      c->opacity = 0.1;
+    if (c->opacity < 0.00)
+      c->opacity = 0.01;
     opacity(c, c->opacity);
   } else {
     changeunfocusopacity(arg);
@@ -972,8 +972,8 @@ void changeunfocusopacity(const Arg *arg) {
   c->unfocusopacity += arg->f;
   if (c->unfocusopacity > 1.0)
     c->unfocusopacity = 1.0;
-  if (c->unfocusopacity < 0.1)
-    c->unfocusopacity = 0.1;
+  if (c->unfocusopacity < 0.01)
+    c->unfocusopacity = 0.01;
   opacity(c, c->unfocusopacity);
 }
 

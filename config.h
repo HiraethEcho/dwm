@@ -79,7 +79,7 @@ static const char *tagn[][2] = {
 };
 
 static const char *tagy[][2] = {
-  {"#ef616a","#ffb966" },
+  {"#ef616a","#61afef" },
   {"#de617a","#98fb98" },
   {"#cd618a","#9c8eff" },
   {"#bc619a","#ffec2b" },
