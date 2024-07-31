@@ -105,7 +105,7 @@ static const char *colors[][3] = {
     [SchemeStatus]   = { "#ffffff", "#49688e", cyan},
     [SchemeSym]      = { "#dfe3ee", "#3b5998", cyan},
     [SchemeTag]      = { "#83848e", "#213438", cyan},
-    [SchemeTitle]    = { "#3b5998", "#ffeaba", "#d8dee9"},
+    [SchemeTitle]    = { "#2a303c", "#81a1c1", "#d8dee9"},
 };
 
 static const unsigned int alphas[][3]      = {
