@@ -49,8 +49,6 @@ static const char dmenufont[] = "Maple Mono NF:size=12";
 
 
 #define OPAQUE                  0xffU
-// static const unsigned int baralpha = 0xd0;
-// static const unsigned int baralpha = OPAQUE*0.3;
 static const unsigned int launcheralpha = 0.6*0xffU;
 static const unsigned int selalpha = 0.9*0xffU;
 static const unsigned int normalpha = 0.8*0xffU;
@@ -85,15 +83,14 @@ static const char *tagy[][2] = {
   {"#bc619a","#ffec2b" },
   {"#ab61aa","#6ce0d6" },
 };
-
 static const unsigned int tagalphas[][2]      = {
-	/*               fg      bg        border     */
   { OPAQUE, tagalpha },
   { OPAQUE, tagalpha },
   { OPAQUE, tagalpha },
   { OPAQUE, tagalpha },
   { OPAQUE, tagalpha },
 };
+
 static const char *colors[][3] = {
     /*               fg         bg         border   */
     [SchemeLauncher] = { "#61afef", "#5a5255", cyan},
@@ -107,7 +104,6 @@ static const char *colors[][3] = {
     [SchemeTag]      = { "#83848e", "#213438", cyan},
     [SchemeTitle]    = { "#2a303c", "#81a1c1", "#d8dee9"},
 };
-
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
 	[SchemeLauncher]  = { OPAQUE, launcheralpha, borderalpha },
@@ -124,8 +120,8 @@ static const unsigned int alphas[][3]      = {
 
 static const char *launchers[] = {""} ;
 // static const char *launchercmds[][] = {"kitty", NULL};
-
-static const char *tags[] = {"󰋜", "󰗚", "", "", "󰨇"};
+// 󰖳    󰃥    󰗚 󰨇 
+static const char *tags[] = {"󰋜", "󰃥", "", "󰖳", ""};
 static const int taglayouts[] = { 1, 0, 0, 0, 0, 0 }; //first for viewall tags
                                                       //
 
@@ -142,8 +138,9 @@ static const unsigned int ulinevoffset = 2; /* how far above the bottom of the b
 
 static const Rule rules[] = {
     /* class, instance, title,        tags mask, isfloating, focusopacity, unfocusopacity,  monitor */
-    {"st",    NULL,     "scratchpad", 0,         1,          0.8,          0.7,             -1},
+    // {"st",    NULL,     "scratchpad", 0,         1,          0.8,          0.7,             -1},
     {"st",    NULL,     "tasks",      0,         1,          0.8,          0.7,             -1},
+    {"Tilda", NULL,     "Tilda",      0,         1,          0.9,          0.8,             -1},
     // {"Gimp",  NULL,     NULL,         0,         1,          1.0,          inactiveopacity, -1},
 };
 
@@ -157,25 +154,6 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 /* nrowgrid layout: force two clients to always split vertically */
 #include "vanitygaps.c"
 
-static const BarBlock blocksl[] = {
-  {drawlaunchers,click_lancher},
-  // {1,drawlaunchers,click_lancher},
-};
-
-static const BarBlock ebarblocksl[] = {
-  {drawsym,click_sym},
-  {drawtags,click_tag},
-};
-
-static const BarBlock ebarblocksr[] = {
-  {drawestatusbar,click_status},
-};
-// static const BarBlock blocksr[] = {}
-/*
-static const BarBlock blockm[] = {}
-
-static const BarBlock eblockm[] = {}
-*/
 static const Layout layouts[] = {
     /* symbol     arrange function */
     {"[M]", monocle},
@@ -186,10 +164,7 @@ static const Layout layouts[] = {
     {"H[]", deck},
     {NULL, NULL},
 };
-
 static const Layout tablayout = {"---", horizgrid};
-
-
 /*
     {">M>", centeredfloatingmaster},
     {"[@]", spiral},
@@ -200,14 +175,13 @@ static const Layout tablayout = {"---", horizgrid};
     {"===", bstackhoriz},
     {"---", horizgrid},
 */
-/* key definitions */
+
 #define MODKEY Mod1Mask
 #define TAGKEYS(KEY, TAG) \
 {MODKEY,                           KEY, view,       {.ui = 1 << TAG}}, \
 {MODKEY | ControlMask,             KEY, toggleview, {.ui = 1 << TAG}}, \
 {MODKEY | ShiftMask,               KEY, tag,        {.ui = 1 << TAG}}, \
 {MODKEY | ControlMask | ShiftMask, KEY, toggletag,  {.ui = 1 << TAG}}, \
-// {Mod4Mask,                         KEY, previewtag, {.ui = TAG } },    \
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL } }
@@ -219,8 +193,8 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = {"dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", gray1, "-nf", cyan, "-sb", cyan, "-sf", gray1, NULL};
 static const char *termcmd[] = {"kitty", NULL};
 
-static const char scratchpadname[] = "scratchpad";
-static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
+// static const char scratchpadname[] = "scratchpad";
+// static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
 
 static const Key keys[] = {
     /* modifier                     key        function        argument */
@@ -230,7 +204,7 @@ static const Key keys[] = {
     // {MODKEY, XK_equal, scratchpad_remove, {0}},
 
     // spawn and kill client
-    {Mod4Mask, XK_grave,  togglescratch, {.v = scratchpadcmd}},
+    // {Mod4Mask, XK_grave,  togglescratch, {.v = scratchpadcmd}},
     {MODKEY,   XK_p,      spawn,         {.v = dmenucmd}},
     {MODKEY,   XK_Return, spawn,         {.v = termcmd}},
     {MODKEY,   XK_c,      killclient,    {0}},
