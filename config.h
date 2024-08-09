@@ -193,7 +193,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = {"dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", gray1, "-nf", cyan, "-sb", cyan, "-sf", gray1, NULL};
 static const char *termcmd[] = {"kitty", NULL};
 
-static const char scratchpadname[] = "scratchpad";
+static const char scratchpadname[] = "pad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
 
 static const Key keys[] = {

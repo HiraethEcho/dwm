@@ -1,0 +1,159 @@
+From 8c32f5ce2ed65cdb47452d658578bfe3f1dba81b Mon Sep 17 00:00:00 2001
+From: Hai Nguyen <hhai2105@gmail.com>
+Date: Fri, 10 Dec 2021 20:19:56 -0500
+Subject: [PATCH] added scratchpad struct, added togglescratch program, change
+ struct Rule to have floating dimensions
+
+---
+ config.def.h | 11 +++++---
+ dwm.c        | 72 +++++++++++++++++++++++++++++++++++++++++++++-------
+ 2 files changed, 71 insertions(+), 12 deletions(-)
+
+diff --git a/config.def.h b/config.def.h
+index a2ac963..bbd132a 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -26,11 +26,14 @@ static const Rule rules[] = {
+ 	 *	WM_CLASS(STRING) = instance, class
+ 	 *	WM_NAME(STRING) = title
+ 	 */
+-	/* class      instance    title       tags mask     isfloating   monitor */
+-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
+-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
++
++	/* class	instance title	tags mask		isfloating		x, y, w, h		monitor */
++
++	{"Gimp",			NULL,	NULL,	0,		1,				-1,-1,-1,-1,		-1},
++	{"Qalculate-gtk",	NULL,	NULL,	0,		1,				.35,35,.3,.5,		-1},
+ };
+ 
++
+ /* layout(s) */
+ static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+ static const int nmaster     = 1;    /* number of clients in master area */
+@@ -59,9 +62,11 @@ static const Layout layouts[] = {
+ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+ static const char *termcmd[]  = { "st", NULL };
++static const scratchpad qalculate = {.class = "Qalculate-gtk", .v = (char *[]){"qalculate-gtk", NULL}};
+ 
+ static Key keys[] = {
+ 	/* modifier                     key        function        argument */
++	{ControlMask,					XK_s,		togglescratch,		{.v = &qalculate } },
+ 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+ 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+ 	{ MODKEY,                       XK_b,      togglebar,      {0} },
+diff --git a/dwm.c b/dwm.c
+index 5e4d494..ba7dd1e 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -82,6 +82,12 @@ typedef struct {
+ 	const Arg arg;
+ } Button;
+ 
++typedef struct {
++	const char* class;
++	const char* title;
++	const void* v;
++} scratchpad;
++
+ typedef struct Monitor Monitor;
+ typedef struct Client Client;
+ struct Client {
+@@ -138,6 +144,7 @@ typedef struct {
+ 	const char *title;
+ 	unsigned int tags;
+ 	int isfloating;
++	float floatx, floaty, floatw, floath;
+ 	int monitor;
+ } Rule;
+ 
+@@ -214,6 +221,7 @@ static void togglebar(const Arg *arg);
+ static void togglefloating(const Arg *arg);
+ static void toggletag(const Arg *arg);
+ static void toggleview(const Arg *arg);
++static void togglescratch(const Arg *arg);
+ static void unfocus(Client *c, int setfocus);
+ static void unmanage(Client *c, int destroyed);
+ static void unmapnotify(XEvent *e);
+@@ -295,15 +303,21 @@ applyrules(Client *c)
+ 	for (i = 0; i < LENGTH(rules); i++) {
+ 		r = &rules[i];
+ 		if ((!r->title || strstr(c->name, r->title))
+-		&& (!r->class || strstr(class, r->class))
+-		&& (!r->instance || strstr(instance, r->instance)))
+-		{
+-			c->isfloating = r->isfloating;
+-			c->tags |= r->tags;
+-			for (m = mons; m && m->num != r->monitor; m = m->next);
+-			if (m)
+-				c->mon = m;
+-		}
++			&& (!r->class || strstr(class, r->class))
++			&& (!r->instance || strstr(instance, r->instance)))
++			{
++				c->isfloating = r->isfloating;
++				c->tags |= r->tags;
++				for (m = mons; m && m->num != r->monitor; m = m->next);
++				if (m)
++					c->mon = m;
++				if(c->isfloating){
++					if (r->floatx >= 0) c->x = c->mon->mx + (int)((float)c->mon->mw * r->floatx);
++					if (r->floaty >= 0) c->y = c->mon->my + (int)((float)c->mon->mh * r->floaty);
++					if (r->floatw >= 0) c->w = (int)((float)c->mon->mw * r->floatw);
++					if (r->floath >= 0) c->h = (int)((float)c->mon->mh * r->floath);
++				}
++			}
+ 	}
+ 	if (ch.res_class)
+ 		XFree(ch.res_class);
+@@ -1749,6 +1763,46 @@ toggleview(const Arg *arg)
+ 	}
+ }
+ 
++void
++togglescratch(const Arg *arg)
++{
++	Client *c;
++	char found = 0;
++	Monitor *m;
++	for(m = mons; m; m = m->next){
++		for (c = m->clients; c; c = c->next){
++			const char *class;
++			XClassHint ch = { NULL, NULL };
++			XGetClassHint(dpy, c->win, &ch);
++			class = ch.res_class ? ch.res_class : broken;
++			found = (((char *)((scratchpad *)arg->v)->class != NULL) && strcmp(class,(char *)((scratchpad *)arg->v)->class) == 0) || (((char *)((scratchpad *)arg->v)->title != NULL) && strcmp(c->name, (char *)((scratchpad *)arg->v)->title) == 0);
++			if(found){
++				break;
++			}
++		}
++		if(found){
++			break;
++		}
++	}
++	if (found) {
++		if(m != selmon){
++			sendmon(c, selmon);
++			c->tags = selmon->tagset[selmon->seltags];
++			applyrules(c);
++		}else{
++			c->tags = ISVISIBLE(c) ? 1 << 31 : selmon->tagset[selmon->seltags];
++		}
++		focus(NULL);
++		arrange(selmon);
++		if (ISVISIBLE(c)) {
++			restack(selmon);
++			focus(c);
++		}
++	} else{
++		spawn(&((Arg){.v = ((scratchpad *)arg->v)->v}));
++	}
++}
++
+ void
+ unfocus(Client *c, int setfocus)
+ {
+-- 
+2.34.1
+

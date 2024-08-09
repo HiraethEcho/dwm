@@ -266,16 +266,11 @@ static void attach(Client *c);
 static void attachstack(Client *c);
 
 static void buttonpress(XEvent *e);
-static void click_lancher(int x, unsigned int *click, Arg *arg, Monitor *m,
-                          XButtonPressedEvent *ev);
-static void click_sym(int x, unsigned int *click, Arg *arg, Monitor *m,
-                      XButtonPressedEvent *ev);
-static void click_tabs(int x, unsigned int *click, Arg *arg, Monitor *m,
-                       XButtonPressedEvent *ev);
-static void click_status(int x, unsigned int *click, Arg *arg, Monitor *m,
-                         XButtonPressedEvent *ev);
-static void click_tag(int x, unsigned int *click, Arg *arg, Monitor *m,
-                      XButtonPressedEvent *ev);
+static void click_lancher(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
+static void click_sym(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
+static void click_tabs(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
+static void click_status(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
+static void click_tag(int x, unsigned int *click, Arg *arg, Monitor *m, XButtonPressedEvent *ev);
 static void sigstatusbar(const Arg *arg);
 
 static void changefocusopacity(const Arg *arg);
@@ -671,8 +666,6 @@ void applyrules(Client *c) {
       for (m = mons; m && m->num != r->monitor; m = m->next) ;
       if (m)
         c->mon = m;
-      else
-        c->mon = selmon;
     }
   }
   if (ch.res_class)
@@ -930,6 +923,7 @@ void buttonpress(XEvent *e) {
       else
         buttons[i].func(&buttons[i].arg);
     }
+  drawbars();
 }
 
 void changefocusopacity(const Arg *arg) {
@@ -2079,8 +2073,6 @@ void manage(Window w, XWindowAttributes *wa) {
   if (!strcmp(c->name, scratchpadname)) {
     c->mon->tagset[c->mon->seltags] |= c->tags = scratchtag;
     c->isfloating = True;
-    // c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);
-    // c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);
   }
 
   wc.border_width = c->bw;
@@ -2714,7 +2706,7 @@ void sendmon(Client *c, Monitor *m) {
   detachstack(c);
   c->mon = m;
   // c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
-  c->tags = (m->tagset[m->seltags] ? m->tagset[m->seltags] : 1);
+  // c->tags = (m->tagset[m->seltags] ? m->tagset[m->seltags] : 1);
   c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
   c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
   attach(c);
@@ -3149,7 +3141,6 @@ void togglefloating(const Arg *arg) {
 void togglescratch(const Arg *arg) {
   Client *c;
   unsigned int found = 0;
-
   for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next) ;
   if (found) {
     unsigned int newtagset = selmon->tagset[selmon->seltags] ^ scratchtag;
@@ -3185,8 +3176,6 @@ void toggleview(const Arg *arg) {
 
   int i;
 
-  // if (newtagset) {
-  // takepreview();
   selmon->tagset[selmon->seltags] = newtagset;
   if (newtagset == ~0) {
     selmon->pertag->prevtag = selmon->pertag->curtag;
@@ -3689,17 +3678,15 @@ void view(const Arg *arg) {
     view(&((Arg){.ui = 0}));
     return;
   }
-  // takepreview();
   selmon->seltags ^= 1; /* toggle sel tagset */
 
   if (arg->ui & TAGMASK) {
-    selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+    selmon->tagset[selmon->seltags] = arg->ui & TAGMASK; // & TAGMASK kills scratchtag
     selmon->pertag->prevtag = selmon->pertag->curtag;
     if (arg->ui == ~0)
       selmon->pertag->curtag = 0;
     else {
-      for (i = 0; !(arg->ui & 1 << i); i++)
-        ;
+      for (i = 0; !(arg->ui & 1 << i); i++) ;
       selmon->pertag->curtag = i + 1;
     }
   } else if (selmon->tagset[selmon->seltags ^ 1]) {
