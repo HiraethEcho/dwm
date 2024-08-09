@@ -138,9 +138,9 @@ static const unsigned int ulinevoffset = 2; /* how far above the bottom of the b
 
 static const Rule rules[] = {
     /* class, instance, title,        tags mask, isfloating, focusopacity, unfocusopacity,  monitor */
-    // {"st",    NULL,     "scratchpad", 0,         1,          0.8,          0.7,             -1},
+    {"st",    NULL,     "scratchpad", 0,         1,          0.8,          0.7,             -1},
     {"st",    NULL,     "tasks",      0,         1,          0.8,          0.7,             -1},
-    {"Tilda", NULL,     "Tilda",      0,         1,          0.9,          0.8,             -1},
+    // {"Tilda", NULL,     "Tilda",      0,         1,          0.9,          0.8,             -1},
     // {"Gimp",  NULL,     NULL,         0,         1,          1.0,          inactiveopacity, -1},
 };
 
@@ -193,18 +193,12 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = {"dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", gray1, "-nf", cyan, "-sb", cyan, "-sf", gray1, NULL};
 static const char *termcmd[] = {"kitty", NULL};
 
-// static const char scratchpadname[] = "scratchpad";
-// static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40", NULL };
 
 static const Key keys[] = {
-    /* modifier                     key        function        argument */
-    // scratchpads
-    // {MODKEY, XK_minus, scratchpad_show, {0}},
-    // {MODKEY | ShiftMask, XK_minus, scratchpad_hide, {0}},
-    // {MODKEY, XK_equal, scratchpad_remove, {0}},
-
     // spawn and kill client
-    // {Mod4Mask, XK_grave,  togglescratch, {.v = scratchpadcmd}},
+    {Mod4Mask, XK_grave,  togglescratch, {.v = scratchpadcmd}},
     {MODKEY,   XK_p,      spawn,         {.v = dmenucmd}},
     {MODKEY,   XK_Return, spawn,         {.v = termcmd}},
     {MODKEY,   XK_c,      killclient,    {0}},
