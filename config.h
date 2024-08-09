@@ -19,7 +19,7 @@ static const unsigned int gappov = 3; /* vert outer gap between windows and scre
 static int smartgaps = 1; /* 1 means no outer gap when there is only one window */
 
 
-static const unsigned int systraypinning = 1; /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
+static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayspacing = 0; /* systray spacing */
 static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray = 1;             /* 0 means no systray */
@@ -98,11 +98,11 @@ static const char *colors[][3] = {
     [SchemeNorm]     = { "#d8dee9", "#414868", "#d8dee9"},
     [SchemeHid]      = { "#81a1c1", "#24283b", cyan},
     [SchemeEty]      = { "#d8dee9", "#000000", "#d8dee9"},
-    [SchemeSys]      = { "#ffffff", "#ffeaba", cyan},
+    [SchemeSys]      = { "#ffffff", "#81a1c1", cyan},
     [SchemeStatus]   = { "#ffffff", "#49688e", cyan},
     [SchemeSym]      = { "#dfe3ee", "#3b5998", cyan},
     [SchemeTag]      = { "#83848e", "#213438", cyan},
-    [SchemeTitle]    = { "#2a303c", "#81a1c1", "#d8dee9"},
+    [SchemeTitle]    = { "#2a303c", "#ffeaba", "#d8dee9"},
 };
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */

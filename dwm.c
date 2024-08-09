@@ -321,7 +321,6 @@ static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusmon(const Arg *arg);
-// static void focusstack(const Arg *arg);
 static void focusstackvis(const Arg *arg);
 static void focusstackhid(const Arg *arg);
 static void focusstack(int inc, int vis);
@@ -1672,7 +1671,7 @@ void drawbar(Monitor *m) {
     drw_map(drw, m->barwin, 0, 0, m->bw, bh);
   }
 
-  if (m == selmon && m->showextrabar) {
+  if (m->showextrabar) {
     //clean
     drw_setscheme(drw, scheme[SchemeStatus]);
     drw_rect(drw, x, 0, m->ebw, bh, 1, 1);
@@ -1776,11 +1775,9 @@ void focusmon(const Arg *arg) {
     return;
   if ((m = dirtomon(arg->i)) == selmon)
     return;
-  toggleextrabar(NULL);
   unfocus(selmon->sel, 0);
   selmon = m;
   focus(NULL);
-  toggleextrabar(NULL);
 }
 
 void focusstackvis(const Arg *arg) { focusstack(arg->i, 0); }
