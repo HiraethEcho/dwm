@@ -2433,16 +2433,17 @@ void moveresizeedge(const Arg *arg) {
   unsigned int dui;
   Window dummy;
 
+  if (!c || !arg)
+    return;
+
   nx = c->x;
   ny = c->y;
   nw = c->w;
   nh = c->h;
 
-  starty = selmon->showbar && topbar ? bh : 0;
-  bp = selmon->showbar && !topbar ? bh : 0;
+  starty = selmon->showbar && topbar ? bh + 2 * barpad : (selmon->showextrabar && !topbar ? bh + 2 * ebarpad : 0 );
+  bp = selmon->showbar && !topbar ? bh + 2 * barpad : (selmon->showextrabar && topbar ? bh + 2 * ebarpad : 0 );
 
-  if (!c || !arg)
-    return;
   if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
     return;
   if (sscanf((char *)arg->v, "%c", &e) != 1)
