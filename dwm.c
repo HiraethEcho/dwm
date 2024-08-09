@@ -1736,8 +1736,8 @@ void expose(XEvent *e) {
 
   if (ev->count == 0 && (m = wintomon(ev->window))) {
     drawbar(m);
-    if (m == selmon)
-      updatesystray(0);
+    // if (m == selmon)
+    updatesystray(0);
     // if (showsystray && m == systraytomon(m))
     // updatesystray(0);
   }
@@ -1777,7 +1777,6 @@ void focus(Client *c) {
   drawbars();
 }
 
-/* there are some broken focus acquiring clients needing extra handling */
 void focusin(XEvent *e) {
   XFocusChangeEvent *ev = &e->xfocus;
 
@@ -1792,9 +1791,11 @@ void focusmon(const Arg *arg) {
     return;
   if ((m = dirtomon(arg->i)) == selmon)
     return;
+  toggleextrabar(NULL);
   unfocus(selmon->sel, 0);
   selmon = m;
   focus(NULL);
+  toggleextrabar(NULL);
 }
 
 void focusstackvis(const Arg *arg) { focusstack(arg->i, 0); }
@@ -3759,24 +3760,6 @@ void view(const Arg *arg) {
     selmon->pertag->prevtag = selmon->pertag->curtag;
     selmon->pertag->curtag = tmptag;
   }
-  /*
-    if (arg->ui & TAGMASK) {
-      selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
-      selmon->pertag->prevtag = selmon->pertag->curtag;
-
-      if (arg->ui == ~0)
-        selmon->pertag->curtag = 0;
-      else {
-        for (i = 0; !(arg->ui & 1 << i); i++)
-          ;
-        selmon->pertag->curtag = i + 1;
-      }
-    } else {
-      tmptag = selmon->pertag->prevtag;
-      selmon->pertag->prevtag = selmon->pertag->curtag;
-      selmon->pertag->curtag = tmptag;
-    }
-  */
   selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
   selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];
   selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
