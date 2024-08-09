@@ -167,15 +167,6 @@ typedef struct {
 
 typedef struct Monitor Monitor;
 
-typedef struct {
-  // int show;
-  // void (*motion)(const Arg *arg);
-  // int align; // 0 left, 1 mid, 2 right
-  int (*draw)(int x, Monitor *m);
-  void (*click)(int x, unsigned int *click, Arg *arg, Monitor *m,
-                XButtonPressedEvent *ev);
-} BarBlock;
-
 typedef struct Client Client;
 struct Client {
   char name[256];
@@ -202,9 +193,6 @@ typedef struct {
 
 typedef struct Pertag Pertag;
 struct Monitor {
-  /* int previewshow;
-  Window tagwin;
-  Pixmap *tagmap; */
   char ltsymbol[16];
   float mfact;
   int nmaster;
@@ -212,9 +200,19 @@ struct Monitor {
 
   int btw; /* width of tasks portion of bar */
   int bt;  /* number of tasks */
-  // int eby;              /* extra bar geometry */
+
   int bx, bw, by;    /* bar geometry */
   int ebx, eby, ebw; /* extrabar geometry */
+
+  int launchersw;
+  int tagsw;
+  int symw;
+  int midw;
+  int emidw;
+  int statusw;
+  int estatusw;
+  int sysw;
+  int bsysw;
 
   int mx, my, mw, mh; /* screen size */
   int wx, wy, ww, wh; /* window area  */
@@ -340,7 +338,6 @@ static void hidewin(Client *c);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
-// static void killclick(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
 static void maprequest(XEvent *e);
@@ -440,20 +437,6 @@ static char estext[1024];
 // static char validtext[1024];
 // static char validetext[1024];
 
-static int launchersw;
-static int tagsw;
-static int symw;
-static int midw;
-static int emidw;
-static int statusw;
-static int estatusw;
-static int sysw;
-static int bsysw;
-
-static int ebarrw;
-static int ebarlw;
-static int barrw;
-static int barlw;
 
 static int useargb = 0;
 static Visual *visual;
@@ -686,10 +669,11 @@ void applyrules(Client *c) {
       c->tags |= r->tags;
       c->opacity = r->opacity;
       c->unfocusopacity = r->unfocusopacity;
-      for (m = mons; m && m->num != r->monitor; m = m->next)
-        ;
+      for (m = mons; m && m->num != r->monitor; m = m->next) ;
       if (m)
         c->mon = m;
+      else
+        c->mon = selmon;
     }
   }
   if (ch.res_class)
@@ -878,13 +862,11 @@ void click_status(int x, unsigned int *click, Arg *arg, Monitor *m,
 void buttonpress(XEvent *e) {
   unsigned int i, click;
   int x = 0;
-  // int stw;
   Arg arg = {0};
   Client *c;
   Monitor *m;
   XButtonPressedEvent *ev = &e->xbutton;
 
-  // init
   click = ClkRootWin;
 
   // click on focus
@@ -895,35 +877,35 @@ void buttonpress(XEvent *e) {
     focus(NULL);
   }
   x = 0;
-  if (ev->window == selmon->barwin) {
-    if (ev->x < symw) {
+  if (ev->window == m->barwin) {
+    if (ev->x < m->symw) {
       click_sym(x, &click, &arg, m, ev);
     }
-    else if (ev->x < symw + tagsw) {
-      x += symw;
+    else if (ev->x < m->symw + m->tagsw) {
+      x += m->symw;
       click_tag(x, &click, &arg, m, ev);
     }
     else
-      if (ev->x > selmon->ebw - statusw) {
-        x = selmon->ebw - statusw;
+      if (ev->x > m->ebw - m->statusw) {
+        x = m->ebw - m->statusw;
         arg.ui = 1;
         click_status(x, &click, &arg, m, ev);
-      } else if (ev->x < selmon->ebw - statusw - sysw) {
-        x = symw + tagsw;
+      } else if (ev->x < m->ebw - m->statusw - m->sysw) {
+        x = m->symw + m->tagsw;
         click_tabs(x, &click, &arg, m, ev);
       }
-  } else if (ev->window == selmon->extrabarwin) {
-    if (ev->x < launchersw) {
+  } else if (ev->window == m->extrabarwin) {
+    if (ev->x < m->launchersw) {
       click_lancher(x, &click, &arg, m, ev);
     }
-    else if (ev->x < selmon->ebw - estatusw) {
+    else if (ev->x < m->ebw - m->estatusw) {
       if (m->sel) {
         click = ClkTitle;
         arg.v = m->sel;
       } else
         click = ClkEtyTitle;
-    } else if (ev->x > selmon->ebw - estatusw) {
-      x = selmon->ebw - estatusw;
+    } else if (ev->x > m->ebw - m->estatusw) {
+      x = m->ebw - m->estatusw;
       arg.ui = 0;
       click_status(x, &click, &arg, m, ev);
     }
@@ -1413,7 +1395,7 @@ int drawonestatusbar(int x, Monitor *m, char *rawtext) {
   drw_setscheme(drw, scheme[SchemeStatus]);
   drw->scheme[ColFg] = scheme[SchemeStatus][ColFg];
   drw->scheme[ColBg] = scheme[SchemeStatus][ColBg];
-  drw_rect(drw, x, 0, statusw, bh, 1, 1);
+  drw_rect(drw, x, 0, m->statusw, bh, 1, 1);
   x += lrpad / 2;
   /* process status text */
   i = -1;
@@ -1569,9 +1551,14 @@ int drawtags(int x, Monitor *m) {
 }
 
 int drawsystray(int x, Monitor *m) {
-  sysw = getsystraywidth();
-  bsysw = m->ww - x;
-  updatesystray(0);
+  int sysw;
+  if (showsystray && m == systraytomon(m)){
+    sysw = getsystraywidth();
+    updatesystray(0);
+  } else {
+    sysw =1;
+  }
+  m->bsysw = m->ww - x;
   return sysw;
 }
 
@@ -1667,19 +1654,19 @@ void drawbar(Monitor *m) {
     drw_setscheme(drw, scheme[SchemeEty]);
     drw_rect(drw, x, 0, m->bw, bh, 1, 1);
     l = 0;
-    symw = drawsym(l, m);
-    l += symw;
-    tagsw = drawtags(l, m);
-    l += tagsw;
+    m->symw = drawsym(l, m);
+    l += m->symw;
+    m->tagsw = drawtags(l, m);
+    l += m->tagsw;
 
     r = m->bw;
-    statusw = drawstatusbar(r, m);
-    r -= statusw;
-    sysw = drawsystray(r, m);
-    r -= sysw;
+    m->statusw = drawstatusbar(r, m);
+    r -= m->statusw;
+    m->sysw = drawsystray(r, m);
+    r -= m->sysw;
 
-    midw = r - l;
-    x = drawtabs(l, m, midw);
+    m->midw = r - l;
+    x = drawtabs(l, m, m->midw);
 
     XMoveResizeWindow(dpy, m->barwin, m->bx, m->by, m->bw, bh);
     drw_map(drw, m->barwin, 0, 0, m->bw, bh);
@@ -1690,15 +1677,15 @@ void drawbar(Monitor *m) {
     drw_setscheme(drw, scheme[SchemeStatus]);
     drw_rect(drw, x, 0, m->ebw, bh, 1, 1);
     l = 0;
-    launchersw = drawlaunchers(l, m);
-    l += launchersw;
+    m->launchersw = drawlaunchers(l, m);
+    l += m->launchersw;
 
     r = m->ebw;
-    estatusw = drawestatusbar(r, m);
-    r -= estatusw;
+    m->estatusw = drawestatusbar(r, m);
+    r -= m->estatusw;
 
-    emidw = r - l;
-    drawtitle(l, m, emidw);
+    m->emidw = r - l;
+    drawtitle(l, m, m->emidw);
     XMoveResizeWindow(dpy, m->extrabarwin, m->ebx, m->eby, m->ebw, bh);
     drw_map(drw, m->extrabarwin, 0, 0, m->ebw, bh);
   }
@@ -1708,8 +1695,6 @@ void drawbars(void) {
   Monitor *m;
   for (m = mons; m; m = m->next)
     drawbar(m);
-  // if (showsystray && !systraypinning)
-  // updatesystray(0);
 }
 
 void enternotify(XEvent *e) {
@@ -1737,9 +1722,9 @@ void expose(XEvent *e) {
   if (ev->count == 0 && (m = wintomon(ev->window))) {
     drawbar(m);
     // if (m == selmon)
-    updatesystray(0);
-    // if (showsystray && m == systraytomon(m))
     // updatesystray(0);
+    if (showsystray && m == systraytomon(m))
+    updatesystray(0);
   }
 }
 
@@ -2181,36 +2166,6 @@ void motionnotify(XEvent *e) {
   static Monitor *mon = NULL;
   Monitor *m;
   XMotionEvent *ev = &e->xmotion;
-  /*
-    unsigned int i, x;
-    if (ev->window == selmon->extrabarwin) {
-      i = 0;
-      x = symw;
-      do
-        x += TEXTW(tags[i]);
-      while (ev->x >= x && ++i < LENGTH(tags));
-    // FIXME when hovering the mouse over the tags and we view the tag, the
-    preview window get's in the preview shot if (i < LENGTH(tags)) { if
-    (selmon->previewshow != (i + 1)
-        && !(selmon->tagset[selmon->seltags] & 1 << i)) {
-          selmon->previewshow = i + 1;
-          // showtagpreview(i);
-        } else if (selmon->tagset[selmon->seltags] & 1 << i) {
-          selmon->previewshow = 0;
-          XUnmapWindow(dpy, selmon->tagwin);
-        }
-      } else if (selmon->previewshow) {
-        selmon->previewshow = 0;
-        XUnmapWindow(dpy, selmon->tagwin);
-      }
-    } else if (ev->window == selmon->tagwin) {
-      selmon->previewshow = 0;
-      XUnmapWindow(dpy, selmon->tagwin);
-    } else if (selmon->previewshow) {
-      selmon->previewshow = 0;
-      XUnmapWindow(dpy, selmon->tagwin);
-    }
-  */
   if (ev->window != root)
     return;
   if ((m = recttomon(ev->x_root, ev->y_root, 1, 1)) != mon && mon) {
@@ -3352,7 +3307,7 @@ void updatebars(void) {
   for (m = mons; m; m = m->next) {
     if (!m->barwin) {
       w = m->ww;
-      if (showsystray)
+      if (showsystray && m == systraytomon(m))
         w -= getsystraywidth();
       m->barwin = XCreateWindow(dpy, root, m->wx, m->by, m->ww, bh, 0, depth,
                                 InputOutput, visual,
@@ -3611,13 +3566,14 @@ void updatesystray(int updatebar) {
   XSetWindowAttributes wa;
   XWindowChanges wc;
   Client *i;
-  Monitor *m = selmon;
+  // Monitor *m = selmon;
+  Monitor *m = systraytomon(NULL);
   unsigned int x = m->mx + m->mw;
   unsigned int w = 1;
 
   if (!showsystray)
     return;
-  x -= bsysw;
+  x -= m->bsysw;
 
   if (!systray) {
     /* init systray */
@@ -3666,16 +3622,14 @@ void updatesystray(int updatebar) {
     XMapRaised(dpy, i->win);
     w += systrayspacing;
     i->x = w;
-    XMoveResizeWindow(dpy, i->win, i->x, 0, i->w,
-                      i->h); // position of each window of systray icons
+    XMoveResizeWindow(dpy, i->win, i->x, 0, i->w, i->h); // position of each window of systray icons
     w += i->w;
     if (i->mon != m)
       i->mon = m;
   }
   w = w ? w + systrayspacing : 1;
   x -= w;
-  XMoveResizeWindow(dpy, systray->win, x, m->by, w,
-                    bh); // position of the whole systray window
+  XMoveResizeWindow(dpy, systray->win, x, m->by, w, bh); // position of the whole systray window
   wc.x = x;
   wc.y = m->by;
   wc.width = w;
