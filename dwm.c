@@ -1600,10 +1600,6 @@ int drawtitle(int x, Monitor *m, int emidw) {
     drw_setscheme(drw, scheme[SchemeEty]);
     drw_rect(drw, x, 0, emidw, bh, 1, 1);
   }
-  // } else {
-  //     drw_setscheme(drw, scheme[SchemeEty]);
-  //     drw_rect(drw, x, 0, emidw, bh, 1, 1);
-  // }
   x += emidw;
   return x;
 }
@@ -1689,7 +1685,7 @@ void drawbar(Monitor *m) {
     drw_map(drw, m->barwin, 0, 0, m->bw, bh);
   }
 
-  if (m->showextrabar) {
+  if (m == selmon && m->showextrabar) {
     //clean
     drw_setscheme(drw, scheme[SchemeStatus]);
     drw_rect(drw, x, 0, m->ebw, bh, 1, 1);
@@ -3354,7 +3350,7 @@ void updatebars(void) {
   for (m = mons; m; m = m->next) {
     if (!m->barwin) {
       w = m->ww;
-      if (showsystray && m == systraytomon(m))
+      if (showsystray)
         w -= getsystraywidth();
       m->barwin = XCreateWindow(dpy, root, m->wx, m->by, m->ww, bh, 0, depth,
                                 InputOutput, visual,
@@ -3362,7 +3358,7 @@ void updatebars(void) {
                                     CWBorderPixel | CWColormap | CWEventMask,
                                 &wa);
       XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
-      if (showsystray && m == systraytomon(m))
+      if (showsystray)
         XMapRaised(dpy, systray->win);
       XMapRaised(dpy, m->barwin);
       XSetClassHint(dpy, m->barwin, &ch);
@@ -3613,7 +3609,7 @@ void updatesystray(int updatebar) {
   XSetWindowAttributes wa;
   XWindowChanges wc;
   Client *i;
-  Monitor *m = systraytomon(NULL);
+  Monitor *m = selmon;
   unsigned int x = m->mx + m->mw;
   unsigned int w = 1;
 
