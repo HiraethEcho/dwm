@@ -3268,7 +3268,7 @@ void toggleview(const Arg *arg) {
 }
 
 void togglewin(const Arg *arg) {
-  Client *c = (Client *)arg->v;
+  Client *c = arg->v ? (Client *)arg->v : selmon->sel;
   if (c == selmon->sel) {
     hidewin(c);
     focus(NULL);
