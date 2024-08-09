@@ -12,10 +12,10 @@ static const unsigned int winModKey = 0x85; //win
 static const unsigned int tabCycleKey = 0x17;
 static const unsigned int tabCycleKeyInv = 0x32;
 
-static const unsigned int gappih = 2; /* horiz inner gap between windows */
-static const unsigned int gappiv = 2; /* vert inner gap between windows */
-static const unsigned int gappoh = 2; /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov = 2; /* vert outer gap between windows and screen edge */
+static const unsigned int gappih = 3; /* horiz inner gap between windows */
+static const unsigned int gappiv = 3; /* vert inner gap between windows */
+static const unsigned int gappoh = 3; /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov = 3; /* vert outer gap between windows and screen edge */
 static int smartgaps = 1; /* 1 means no outer gap when there is only one window */
 
 
@@ -26,7 +26,7 @@ static const int showsystray = 1;             /* 0 means no systray */
 
 static const int showbar = 1;                 /* 0 means no bar */
 static const int showextrabar = 1;                 /* 0 means no bar */
-static const int topbar = 0;                  /* 0 means bottom bar */
+static const int topbar = 1;                  /* 0 means bottom bar */
 
 static const int isfixedtabwidth = 1; 
 static const char *tabWidth = "                           ";
@@ -157,7 +157,7 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 static const Layout layouts[] = {
     /* symbol     arrange function */
     {"[M]", monocle},
-    {":::", gaplessgrid},
+    {"---", horizgrid},
     {"|M|", centeredmaster},
     {"><>", NULL}, /* no layout function means floating behavior */
     {"[]=", tile}, /* first entry is default */

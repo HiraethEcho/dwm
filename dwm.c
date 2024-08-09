@@ -894,34 +894,29 @@ void buttonpress(XEvent *e) {
     selmon = m;
     focus(NULL);
   }
+  x = 0;
   if (ev->window == selmon->barwin) {
-    if (ev->x < launchersw) {
-      x = 0;
-      // click = ClkLancher;
-      click_lancher(x, &click, &arg, m, ev);
-    } else
-      // if (ev->x < buttonw + tagsw){
-      //
-      // }
-      // if (ev->x > selmon->ww - statusw - sysw) {
-      if (ev->x > selmon->bw - statusw) {
-        x = selmon->bw - statusw;
-        // click = ClkStatusText;
-        // click_status(x,e,stext);
+    if (ev->x < symw) {
+      click_sym(x, &click, &arg, m, ev);
+    }
+    else if (ev->x < symw + tagsw) {
+      x += symw;
+      click_tag(x, &click, &arg, m, ev);
+    }
+    else
+      if (ev->x > selmon->ebw - statusw) {
+        x = selmon->ebw - statusw;
         arg.ui = 1;
         click_status(x, &click, &arg, m, ev);
-      } else if (ev->x < selmon->bw - statusw - sysw) {
-        x = launchersw;
+      } else if (ev->x < selmon->ebw - statusw - sysw) {
+        x = symw + tagsw;
         click_tabs(x, &click, &arg, m, ev);
       }
   } else if (ev->window == selmon->extrabarwin) {
-    if (ev->x < symw) {
-      x = 0;
-      click_sym(x, &click, &arg, m, ev);
-    } else if (ev->x < symw + tagsw) {
-      x += symw;
-      click_tag(x, &click, &arg, m, ev);
-    } else if (ev->x < selmon->ebw - estatusw) {
+    if (ev->x < launchersw) {
+      click_lancher(x, &click, &arg, m, ev);
+    }
+    else if (ev->x < selmon->ebw - estatusw) {
       if (m->sel) {
         click = ClkTitle;
         arg.v = m->sel;
@@ -929,14 +924,10 @@ void buttonpress(XEvent *e) {
         click = ClkEtyTitle;
     } else if (ev->x > selmon->ebw - estatusw) {
       x = selmon->ebw - estatusw;
-      // click = ClkStatusText;
-      // click_status(x,e,estext);
       arg.ui = 0;
       click_status(x, &click, &arg, m, ev);
     }
   } else if ((c = wintoclient(ev->window))) {
-    // focus(c);
-    // restack(selmon);
     if (focusonwheel || (ev->button != Button4 && ev->button != Button5))
       focus(c);
     XAllowEvents(dpy, ReplayPointer, CurrentTime);
@@ -1675,17 +1666,15 @@ void drawbar(Monitor *m) {
   int x = 0;
   int i;
   int l, r;
-  // unsigned int w = m->ww;
-  // if (showsystray && m == systraytomon(m) && !systrayonleft)
-  // sysw = getsystraywidth();
-  // resizebarwin(m);
   if (m->showbar) {
     // clean
     drw_setscheme(drw, scheme[SchemeEty]);
     drw_rect(drw, x, 0, m->bw, bh, 1, 1);
     l = 0;
-    launchersw = drawlaunchers(l, m);
-    l += launchersw;
+    symw = drawsym(l, m);
+    l += symw;
+    tagsw = drawtags(l, m);
+    l += tagsw;
 
     r = m->bw;
     statusw = drawstatusbar(r, m);
@@ -1702,12 +1691,9 @@ void drawbar(Monitor *m) {
 
   if (m->showextrabar) {
     l = 0;
-    symw = drawsym(l, m);
-    l += symw;
-    tagsw = drawtags(l, m);
-    l += tagsw;
+    launchersw = drawlaunchers(l, m);
+    l += launchersw;
 
-    // r = m->ww;
     r = m->ebw;
     estatusw = drawestatusbar(r, m);
     r -= estatusw;
