@@ -1690,6 +1690,9 @@ void drawbar(Monitor *m) {
   }
 
   if (m->showextrabar) {
+    //clean
+    drw_setscheme(drw, scheme[SchemeStatus]);
+    drw_rect(drw, x, 0, m->ebw, bh, 1, 1);
     l = 0;
     launchersw = drawlaunchers(l, m);
     l += launchersw;
@@ -3349,25 +3352,10 @@ void updatebars(void) {
                                            PointerMotionMask};
   XClassHint ch = {"dwm", "dwm"};
   for (m = mons; m; m = m->next) {
-    /*
-        if (!m->tagwin) {
-          m->tagwin = XCreateWindow(dpy, root, m->wx, m->wy, m->mw /
-       scalepreview, m->mh / scalepreview, 0, DefaultDepth(dpy, screen),
-       CopyFromParent, DefaultVisual(dpy, screen),
-       CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa); XDefineCursor(dpy,
-       m->tagwin, cursor[CurNormal]->cursor); XUnmapWindow(dpy, m->tagwin);
-        } */
-    // if (m->barwin)
-    //   continue;
-
     if (!m->barwin) {
       w = m->ww;
       if (showsystray && m == systraytomon(m))
         w -= getsystraywidth();
-      // m->barwin = XCreateWindow(
-      //     dpy, root, m->wx, m->by, w, bh, 0, DefaultDepth(dpy, screen),
-      //     CopyFromParent, DefaultVisual(dpy, screen),
-      //     CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
       m->barwin = XCreateWindow(dpy, root, m->wx, m->by, m->ww, bh, 0, depth,
                                 InputOutput, visual,
                                 CWOverrideRedirect | CWBackPixel |
@@ -3380,10 +3368,6 @@ void updatebars(void) {
       XSetClassHint(dpy, m->barwin, &ch);
     }
     if (!m->extrabarwin) {
-      // m->extrabarwin = XCreateWindow(dpy, root, m->wx, m->eby, m->ww, bh, 0,
-      // DefaultDepth(dpy, screen),
-      //     CopyFromParent, DefaultVisual(dpy, screen),
-      //     CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
       m->extrabarwin = XCreateWindow(
           dpy, root, m->ebx, m->eby, m->ebw, bh, 0, depth, InputOutput, visual,
           CWOverrideRedirect | CWBackPixel | CWBorderPixel | CWColormap |
@@ -3573,8 +3557,6 @@ void updatestatus(void) {
       strncpy(estext, e, sizeof(estext) - 1);
     } else
       estext[0] = '\0';
-    // copyvalidchars(validtext,stext);
-    // copyvalidchars(validetext,estext);
   }
   drawbar(selmon);
   // updatesystray(1);
@@ -3633,15 +3615,10 @@ void updatesystray(int updatebar) {
   Client *i;
   Monitor *m = systraytomon(NULL);
   unsigned int x = m->mx + m->mw;
-  // FIX: length stext
-  // unsigned int sw = TEXTW(stext) - lrpad + systrayspacing;
-  // unsigned int xsys = statusw - lrpad + systrayspacing;
   unsigned int w = 1;
 
   if (!showsystray)
     return;
-  // if (systrayonleft)
-  // x -= xsys + lrpad / 2;
   x -= bsysw;
 
   if (!systray) {
