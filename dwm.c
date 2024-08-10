@@ -2707,8 +2707,8 @@ void sendmon(Client *c, Monitor *m) {
   c->mon = m;
   // c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
   // c->tags = (m->tagset[m->seltags] ? m->tagset[m->seltags] : 1);
-  c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
-  c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
+  c->x = c->mon->wx + (c->mon->ww - WIDTH(c)) / 2;
+  c->y = c->mon->wy + (c->mon->wh - HEIGHT(c)) / 2;
   attach(c);
   attachstack(c);
   focus(NULL);
@@ -3132,9 +3132,9 @@ void togglefloating(const Arg *arg) {
     resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
            selmon->sel->h, 0);
   selmon->sel->x =
-      selmon->sel->mon->mx + (selmon->sel->mon->mw - WIDTH(selmon->sel)) / 2;
+      selmon->sel->mon->wx + (selmon->sel->mon->ww - WIDTH(selmon->sel)) / 2;
   selmon->sel->y =
-      selmon->sel->mon->my + (selmon->sel->mon->mh - HEIGHT(selmon->sel)) / 2;
+      selmon->sel->mon->wy + (selmon->sel->mon->wh - HEIGHT(selmon->sel)) / 2;
   arrange(selmon);
 }
 
