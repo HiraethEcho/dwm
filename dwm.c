@@ -1724,8 +1724,7 @@ void expose(XEvent *e) {
 
 void focus(Client *c) {
   if (!c || !ISVISIBLE(c))
-    for (c = selmon->stack; c && (!ISVISIBLE(c) || HIDDEN(c)); c = c->snext)
-      ;
+    for (c = selmon->stack; c && (!ISVISIBLE(c) || HIDDEN(c)); c = c->snext);
   if (selmon->sel && selmon->sel != c) {
     unfocus(selmon->sel, 0);
 
@@ -3124,19 +3123,20 @@ void toggletopbar(const Arg *arg) {
 }
 
 void togglefloating(const Arg *arg) {
-  if (!selmon->sel)
+  Client *c = arg->v ? (Client *)arg->v : selmon->sel;
+  if (!c)
     return;
-  if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
+  if (c->isfullscreen) /* no support for fullscreen windows */
     return;
-  selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
-  if (selmon->sel->isfloating)
-    // resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w, selmon->sel->h, 0);
-    resize(selmon->sel, selmon->sel->x, selmon->sel->y, WIDTH(selmon->sel) / 2 , HEIGHT(selmon->sel) / 2, 0);
-  selmon->sel->x =
-      selmon->sel->mon->wx + (selmon->sel->mon->ww - WIDTH(selmon->sel)) / 2;
-  selmon->sel->y =
-      selmon->sel->mon->wy + (selmon->sel->mon->wh - HEIGHT(selmon->sel)) / 2;
-  arrange(selmon);
+  c->isfloating = !c->isfloating || c->isfixed;
+  if (c->isfloating)
+    // resize(c, c->x, c->y, c->w, c->h, 0);
+    resize(c, c->x, c->y, WIDTH(c) / 2 , HEIGHT(c) / 2, 0);
+  c->x =
+      c->mon->wx + (c->mon->ww - WIDTH(c)) / 2;
+  c->y =
+      c->mon->wy + (c->mon->wh - HEIGHT(c)) / 2;
+  arrange(c->mon);
 }
 
 void sendtoscratch(const Arg *arg) {
