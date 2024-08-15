@@ -904,8 +904,10 @@ void buttonpress(XEvent *e) {
       click_status(x, &click, &arg, m, ev);
     }
   } else if ((c = wintoclient(ev->window))) {
-    if (focusonwheel || (ev->button != Button4 && ev->button != Button5))
+    if (focusonwheel || (ev->button != Button4 && ev->button != Button5)){
       focus(c);
+      XRaiseWindow(dpy, c->win);
+    }
     XAllowEvents(dpy, ReplayPointer, CurrentTime);
     click = ClkClientWin;
   }
@@ -1108,14 +1110,6 @@ void clientmessage(XEvent *e) {
   } else if (cme->message_type == netatom[NetActiveWindow]) {
     if (c != selmon->sel && !c->isurgent)
       seturgent(c, 1);
-    // for (i = 0; i < LENGTH(tags) && !((1 << i) & c->tags); i++) ;
-    // if (i < LENGTH(tags)) {
-    //   const Arg a = {.ui = 1 << i};
-    //   selmon = c->mon;
-    //   view(&a);
-    //   focus(c);
-    //   restack(selmon);
-    // }
   }
 }
 
@@ -1753,9 +1747,6 @@ void focus(Client *c) {
     XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
   }
   selmon->sel = c;
-/* This doesn't work
-  if (c)
-    XRaiseWindow(dpy, c->win); */
   drawbars();
 }
 
@@ -1790,8 +1781,7 @@ void focusstackhid(const Arg *arg) { focusstack(arg->i, 1); }
 
 void focusstack(int inc, int hid) {
   Client *c = NULL, *i;
-  // if no client selected AND exclude hidden client; if client selected but
-  // fullscreened
+  // if no client selected AND exclude hidden client; if client selected but fullscreened
   if ((!selmon->sel && !hid) ||
       (selmon->sel && selmon->sel->isfullscreen && lockfullscreen))
     return;
@@ -1825,6 +1815,8 @@ void focusstack(int inc, int hid) {
       showwin(c);
       c->mon->hidsel = 1;
     }
+    // raisewin(&(Arg){.v = &c});
+    XRaiseWindow(dpy, c->win);
   }
 }
 
@@ -2245,10 +2237,10 @@ void moveresize(const Arg *arg) {
 
   if (!c || !arg)
     return;
-  // if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
-  //  return;
   if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
-    togglefloating(NULL);
+   return;
+  // if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
+  //   togglefloating(NULL);
 
   if (sscanf((char *)arg->v, "%d%c %d%c %d%c %d%c", &x, &xAbs, &y, &yAbs, &w,
              &wAbs, &h, &hAbs) != 8)
@@ -2583,8 +2575,8 @@ void restack(Monitor *m) {
   drawbar(m);
   if (!m->sel)
     return;
-  // if (m->sel->isfloating || !m->lt[m->sellt]->arrange)
-  XRaiseWindow(dpy, m->sel->win);
+  if (m->sel->isfloating || !m->lt[m->sellt]->arrange)
+    XRaiseWindow(dpy, m->sel->win);
   if (m->lt[m->sellt]->arrange) {
     wc.stack_mode = Below;
     wc.sibling = m->barwin;
