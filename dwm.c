@@ -3129,8 +3129,8 @@ void togglefloating(const Arg *arg) {
     return;
   selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
   if (selmon->sel->isfloating)
-    resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
-           selmon->sel->h, 0);
+    // resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w, selmon->sel->h, 0);
+    resize(selmon->sel, selmon->sel->x, selmon->sel->y, WIDTH(selmon->sel) / 2 , HEIGHT(selmon->sel) / 2, 0);
   selmon->sel->x =
       selmon->sel->mon->wx + (selmon->sel->mon->ww - WIDTH(selmon->sel)) / 2;
   selmon->sel->y =
@@ -3485,6 +3485,7 @@ void updatesizehints(Client *c) {
 }
 
 void updatestatus(void) {
+	Monitor* m;
   if (!gettextprop(root, XA_WM_NAME, stext, sizeof(stext))) {
     strcpy(stext, "dwm");
     estext[0] = '\0';
@@ -3497,7 +3498,8 @@ void updatestatus(void) {
     } else
       estext[0] = '\0';
   }
-  drawbar(selmon);
+	for(m = mons; m; m = m->next)
+    drawbar(m);
   // updatesystray(1);
 }
 
