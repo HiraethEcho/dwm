@@ -385,6 +385,7 @@ static void toggleextrabar(const Arg *arg);
 static void toggletopbar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void togglescratch(const Arg *arg);
+static void sendtoscratch(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void togglewin(const Arg *arg);
@@ -3136,6 +3137,14 @@ void togglefloating(const Arg *arg) {
   selmon->sel->y =
       selmon->sel->mon->wy + (selmon->sel->mon->wh - HEIGHT(selmon->sel)) / 2;
   arrange(selmon);
+}
+
+void sendtoscratch(const Arg *arg) {
+  Client *c = arg->v ? (Client *)arg->v : selmon->sel;
+  if (!c)
+    return;
+  c->tags = scratchtag;
+  c->isfloating = True;
 }
 
 void togglescratch(const Arg *arg) {
