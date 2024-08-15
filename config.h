@@ -252,6 +252,8 @@ static const Key keys[] = {
     {MODKEY,           XK_d,     setlayout,      {.v = &layouts[5]}},
     {MODKEY,           XK_f,     setlayout,      {.v = &layouts[0]}},
     {MODKEY,           XK_g,     setlayout,      {.v = &layouts[1]}},
+
+    {MODKEY|ShiftMask,  XK_f,     raisewin,       {0}},
     // { MODKEY|ShiftMask,          XK_comma,  cyclelayout,    {.i =
     // -1 } }, { MODKEY|ShiftMask,           XK_period, cyclelayout,    {.i = +1
     // } },
@@ -336,7 +338,7 @@ static const Button buttons[] = {
 
     {ClkTab,        0,                Button1, togglewin,          {0}},
     {ClkTab,        0,                Button2, killclient,         {0}},
-    {ClkTab,        0,                Button3, zoom,               {0}},
+    {ClkTab,        0,                Button3, togglefloating,     {0}},
     {ClkTab,        0,                Button4, changefocusopacity, {.f = +0.025}},
     {ClkTab,        0,                Button5, changefocusopacity, {.f = -0.025}},
     {ClkEtyTab,     0,                Button1, spawn,              SHCMD("rofi_quickapps")},
@@ -350,6 +352,7 @@ static const Button buttons[] = {
     {ClkTitle,      0,                Button2, killclient,         {0}},
     {ClkTitle,      0,                Button4, changefocusopacity, {.f = +0.025}},
     {ClkTitle,      0,                Button5, changefocusopacity, {.f = -0.025}},
+    {ClkTitle,      MODKEY,           Button1, raisewin,           {0}},
 
     {ClkEtyTitle,   0,                Button1, spawn,              SHCMD("rofi_quickapps")},
     {ClkEtyTitle,   0,                Button2, spawn,              SHCMD("rofi -show run")},

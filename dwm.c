@@ -384,6 +384,7 @@ static void togglebar(const Arg *arg);
 static void toggleextrabar(const Arg *arg);
 static void toggletopbar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void raisewin(const Arg *arg);
 static void togglescratch(const Arg *arg);
 static void sendtoscratch(const Arg *arg);
 static void toggletag(const Arg *arg);
@@ -1752,7 +1753,16 @@ void focus(Client *c) {
     XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
   }
   selmon->sel = c;
+/* This doesn't work
+  if (c)
+    XRaiseWindow(dpy, c->win); */
   drawbars();
+}
+
+void raisewin (const Arg *arg){
+  Client *c = arg->v ? (Client *)arg->v : selmon->sel;
+  if (c)
+    XRaiseWindow(dpy, c->win);
 }
 
 void focusin(XEvent *e) {
@@ -2092,8 +2102,8 @@ void manage(Window w, XWindowAttributes *wa) {
   grabbuttons(c, 0);
   if (!c->isfloating)
     c->isfloating = c->oldstate = trans != None || c->isfixed;
-  if (c->isfloating)
-    XRaiseWindow(dpy, c->win);
+  // if (c->isfloating)
+  //   XRaiseWindow(dpy, c->win);
   attach(c);
   attachstack(c);
   XChangeProperty(dpy, root, netatom[NetClientList], XA_WINDOW, 32,
@@ -2222,79 +2232,7 @@ void movemouse(const Arg *arg) {
     focus(NULL);
   }
 }
-/*
-void showtagpreview(unsigned int i) {
-  if (!selmon->previewshow || !selmon->tagmap[i]) {
-    XUnmapWindow(dpy, selmon->tagwin);
-    return;
-  }
 
-  XSetWindowBackgroundPixmap(dpy, selmon->tagwin, selmon->tagmap[i]);
-  XCopyArea(dpy, selmon->tagmap[i], selmon->tagwin, drw->gc, 0, 0,
-      selmon->mw / scalepreview, selmon->mh / scalepreview,
-      0, 0);
-  XSync(dpy, False);
-  XMapRaised(dpy, selmon->tagwin);
-}
-
-void takepreview(void) {
-  Client *c;
-  Imlib_Image image;
-  unsigned int occ = 0, i;
-
-  for (c = selmon->clients; c; c = c->next)
-    occ |= c->tags;
-    //occ |= c->tags == 255 ? 0 : c->tags;
-
-  for (i = 0; i < LENGTH(tags); i++) {
-    // searching for tags that are occupied && selected
-    if (!(occ & 1 << i) || !(selmon->tagset[selmon->seltags] & 1 << i))
-      continue;
-
-      // tagmap exist, clean it
-    if (selmon->tagmap[i]) {
-      XFreePixmap(dpy, selmon->tagmap[i]);
-      selmon->tagmap[i] = 0;
-    }
-
-    // try to unmap the window so it doesn't show the preview on the preview
-    selmon->previewshow = 0;
-    XUnmapWindow(dpy, selmon->tagwin);
-    XSync(dpy, False);
-
-    if (!(image = imlib_create_image(sw, sh))) {
-      fprintf(stderr, "dwm: imlib: failed to create image, skipping.");
-      continue;
-    }
-    imlib_context_set_image(image);
-    imlib_context_set_display(dpy);
-    // uncomment if using alpha patch
-    imlib_image_set_has_alpha(1);
-    imlib_context_set_blend(0);
-    imlib_context_set_visual(visual);
-    imlib_context_set_visual(DefaultVisual(dpy, screen));
-    imlib_context_set_drawable(root);
-
-    if (!previewbar)
-      imlib_copy_drawable_to_image(0, selmon->wx, selmon->wy, selmon->ww,
-selmon->wh, 0, 0, 1); else imlib_copy_drawable_to_image(0, selmon->mx,
-selmon->my, selmon->mw ,selmon->mh, 0, 0, 1); selmon->tagmap[i] =
-XCreatePixmap(dpy, selmon->tagwin, selmon->mw / scalepreview, selmon->mh /
-scalepreview, DefaultDepth(dpy, screen));
-    imlib_context_set_drawable(selmon->tagmap[i]);
-    imlib_render_image_part_on_drawable_at_size(0, 0, selmon->mw, selmon->mh, 0,
-0, selmon->mw / scalepreview, selmon->mh / scalepreview); imlib_free_image();
-  }
-}
-
-void previewtag(const Arg *arg) {
-  if (selmon->previewshow != (arg->ui + 1))
-    selmon->previewshow = arg->ui + 1;
-  else
-    selmon->previewshow = 0;
-  showtagpreview(arg->ui);
-}
-*/
 void moveresize(const Arg *arg) {
   /* only floating windows can be moved */
   Client *c;
@@ -2645,8 +2583,8 @@ void restack(Monitor *m) {
   drawbar(m);
   if (!m->sel)
     return;
-  if (m->sel->isfloating || !m->lt[m->sellt]->arrange)
-    XRaiseWindow(dpy, m->sel->win);
+  // if (m->sel->isfloating || !m->lt[m->sellt]->arrange)
+  XRaiseWindow(dpy, m->sel->win);
   if (m->lt[m->sellt]->arrange) {
     wc.stack_mode = Below;
     wc.sibling = m->barwin;
@@ -3013,8 +2951,8 @@ void showhide(Client *c) {
   if (ISVISIBLE(c)) {
     /* show clients top down */
     XMoveWindow(dpy, c->win, c->x, c->y);
-    if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) &&
-        !c->isfullscreen)
+    if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) && !c->isfullscreen)
+    // if (!c->isfullscreen)
       resize(c, c->x, c->y, c->w, c->h, 0);
     showhide(c->snext);
   } else {
@@ -3130,12 +3068,10 @@ void togglefloating(const Arg *arg) {
     return;
   c->isfloating = !c->isfloating || c->isfixed;
   if (c->isfloating)
+    resize(c, c->x, c->y, WIDTH(c) * 2 / 3 , HEIGHT(c) * 2 / 3, 0);
     // resize(c, c->x, c->y, c->w, c->h, 0);
-    resize(c, c->x, c->y, WIDTH(c) / 2 , HEIGHT(c) / 2, 0);
-  c->x =
-      c->mon->wx + (c->mon->ww - WIDTH(c)) / 2;
-  c->y =
-      c->mon->wy + (c->mon->wh - HEIGHT(c)) / 2;
+  c->x = c->mon->wx + (c->mon->ww - WIDTH(c)) / 2;
+  c->y = c->mon->wy + (c->mon->wh - HEIGHT(c)) / 2;
   arrange(c->mon);
 }
 
