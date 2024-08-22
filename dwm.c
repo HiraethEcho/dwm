@@ -2179,6 +2179,8 @@ void movemouse(const Arg *arg) {
     return;
   if (c->isfullscreen) /* no support moving fullscreen windows by mouse */
     return;
+  if (!c->isfloating)
+    return;
   restack(selmon);
   ocx = c->x;
   ocy = c->y;
@@ -2507,6 +2509,8 @@ void resizemouse(const Arg *arg) {
   if (!(c = selmon->sel))
     return;
   if (c->isfullscreen) /* no support resizing fullscreen windows by mouse */
+    return;
+  if (!c->isfloating)
     return;
   restack(selmon);
   ocx = c->x;
