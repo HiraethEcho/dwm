@@ -198,11 +198,11 @@ static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40
 
 static const Key keys[] = {
     // spawn and kill client
-    {Mod4Mask, XK_grave,  togglescratch, {.v = scratchpadcmd}},
+    {Mod4Mask,           XK_grave,  togglescratch, {.v = scratchpadcmd}},
     {Mod4Mask|ShiftMask, XK_grave,  sendtoscratch, {0}},
-    {MODKEY,   XK_p,      spawn,         {.v = dmenucmd}},
-    {MODKEY,   XK_Return, spawn,         {.v = termcmd}},
-    {MODKEY,   XK_c,      killclient,    {0}},
+    {MODKEY,             XK_p,      spawn,         {.v = dmenucmd}},
+    {MODKEY,             XK_Return, spawn,         {.v = termcmd}},
+    {MODKEY,             XK_c,      killclient,    {0}},
     // {MODKEY, XK_Escape, killclient, {0}},
 
     // focus and hide clients
@@ -225,7 +225,7 @@ static const Key keys[] = {
     // move clients
     {Mod4Mask,           XK_j,      movestack,            {.i = +1}},
     {Mod4Mask,           XK_k,      movestack,            {.i = -1}},
-    {Mod4Mask,           XK_Return, zoom,                 {0}},
+    {Mod4Mask,           XK_Return, movecenter,                 {0}},
     // opacity
     {MODKEY | ShiftMask, XK_a,      changefocusopacity,   {.f = +0.025}},
     {MODKEY | ShiftMask, XK_s,      changefocusopacity,   {.f = -0.025}},
@@ -338,7 +338,7 @@ static const Button buttons[] = {
 
     {ClkTab,        0,                Button1, togglewin,          {0}},
     {ClkTab,        0,                Button2, killclient,         {0}},
-    {ClkTab,        0,                Button3, togglefloating,     {0}},
+    {ClkTab,        0,                Button3, movecenter,     {0}},
     {ClkTab,        0,                Button4, changefocusopacity, {.f = +0.025}},
     {ClkTab,        0,                Button5, changefocusopacity, {.f = -0.025}},
     {ClkTab,        MODKEY,           Button1, raisewin,           {0}},
@@ -349,7 +349,7 @@ static const Button buttons[] = {
     {ClkEtyTab,     0,                Button5, spawn,              SHCMD("xbacklight -dec 5; pkill -SIGUSR1 dwmblocks")},
 
     {ClkTitle,      0,                Button1, togglewin,          {0}},
-    {ClkTitle,      0,                Button3, togglefloating,     {0}},
+    {ClkTitle,      0,                Button3, movecenter,     {0}},
     {ClkTitle,      0,                Button2, killclient,         {0}},
     {ClkTitle,      0,                Button4, changefocusopacity, {.f = +0.025}},
     {ClkTitle,      0,                Button5, changefocusopacity, {.f = -0.025}},

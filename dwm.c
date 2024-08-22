@@ -384,6 +384,7 @@ static void togglebar(const Arg *arg);
 static void toggleextrabar(const Arg *arg);
 static void toggletopbar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void movecenter(const Arg *arg);
 static void raisewin(const Arg *arg);
 static void togglescratch(const Arg *arg);
 static void sendtoscratch(const Arg *arg);
@@ -3052,7 +3053,7 @@ void toggletopbar(const Arg *arg) {
   arrange(selmon);
 }
 
-void togglefloating(const Arg *arg) {
+void movecenter(const Arg *arg) {
   Client *c = arg->v ? (Client *)arg->v : selmon->sel;
   if (!c)
     return;
@@ -3061,9 +3062,20 @@ void togglefloating(const Arg *arg) {
   c->isfloating = !c->isfloating || c->isfixed;
   if (c->isfloating)
     resize(c, c->x, c->y, WIDTH(c) * 2 / 3 , HEIGHT(c) * 2 / 3, 0);
-    // resize(c, c->x, c->y, c->w, c->h, 0);
   c->x = c->mon->wx + (c->mon->ww - WIDTH(c)) / 2;
   c->y = c->mon->wy + (c->mon->wh - HEIGHT(c)) / 2;
+  arrange(c->mon);
+}
+
+void togglefloating(const Arg *arg) {
+  Client *c = arg->v ? (Client *)arg->v : selmon->sel;
+  if (!c)
+    return;
+  if (c->isfullscreen) /* no support for fullscreen windows */
+    return;
+  c->isfloating = !c->isfloating || c->isfixed;
+  if (c->isfloating)
+    resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w, selmon->sel->h, 0);
   arrange(c->mon);
 }
 
