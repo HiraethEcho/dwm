@@ -385,7 +385,7 @@ static void toggleextrabar(const Arg *arg);
 static void toggletopbar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void movecenter(const Arg *arg);
-static void raisewin(const Arg *arg);
+// static void raisewin(const Arg *arg);
 static void togglescratch(const Arg *arg);
 static void sendtoscratch(const Arg *arg);
 static void toggletag(const Arg *arg);
@@ -1750,13 +1750,13 @@ void focus(Client *c) {
   selmon->sel = c;
   drawbars();
 }
-
-void raisewin (const Arg *arg){
-  Client *c = arg->v ? (Client *)arg->v : selmon->sel;
-  if (c)
-    XRaiseWindow(dpy, c->win);
-}
-
+//
+// void raisewin (const Arg *arg){
+//   Client *c = arg->v ? (Client *)arg->v : selmon->sel;
+//   if (c)
+//     XRaiseWindow(dpy, c->win);
+// }
+//
 void focusin(XEvent *e) {
   XFocusChangeEvent *ev = &e->xfocus;
 
@@ -1816,7 +1816,6 @@ void focusstack(int inc, int hid) {
       showwin(c);
       c->mon->hidsel = 1;
     }
-    // raisewin(&(Arg){.v = &c});
     XRaiseWindow(dpy, c->win);
   }
 }
@@ -3065,7 +3064,7 @@ void movecenter(const Arg *arg) {
     return;
   c->isfloating = !c->isfloating || c->isfixed;
   if (c->isfloating)
-    resize(c, c->x, c->y, WIDTH(c) * 2 / 3 , HEIGHT(c) * 2 / 3, 0);
+    resize(c, c->x, c->y, c->mon->ww * 2 / 3 , c->mon->wh * 2 / 3, 0);
   c->x = c->mon->wx + (c->mon->ww - WIDTH(c)) / 2;
   c->y = c->mon->wy + (c->mon->wh - HEIGHT(c)) / 2;
   arrange(c->mon);

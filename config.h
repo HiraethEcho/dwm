@@ -202,7 +202,7 @@ static const Key keys[] = {
     {Mod4Mask|ShiftMask, XK_grave,  sendtoscratch, {0}},
     {MODKEY,             XK_p,      spawn,         {.v = dmenucmd}},
     {MODKEY,             XK_Return, spawn,         {.v = termcmd}},
-    {MODKEY,             XK_c,      killclient,    {0}},
+    {Mod4Mask,             XK_c,      killclient,    {0}},
     // {MODKEY, XK_Escape, killclient, {0}},
 
     // focus and hide clients
@@ -227,33 +227,37 @@ static const Key keys[] = {
     {Mod4Mask,           XK_k,      movestack,            {.i = -1}},
     {Mod4Mask,           XK_Return, movecenter,                 {0}},
     // opacity
-    {MODKEY | ShiftMask, XK_a,      changefocusopacity,   {.f = +0.025}},
-    {MODKEY | ShiftMask, XK_s,      changefocusopacity,   {.f = -0.025}},
-    {MODKEY | ShiftMask, XK_z,      changeunfocusopacity, {.f = +0.025}},
-    {MODKEY | ShiftMask, XK_x,      changeunfocusopacity, {.f = -0.025}},
+    // {MODKEY | ShiftMask, XK_a,      changefocusopacity,   {.f = +0.025}},
+    // {MODKEY | ShiftMask, XK_s,      changefocusopacity,   {.f = -0.025}},
+    // {MODKEY | ShiftMask, XK_z,      changeunfocusopacity, {.f = +0.025}},
+    // {MODKEY | ShiftMask, XK_x,      changeunfocusopacity, {.f = -0.025}},
+    {MODKEY, XK_z,      changefocusopacity,   {.f = +0.025}},
+    {MODKEY, XK_x,      changefocusopacity,   {.f = -0.025}},
+    {MODKEY, XK_c,      changeunfocusopacity, {.f = +0.025}},
+    {MODKEY, XK_v,      changeunfocusopacity, {.f = -0.025}},
     // move and resize float clients
     { MODKEY,            XK_Down,   moveresize,           {.v = "0x 25y 0w 0h" } },
     { MODKEY,            XK_Up,     moveresize,           {.v = "0x -25y 0w 0h" } },
     { MODKEY,            XK_Right,  moveresize,           {.v = "25x 0y 0w 0h" } },
     { MODKEY,            XK_Left,   moveresize,           {.v = "-25x 0y 0w 0h" } },
-    { MODKEY|ShiftMask,  XK_Down,   moveresize,           {.v = "0x 0y 0w 25h" } },
-    { MODKEY|ShiftMask,  XK_Up,     moveresize,           {.v = "0x 0y 0w -25h" } },
-    { MODKEY|ShiftMask,  XK_Right,  moveresize,           {.v = "0x 0y 25w 0h" } },
-    { MODKEY|ShiftMask,  XK_Left,   moveresize,           {.v = "0x 0y -25w 0h" } },
-    { Mod4Mask,          XK_Up,     moveresizeedge,       {.v = "t"} },
-    { Mod4Mask,          XK_Down,   moveresizeedge,       {.v = "b"} },
-    { Mod4Mask,          XK_Left,   moveresizeedge,       {.v = "l"} },
-    { Mod4Mask,          XK_Right,  moveresizeedge,       {.v = "r"} },
+    { Mod4Mask,  XK_Down,   moveresize,           {.v = "0x 0y 0w 25h" } },
+    { Mod4Mask,  XK_Up,     moveresize,           {.v = "0x 0y 0w -25h" } },
+    { Mod4Mask,  XK_Right,  moveresize,           {.v = "0x 0y 25w 0h" } },
+    { Mod4Mask,  XK_Left,   moveresize,           {.v = "0x 0y -25w 0h" } },
+    // { Mod4Mask,          XK_Up,     moveresizeedge,       {.v = "t"} },
+    // { Mod4Mask,          XK_Down,   moveresizeedge,       {.v = "b"} },
+    // { Mod4Mask,          XK_Left,   moveresizeedge,       {.v = "l"} },
+    // { Mod4Mask,          XK_Right,  moveresizeedge,       {.v = "r"} },
 
     // change layouts
     {MODKEY|ShiftMask, XK_space, togglefloating, {0}},
-    {MODKEY,           XK_a,     setlayout,      {.v = &layouts[2]}},
-    {MODKEY,           XK_s,     setlayout,      {.v = &layouts[4]}},
-    {MODKEY,           XK_d,     setlayout,      {.v = &layouts[5]}},
-    {MODKEY,           XK_f,     setlayout,      {.v = &layouts[0]}},
-    {MODKEY,           XK_g,     setlayout,      {.v = &layouts[1]}},
+    // {MODKEY,           XK_a,     setlayout,      {.v = &layouts[2]}},
+    {Mod4Mask,           XK_s,     setlayout,      {.v = &layouts[4]}},
+    // {MODKEY,           XK_d,     setlayout,      {.v = &layouts[5]}},
+    {Mod4Mask,           XK_f,     setlayout,      {.v = &layouts[0]}},
+    {Mod4Mask,           XK_g,     setlayout,      {.v = &layouts[1]}},
 
-    {MODKEY|ShiftMask,  XK_f,     raisewin,       {0}},
+    // {MODKEY|ShiftMask,  XK_f,     raisewin,       {0}},
     // { MODKEY|ShiftMask,          XK_comma,  cyclelayout,    {.i =
     // -1 } }, { MODKEY|ShiftMask,           XK_period, cyclelayout,    {.i = +1
     // } },
@@ -264,10 +268,12 @@ static const Key keys[] = {
     // modify layouts
     {MODKEY|ShiftMask, XK_h,            setcfact,    {.f = +0.25}},
     {MODKEY|ShiftMask, XK_l,            setcfact,    {.f = -0.25}},
-    {MODKEY,           XK_h,            setmfact,    {.f = -0.02}},
-    {MODKEY,           XK_l,            setmfact,    {.f = +0.02}},
+    {MODKEY,           XK_h,            setmfact,    {.f = +0.02}},
+    {MODKEY,           XK_l,            setmfact,    {.f = -0.02}},
+
     {Mod4Mask,         XK_d,            setcfact,    {.f = 0.00}},
     {Mod4Mask,         XK_d,            view,        {0}},
+
     {MODKEY,           XK_backslash,    incrgaps,    {.i = +1}},
     {MODKEY|ShiftMask, XK_backslash,    incrgaps,    {.i = -1}},
     {MODKEY,           XK_i,            incrigaps,   {.i = +1}},
@@ -275,6 +281,7 @@ static const Key keys[] = {
     {MODKEY,           XK_o,            incrogaps,   {.i = +1}},
     {MODKEY|ShiftMask, XK_o,            incrogaps,   {.i = -1}},
     {Mod4Mask,         XK_d,            defaultgaps, {0}},
+
     {MODKEY,           XK_bracketleft,  incnmaster,  {.i = +1}},
     {MODKEY,           XK_bracketright, incnmaster,  {.i = -1}},
 
@@ -298,6 +305,23 @@ static const Key keys[] = {
 
     {MODKEY|ShiftMask, XK_0, tag,  {.ui = ~0}},
     {MODKEY,           XK_0, view, {.ui = ~0}},
+
+    {MODKEY,                           XK_q, view,       {.ui = 1 << 0}},
+    {MODKEY,                           XK_w, view,       {.ui = 1 << 1}},
+    {MODKEY,                           XK_e, view,       {.ui = 1 << 2}},
+    {MODKEY,                           XK_r, view,       {.ui = 1 << 3}},
+    {MODKEY,                           XK_t, view,       {.ui = 1 << 4}},
+
+    {MODKEY,                           XK_a, tag,       {.ui = 1 << 0}},
+    {MODKEY,                           XK_s, tag,       {.ui = 1 << 1}},
+    {MODKEY,                           XK_d, tag,       {.ui = 1 << 2}},
+    {MODKEY,                           XK_f, tag,       {.ui = 1 << 3}},
+    {MODKEY,                           XK_g, tag,       {.ui = 1 << 4}},
+
+// {MODKEY,                           KEY, view,       {.ui = 1 << TAG}},
+// {MODKEY | ControlMask,             KEY, toggleview, {.ui = 1 << TAG}},
+// {MODKEY | ShiftMask,               KEY, tag,        {.ui = 1 << TAG}},
+// {MODKEY | ControlMask | ShiftMask, KEY, toggletag,  {.ui = 1 << TAG}},
 
     // quit
     {MODKEY|ShiftMask,   XK_q, quit,    {0}},
@@ -341,7 +365,6 @@ static const Button buttons[] = {
     {ClkTab,        0,                Button3, movecenter,     {0}},
     {ClkTab,        0,                Button4, changefocusopacity, {.f = +0.025}},
     {ClkTab,        0,                Button5, changefocusopacity, {.f = -0.025}},
-    {ClkTab,        MODKEY,           Button1, raisewin,           {0}},
     {ClkEtyTab,     0,                Button1, spawn,              SHCMD("rofi_quickapps")},
     {ClkEtyTab,     0,                Button2, spawn,              SHCMD("rofi -show run")},
     {ClkEtyTab,     0,                Button3, spawn,              SHCMD("rofi_allapps")},
