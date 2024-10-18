@@ -3064,7 +3064,7 @@ void movecenter(const Arg *arg) {
     return;
   c->isfloating = !c->isfloating || c->isfixed;
   if (c->isfloating)
-    resize(c, c->x, c->y, c->mon->ww * 2 / 3 , c->mon->wh * 2 / 3, 0);
+    resize(c, c->x, c->y, c->mon->ww * 1 / 2 , c->mon->wh * 2 / 3, 0);
   c->x = c->mon->wx + (c->mon->ww - WIDTH(c)) / 2;
   c->y = c->mon->wy + (c->mon->wh - HEIGHT(c)) / 2;
   arrange(c->mon);

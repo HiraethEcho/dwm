@@ -266,10 +266,10 @@ static const Key keys[] = {
     // { MODKEY                 , XK_space                 , setlayout , {0} } ,
 
     // modify layouts
-    {MODKEY|ShiftMask, XK_h,            setcfact,    {.f = +0.25}},
-    {MODKEY|ShiftMask, XK_l,            setcfact,    {.f = -0.25}},
-    {MODKEY,           XK_h,            setmfact,    {.f = +0.02}},
-    {MODKEY,           XK_l,            setmfact,    {.f = -0.02}},
+    {MODKEY|ShiftMask, XK_l,            setcfact,    {.f = +0.02}},
+    {MODKEY|ShiftMask, XK_h,            setcfact,    {.f = -0.02}},
+    {MODKEY,           XK_l,            setmfact,    {.f = +0.02}},
+    {MODKEY,           XK_h,            setmfact,    {.f = -0.02}},
 
     {Mod4Mask,         XK_d,            setcfact,    {.f = 0.00}},
     {Mod4Mask,         XK_d,            view,        {0}},
