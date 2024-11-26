@@ -25,11 +25,11 @@ static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display sy
 static const int showsystray = 1;             /* 0 means no systray */
 
 static const int showbar = 1;                 /* 0 means no bar */
-static const int showextrabar = 1;                 /* 0 means no bar */
+static const int showextrabar = 1;                 /* 0 means no extrabar */
 static const int topbar = 1;                  /* 0 means bottom bar */
 
 static const int isfixedtabwidth = 1; 
-static const char *tabWidth = "                           ";
+static const char *tabWidth = "                   ";
 
 static const char statussep         = ';';      /* separator between status bars */
 
@@ -140,7 +140,6 @@ static const Rule rules[] = {
     /* class, instance, title,        tags mask, isfloating, focusopacity, unfocusopacity,  monitor */
     {"st",    NULL,     "scratchpad", 0,         1,          0.8,          0.7,             -1},
     {"st",    NULL,     "tasks",      0,         1,          0.8,          0.7,             -1},
-    // {"Tilda", NULL,     "Tilda",      0,         1,          0.9,          0.8,             -1},
     // {"Gimp",  NULL,     NULL,         0,         1,          1.0,          inactiveopacity, -1},
 };
 
@@ -157,11 +156,11 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 static const Layout layouts[] = {
     /* symbol     arrange function */
     {"[M]", monocle},
-    {"---", horizgrid},
+    {":::", gaplessgrid},
     {"|M|", centeredmaster},
-    {"><>", NULL}, /* no layout function means floating behavior */
     {"[]=", tile}, /* first entry is default */
-    {"H[]", deck},
+    {"><>", NULL}, /* no layout function means floating behavior */
+    {"TTT", bstack},
     {NULL, NULL},
 };
 static const Layout tablayout = {"---", horizgrid};
@@ -169,9 +168,12 @@ static const Layout tablayout = {"---", horizgrid};
     {">M>", centeredfloatingmaster},
     {"[@]", spiral},
     {"[\\]", dwindle},
-    {":::", gaplessgrid},
-    {"###", nrowgrid},
+    {"|M|", centeredmaster},
+    {"H[]", deck},
     {"###", grid},
+    {":::", gaplessgrid},
+    {"---", horizgrid},
+    {"###", nrowgrid},
     {"===", bstackhoriz},
     {"---", horizgrid},
 */
@@ -252,10 +254,12 @@ static const Key keys[] = {
     // change layouts
     {MODKEY|ShiftMask, XK_space, togglefloating, {0}},
     // {MODKEY,           XK_a,     setlayout,      {.v = &layouts[2]}},
-    {Mod4Mask,           XK_s,     setlayout,      {.v = &layouts[4]}},
+    // {Mod4Mask,           XK_s,     setlayout,      {.v = &layouts[4]}},
     // {MODKEY,           XK_d,     setlayout,      {.v = &layouts[5]}},
     {Mod4Mask,           XK_f,     setlayout,      {.v = &layouts[0]}},
     {Mod4Mask,           XK_g,     setlayout,      {.v = &layouts[1]}},
+    {Mod4Mask,           XK_t,     setlayout,      {.v = &layouts[3]}},
+    {Mod4Mask,           XK_b,     setlayout,      {.v = &layouts[5]}},
 
     // {MODKEY|ShiftMask,  XK_f,     raisewin,       {0}},
     // { MODKEY|ShiftMask,          XK_comma,  cyclelayout,    {.i =
@@ -274,25 +278,27 @@ static const Key keys[] = {
     {Mod4Mask,         XK_d,            setcfact,    {.f = 0.00}},
     {Mod4Mask,         XK_d,            view,        {0}},
 
-    {MODKEY,           XK_backslash,    incrgaps,    {.i = +1}},
-    {MODKEY|ShiftMask, XK_backslash,    incrgaps,    {.i = -1}},
-    {MODKEY,           XK_i,            incrigaps,   {.i = +1}},
-    {MODKEY|ShiftMask, XK_i,            incrigaps,   {.i = -1}},
-    {MODKEY,           XK_o,            incrogaps,   {.i = +1}},
-    {MODKEY|ShiftMask, XK_o,            incrogaps,   {.i = -1}},
+    // {MODKEY,           XK_backslash,    incrgaps,    {.i = +1}},
+    // {MODKEY|ShiftMask, XK_backslash,    incrgaps,    {.i = -1}},
+    // {MODKEY,           XK_i,            incrigaps,   {.i = +1}},
+    // {MODKEY|ShiftMask, XK_i,            incrigaps,   {.i = -1}},
+    // {MODKEY,           XK_o,            incrogaps,   {.i = +1}},
+    // {MODKEY|ShiftMask, XK_o,            incrogaps,   {.i = -1}},
+    {MODKEY,           XK_i,            incrgaps,   {.i = +1}},
+    {MODKEY,           XK_o,            incrgaps,   {.i = -1}},
     {Mod4Mask,         XK_d,            defaultgaps, {0}},
 
     {MODKEY,           XK_bracketleft,  incnmaster,  {.i = +1}},
     {MODKEY,           XK_bracketright, incnmaster,  {.i = -1}},
 
     // bars
-    {MODKEY,             XK_b,            togglebar,      {0}},
-    {Mod4Mask,           XK_b,            toggleextrabar, {0}},
-    {Mod4Mask|ShiftMask, XK_b,            toggletopbar,   {0}},
+    {MODKEY,             XK_b, togglebar,      {0}},
+    {MODKEY|ControlMask, XK_b, toggleextrabar, {0}},
+    {MODKEY|ShiftMask,   XK_b, toggletopbar,   {0}},
 
     // monitors
-    {MODKEY,             XK_comma,  focusmon, {.i = -1}},
-    {MODKEY,             XK_period, focusmon, {.i = +1}},
+    {MODKEY,           XK_comma,  focusmon, {.i = -1}},
+    {MODKEY,           XK_period, focusmon, {.i = +1}},
     {MODKEY|ShiftMask, XK_comma,  tagmon,   {.i = -1}},
     {MODKEY|ShiftMask, XK_period, tagmon,   {.i = +1}},
 
