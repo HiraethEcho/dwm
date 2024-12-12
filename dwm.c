@@ -384,6 +384,7 @@ static void togglebar(const Arg *arg);
 static void toggleextrabar(const Arg *arg);
 static void toggletopbar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void togglefullscreen();
 static void movecenter(const Arg *arg);
 // static void raisewin(const Arg *arg);
 static void togglescratch(const Arg *arg);
@@ -1747,7 +1748,14 @@ void focus(Client *c) {
     XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
     XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
   }
-  selmon->sel = c;
+  // selmon->sel = c;
+	if(selmon->sel && selmon->sel->isfullscreen){
+		togglefullscreen();
+		selmon->sel = c;
+		togglefullscreen();
+	}else{
+		selmon->sel = c;
+	}
   drawbars();
 }
 //
@@ -3082,6 +3090,14 @@ void togglefloating(const Arg *arg) {
   arrange(c->mon);
 }
 
+void
+togglefullscreen()
+{
+	if (selmon->sel){
+		setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
+	}
+}
+
 void sendtoscratch(const Arg *arg) {
   Client *c = arg->v ? (Client *)arg->v : selmon->sel;
   if (!c)
@@ -3191,6 +3207,7 @@ void unfocus(Client *c, int setfocus) {
 void unmanage(Client *c, int destroyed) {
   Monitor *m = c->mon;
   XWindowChanges wc;
+	int fullscreen = (selmon->sel == c && selmon->sel->isfullscreen)?1:0;
 
   detach(c);
   detachstack(c);
@@ -3210,6 +3227,9 @@ void unmanage(Client *c, int destroyed) {
   //   scratchpad_last_showed = NULL;
   free(c);
   focus(NULL);
+	if(fullscreen){
+		togglefullscreen();
+	}
   updateclientlist();
   arrange(m);
 }

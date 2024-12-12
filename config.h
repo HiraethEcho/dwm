@@ -1,5 +1,6 @@
 #include "exitdwm.c"
 #include "movestack.c"
+#include <X11/X.h>
 #include <X11/XF86keysym.h>
 /* appearance */
 static const unsigned int borderpx = 2; /* border pixel of windows */
@@ -147,7 +148,7 @@ static const Rule rules[] = {
 static const float mfact = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster = 1;    /* number of clients in master area */
 static const int resizehints = 0; /* 1 means respect size hints in tiled resizals */
-static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
 
 #define FORCE_VSPLIT 1
 /* nrowgrid layout: force two clients to always split vertically */
@@ -252,14 +253,15 @@ static const Key keys[] = {
     // { Mod4Mask,          XK_Right,  moveresizeedge,       {.v = "r"} },
 
     // change layouts
-    {MODKEY|ShiftMask, XK_space, togglefloating, {0}},
     // {MODKEY,           XK_a,     setlayout,      {.v = &layouts[2]}},
     // {Mod4Mask,           XK_s,     setlayout,      {.v = &layouts[4]}},
     // {MODKEY,           XK_d,     setlayout,      {.v = &layouts[5]}},
-    {Mod4Mask,           XK_f,     setlayout,      {.v = &layouts[0]}},
-    {Mod4Mask,           XK_g,     setlayout,      {.v = &layouts[1]}},
-    {Mod4Mask,           XK_t,     setlayout,      {.v = &layouts[3]}},
-    {Mod4Mask,           XK_b,     setlayout,      {.v = &layouts[5]}},
+    {MODKEY|ShiftMask, XK_space, togglefloating,   {0}},
+    {Mod4Mask,         XK_f,     setlayout,        {.v = &layouts[0]}},
+    {Mod4Mask,         XK_g,     setlayout,        {.v = &layouts[1]}},
+    {Mod4Mask,         XK_t,     setlayout,        {.v = &layouts[3]}},
+    {Mod4Mask,         XK_b,     setlayout,        {.v = &layouts[5]}},
+    {MODKEY|ShiftMask, XK_f,     togglefullscreen, {0} },
 
     // {MODKEY|ShiftMask,  XK_f,     raisewin,       {0}},
     // { MODKEY|ShiftMask,          XK_comma,  cyclelayout,    {.i =
