@@ -211,6 +211,8 @@ static const Key keys[] = {
     // focus and hide clients
     {MODKEY,           XK_j,   focusstackvis, {.i = +1}},
     {MODKEY,           XK_k,   focusstackvis, {.i = -1}},
+    // {MODKEY,           XK_period,   focusstackvis, {.i = +1}},
+    // {MODKEY,           XK_comma,   focusstackvis, {.i = -1}},
     {MODKEY,           XK_m,   togglehide,    {0}},
     {MODKEY|ShiftMask, XK_m,   showall,       {0}},
     {Mod4Mask,         XK_Tab, wintab,        {0}},
@@ -226,6 +228,8 @@ static const Key keys[] = {
     // {Mod4Mask , XK_Return   , winview , {0}} ,
 
     // move clients
+    // {MODKEY|ShiftMask,           XK_period,      movestack,            {.i = +1}},
+    // {MODKEY|ShiftMask,           XK_comma,      movestack,            {.i = -1}},
     {Mod4Mask,           XK_j,      movestack,            {.i = +1}},
     {Mod4Mask,           XK_k,      movestack,            {.i = -1}},
     {Mod4Mask,           XK_Return, movecenter,                 {0}},
@@ -299,10 +303,16 @@ static const Key keys[] = {
     {MODKEY|ShiftMask,   XK_b, toggletopbar,   {0}},
 
     // monitors
+    // {Mod4Mask,           XK_comma,  focusmon, {.i = -1}},
+    // {Mod4Mask,           XK_period, focusmon, {.i = +1}},
+    // {Mod4Mask|ShiftMask, XK_comma,  tagmon,   {.i = -1}},
+    // {Mod4Mask|ShiftMask, XK_period, tagmon,   {.i = +1}},
     {MODKEY,           XK_comma,  focusmon, {.i = -1}},
     {MODKEY,           XK_period, focusmon, {.i = +1}},
-    {MODKEY|ShiftMask, XK_comma,  tagmon,   {.i = -1}},
-    {MODKEY|ShiftMask, XK_period, tagmon,   {.i = +1}},
+    {Mod4Mask, XK_comma,  tagmon,   {.i = -1}},
+    {Mod4Mask, XK_period, tagmon,   {.i = +1}},
+    // {MODKEY|ShiftMask, XK_comma,  tagmon,   {.i = -1}},
+    // {MODKEY|ShiftMask, XK_period, tagmon,   {.i = +1}},
 
     // tags
     TAGKEYS(XK_1, 0) 
