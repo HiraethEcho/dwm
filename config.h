@@ -205,8 +205,8 @@ static const Key keys[] = {
     {Mod4Mask|ShiftMask, XK_grave,  sendtoscratch, {0}},
     {MODKEY,             XK_p,      spawn,         {.v = dmenucmd}},
     {MODKEY,             XK_Return, spawn,         {.v = termcmd}},
-    {Mod4Mask,             XK_c,      killclient,    {0}},
-    // {MODKEY, XK_Escape, killclient, {0}},
+    {Mod4Mask,           XK_c,      killclient,    {0}},
+    {MODKEY,             XK_Escape, killclient,    {0}},
 
     // focus and hide clients
     {MODKEY,           XK_j,   focusstackvis, {.i = +1}},
@@ -323,6 +323,8 @@ static const Key keys[] = {
 
     {MODKEY|ShiftMask, XK_0, tag,  {.ui = ~0}},
     {MODKEY,           XK_0, view, {.ui = ~0}},
+    {MODKEY|ShiftMask, XK_grave, tag,  {.ui = ~0}},
+    {MODKEY,           XK_grave, view, {.ui = ~0}},
 
     {MODKEY,                           XK_q, view,       {.ui = 1 << 0}},
     {MODKEY,                           XK_w, view,       {.ui = 1 << 1}},
