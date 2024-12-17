@@ -202,7 +202,7 @@ static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "150x40
 static const Key keys[] = {
     // spawn and kill client
     {Mod4Mask,           XK_grave,  togglescratch, {.v = scratchpadcmd}},
-    {Mod4Mask|ShiftMask, XK_grave,  sendtoscratch, {0}},
+    // {Mod4Mask|ShiftMask, XK_grave,  sendtoscratch, {0}},
     {MODKEY,             XK_p,      spawn,         {.v = dmenucmd}},
     {MODKEY,             XK_Return, spawn,         {.v = termcmd}},
     {Mod4Mask,           XK_c,      killclient,    {0}},
