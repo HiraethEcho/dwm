@@ -119,7 +119,7 @@ static const unsigned int alphas[][3]      = {
 	[SchemeTitle]     = { OPAQUE, titlealpha,    borderalpha },
 };
 
-static const char *launchers[] = {""} ;
+static const char *launchers[] = {"","a"} ;
 // static const char *launchercmds[][] = {"kitty", NULL};
 // 󰖳    󰃥    󰗚 󰨇 
 static const char *tags[] = {"󰋜", "󰃥", "", "󰖳", ""};
@@ -366,7 +366,11 @@ static const Button buttons[] = {
     /* click,     event mask, button,  function argument,  */
     {ClkLancher,    0,                Button1, spawn,              SHCMD("kitty")},
     {ClkLancher,    0,                Button2, spawn,              SHCMD("rofi -show run")},
-    {ClkLancher,    0,                Button3, spawn,              SHCMD("rofi_powermenu")},
+    // {ClkLancher,    0,                Button3, spawn,              SHCMD("notify-send '0' '1'")},
+    // {ClkLancher,    0,                Button3, spawn,              { .v = (const char *[]) {"/bin/sh","-c","notify-send 0  q",NULL}} },
+    {ClkLancher,    0,                Button3, launchf,              {.i = 3}},
+    // {ClkLancher,    0,                Button1, launchf,              {.i = 1}},
+    // {ClkLancher,    0,                Button2, launchf,              {.i = 2}},
 
     {ClkTagBar,     0,                Button1, view,               {0}},
     {ClkTagBar,     0,                Button3, toggleview,         {0}},

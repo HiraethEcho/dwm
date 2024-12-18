@@ -377,6 +377,7 @@ static void sighup(int unused);
 static void sigterm(int unused);
 // static void sigdwmblocks(const Arg *arg);
 static void spawn(const Arg *arg);
+static void launchf(const Arg *arg);
 static Monitor *systraytomon(Monitor *m);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
@@ -788,6 +789,11 @@ void click_sym(int x, unsigned int *click, Arg *arg, Monitor *m,
 void click_lancher(int x, unsigned int *click, Arg *arg, Monitor *m,
                    XButtonPressedEvent *ev) {
   *click = ClkLancher;
+  unsigned int item = 0;
+  do {
+    x += TEXTW(launchers[item]);
+  } while (ev->x >= x && ++item < LENGTH(launchers));
+  arg->ui = item;
 }
 
 void click_tag(int x, unsigned int *click, Arg *arg, Monitor *m,
@@ -914,7 +920,7 @@ void buttonpress(XEvent *e) {
     click = ClkClientWin;
   }
 
-  for (i = 0; i < LENGTH(buttons); i++)
+  for (i = 0; i < LENGTH(buttons); i++) {
     if (click == buttons[i].click && buttons[i].func &&
         buttons[i].button == ev->button &&
         CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state)) {
@@ -924,11 +930,16 @@ void buttonpress(XEvent *e) {
         arg.f = buttons[i].arg.f;
         arg.ui = buttons[i].arg.ui;
         buttons[i].func(&arg);
+      } else if (click == ClkLancher){
+        arg.i = buttons[i].arg.i;
+        arg.v = buttons[i].arg.v;
+        buttons[i].func(&arg);
       } else if (click == ClkTagBar)
         buttons[i].func(&arg);
       else
         buttons[i].func(&buttons[i].arg);
     }
+  }
   drawbars();
 }
 
@@ -3008,6 +3019,15 @@ void spawn(const Arg *arg) {
     execvp(((char **)arg->v)[0], (char **)arg->v);
     die("dwm: execvp '%s' failed:", ((char **)arg->v)[0]);
   }
+}
+void launchf(const Arg *arg) {
+  char cmd[16] = "dwmlauncher a b";
+  cmd[14] = '0'+arg->i;
+  cmd[12] = '0'+arg->ui;
+  char* shcmd[] = {"/bin/sh", "-c", cmd, NULL};
+  Arg a;
+  a.v = shcmd; 
+  spawn(&a);
 }
 
 void tag(const Arg *arg) {
