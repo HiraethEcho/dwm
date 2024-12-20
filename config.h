@@ -120,7 +120,7 @@ static const unsigned int alphas[][3]      = {
 };
 
 // static const char *launchers[] = {"","󰇩","","󰓓","","",""} ;
-static const char *launchers[] = {"","","","","","","󰍺"} ;
+static const char *launchers[] = {"","󰀻","","󰅟"} ;
 // 󰖳    󰃥    󰗚 󰨇 
 static const char *tags[] = {"󰋜", "󰃥", "", "󰖳", ""};
 static const int taglayouts[] = { 1, 0, 0, 0, 0, 0 }; //first for viewall tags
@@ -364,14 +364,11 @@ static const Key keys[] = {
  * ClkClientWin, or ClkRootWin */
 static const Button buttons[] = {
     /* click,     event mask, button,  function argument,  */
-    // {ClkLancher,    0,                Button1, spawn,              SHCMD("kitty")},
-    // {ClkLancher,    0,                Button2, spawn,              SHCMD("rofi -show run")},
-    // {ClkLancher,    0,                Button2, spawn,              SHCMD("rofi_powermenu")},
-    {ClkLancher,    0,                Button1, launchf,              {.i = 1}},
-    {ClkLancher,    0,                Button2, launchf,              {.i = 2}},
-    {ClkLancher,    0,                Button3, launchf,              {.i = 3}},
-    {ClkLancher,    0,                Button4, launchf,              {.i = 4}},
-    {ClkLancher,    0,                Button5, launchf,              {.i = 5}},
+    {ClkLtSymbol,   0,                Button1, cyclelayout,        {.i = -1}},
+    {ClkLtSymbol,   0,                Button2, setlayout,          {.v = &layouts[2]}},
+    {ClkLtSymbol,   0,                Button3, cyclelayout,        {.i = +1}},
+    {ClkLtSymbol,   0,                Button4, setlayout,          {.v = &layouts[4]}},
+    {ClkLtSymbol,   0,                Button5, setlayout,          {.v = &layouts[5]}},
 
     {ClkTagBar,     0,                Button1, view,               {0}},
     {ClkTagBar,     0,                Button3, toggleview,         {0}},
@@ -379,49 +376,38 @@ static const Button buttons[] = {
     {ClkTagBar,     MODKEY,           Button3, toggletag,          {0}},
     {ClkTagBar,     0,                Button2, toggletag,          {0}},
 
-    {ClkLtSymbol,   0,                Button1, cyclelayout,        {.i = -1}},
-    {ClkLtSymbol,   0,                Button2, setlayout,          {.v = &layouts[2]}},
-    {ClkLtSymbol,   0,                Button3, cyclelayout,        {.i = +1}},
-    {ClkLtSymbol,   0,                Button4, setlayout,          {.v = &layouts[4]}},
-    {ClkLtSymbol,   0,                Button5, setlayout,          {.v = &layouts[5]}},
-
     {ClkTab,        0,                Button1, togglewin,          {0}},
     {ClkTab,        0,                Button2, killclient,         {0}},
-    {ClkTab,        0,                Button3, movecenter,     {0}},
+    {ClkTab,        0,                Button3, movecenter,         {0}},
     {ClkTab,        0,                Button4, changefocusopacity, {.f = +0.025}},
     {ClkTab,        0,                Button5, changefocusopacity, {.f = -0.025}},
-    {ClkEtyTab,     0,                Button1, spawn,              SHCMD("rofi_quickapps")},
-    {ClkEtyTab,     0,                Button2, spawn,              SHCMD("rofi -show run")},
-    {ClkEtyTab,     0,                Button3, spawn,              SHCMD("rofi_allapps")},
-    {ClkEtyTab,     0,                Button4, spawn,              SHCMD("xbacklight -inc 5; pkill -SIGUSR1 dwmblocks")},
-    {ClkEtyTab,     0,                Button5, spawn,              SHCMD("xbacklight -dec 5; pkill -SIGUSR1 dwmblocks")},
-
-    {ClkTitle,      0,                Button1, togglewin,          {0}},
-    {ClkTitle,      0,                Button3, movecenter,     {0}},
-    {ClkTitle,      0,                Button2, killclient,         {0}},
-    {ClkTitle,      0,                Button4, changefocusopacity, {.f = +0.025}},
-    {ClkTitle,      0,                Button5, changefocusopacity, {.f = -0.025}},
-
-    {ClkEtyTitle,   0,                Button1, spawn,              SHCMD("rofi_quickapps")},
-    {ClkEtyTitle,   0,                Button2, spawn,              SHCMD("rofi -show run")},
-    {ClkEtyTitle,   0,                Button3, spawn,              SHCMD("rofi_allapps")},
-    {ClkEtyTitle,   0,                Button4, spawn,              SHCMD("xbacklight -inc 5; pkill -SIGUSR1 dwmblocks")},
-    {ClkEtyTitle,   0,                Button5, spawn,              SHCMD("xbacklight -dec 5; pkill -SIGUSR1 dwmblocks")},
-
 
     {ClkStatusText, 0,                Button1, sigstatusbar,       {.i = 1}},
     {ClkStatusText, 0,                Button2, sigstatusbar,       {.i = 2}},
     {ClkStatusText, 0,                Button3, sigstatusbar,       {.i = 3}},
     {ClkStatusText, 0,                Button4, sigstatusbar,       {.i = 4}},
     {ClkStatusText, 0,                Button5, sigstatusbar,       {.i = 5}},
-    {ClkStatusText, MODKEY,           Button1, sigstatusbar,       {.i = 6}},
+    {ClkStatusText, ControlMask,      Button1, sigstatusbar,       {.i = 6}},
+    {ClkStatusText, ControlMask,      Button1, sigstatusbar,       {.i = 7}},
+    {ClkStatusText, ControlMask,      Button1, sigstatusbar,       {.i = 8}},
+    {ClkStatusText, ControlMask,      Button1, sigstatusbar,       {.i = 9}},
 
-    {ClkRootWin,    0,                Button1, spawn,              SHCMD("wallpaper_change")},
-    {ClkRootWin,    0,                Button2, spawn,              SHCMD("rofi -show run")},
-    {ClkRootWin,    0,                Button3, spawn,              SHCMD("rofi_allapps")},
-    // {ClkRootWin, 0,                Button2, spawn,              SHCMD("pamixer -t; pkill -SIGUSR1 dwmblocks")},
-    // {ClkRootWin, 0,                Button4, spawn,              SHCMD("pamixer -i 5; pkill -SIGUSR1 dwmblocks")},
-    // {ClkRootWin, 0,                Button5, spawn,              SHCMD("pamixer -d 5; pkill -SIGUSR1 dwmblocks")},
+    {ClkLancher,    0,                Button1, launchf,            {.i = 1}},
+    {ClkLancher,    0,                Button2, launchf,            {.i = 2}},
+    {ClkLancher,    0,                Button3, launchf,            {.i = 3}},
+    {ClkLancher,    0,                Button4, launchf,            {.i = 4}},
+    {ClkLancher,    0,                Button5, launchf,            {.i = 5}},
+    {ClkLancher,    ControlMask,      Button1, launchf,            {.i = 6}},
+    {ClkLancher,    ControlMask,      Button2, launchf,            {.i = 7}},
+    {ClkLancher,    ControlMask,      Button3, launchf,            {.i = 8}},
+    {ClkLancher,    ControlMask,      Button4, launchf,            {.i = 9}},
+    {ClkLancher,    ControlMask,      Button5, launchf,            {.i = 0}},
+
+    {ClkTitle,      0,                Button1, togglewin,          {0}},
+    {ClkTitle,      0,                Button3, movecenter,         {0}},
+    {ClkTitle,      0,                Button2, killclient,         {0}},
+    {ClkTitle,      0,                Button4, changefocusopacity, {.f = +0.025}},
+    {ClkTitle,      0,                Button5, changefocusopacity, {.f = -0.025}},
 
     {ClkClientWin,  MODKEY,           Button1, movemouse,          {0}},
     {ClkClientWin,  MODKEY,           Button3, resizemouse,        {0}},
@@ -429,7 +415,37 @@ static const Button buttons[] = {
     {ClkClientWin,  MODKEY,           Button5, moveresize,         {.v = "0x 0y 25w 0h" } },
     {ClkClientWin,  MODKEY|ShiftMask, Button4, moveresize,         {.v = "0x 0y 0w -25h" } },
     {ClkClientWin,  MODKEY|ShiftMask, Button5, moveresize,         {.v = "0x 0y 0w 25h" } },
-    // {ClkClientWin, MODKEY,           Button2, togglefloating, {0}},
-	// { ClkExBarLeftStatus,   0,              Button2,        spawn,          {.v = termcmd } },
-	// { ClkExBarRightStatus,  0,              Button1,        spawn,          {.v = termcmd } },
+
+    {ClkEtyTitle, 0, Button1, spawn, SHCMD("dwmClkEtyTitle 1")},
+    {ClkEtyTitle, 0, Button2, spawn, SHCMD("dwmClkEtyTitle 2")},
+    {ClkEtyTitle, 0, Button3, spawn, SHCMD("dwmClkEtyTitle 3")},
+    {ClkEtyTitle, 0, Button4, spawn, SHCMD("dwmClkEtyTitle 4")},
+    {ClkEtyTitle, 0, Button5, spawn, SHCMD("dwmClkEtyTitle 5")},
+
+    {ClkRootWin,  0, Button1, spawn, SHCMD("dwmClkRootWin 1")},
+    {ClkRootWin,  0, Button2, spawn, SHCMD("dwmClkRootWin 2")},
+    {ClkRootWin,  0, Button3, spawn, SHCMD("dwmClkRootWin 3")},
+    {ClkRootWin,  0, Button4, spawn, SHCMD("dwmClkRootWin 4")},
+    {ClkRootWin,  0, Button5, spawn, SHCMD("dwmClkRootWin 5")},
+
+    {ClkEtyTab,   0, Button1, spawn, SHCMD("dwmClkEtyTab 1")},
+    {ClkEtyTab,   0, Button2, spawn, SHCMD("dwmClkEtyTab 2")},
+    {ClkEtyTab,   0, Button3, spawn, SHCMD("dwmClkEtyTab 3")},
+    {ClkEtyTab,   0, Button4, spawn, SHCMD("dwmClkEtyTab 4")},
+    {ClkEtyTab,   0, Button5, spawn, SHCMD("dwmClkEtyTab 5")},
+    /* {ClkEtyTitle,   0,                Button1, spawn,              SHCMD("rofi_quickapps")},
+    {ClkEtyTitle,   0,                Button2, spawn,              SHCMD("rofi -show run")},
+    {ClkEtyTitle,   0,                Button3, spawn,              SHCMD("rofi_allapps")},
+    {ClkEtyTitle,   0,                Button4, spawn,              SHCMD("xbacklight -inc 5; pkill -SIGUSR1 dwmblocks")},
+    {ClkEtyTitle,   0,                Button5, spawn,              SHCMD("xbacklight -dec 5; pkill -SIGUSR1 dwmblocks")},
+    {ClkRootWin,    0,                Button1, spawn,              SHCMD("wallpaper_change")},
+    {ClkRootWin,    0,                Button2, spawn,              SHCMD("rofi -show run")},
+    {ClkRootWin,    0,                Button3, spawn,              SHCMD("rofi_allapps")},
+    {ClkRootWin,    0,                Button4, spawn,              SHCMD("dwmClkRootWin 4")},
+    {ClkRootWin,    0,                Button5, spawn,              SHCMD("dwmClkRootWin 5")},
+    {ClkEtyTab,     0,                Button1, spawn,              SHCMD("rofi_quickapps")},
+    {ClkEtyTab,     0,                Button2, spawn,              SHCMD("rofi -show run")},
+    {ClkEtyTab,     0,                Button3, spawn,              SHCMD("rofi_allapps")},
+    {ClkEtyTab,     0,                Button4, spawn,              SHCMD("xbacklight -inc 5; pkill -SIGUSR1 dwmblocks")},
+    {ClkEtyTab,     0,                Button5, spawn,              SHCMD("xbacklight -dec 5; pkill -SIGUSR1 dwmblocks")}, */
 };

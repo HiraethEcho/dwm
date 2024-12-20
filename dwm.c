@@ -793,7 +793,7 @@ void click_lancher(int x, unsigned int *click, Arg *arg, Monitor *m,
   do {
     x += TEXTW(launchers[item]);
   } while (ev->x >= x && ++item < LENGTH(launchers));
-  arg->ui = item;
+  arg->ui = item+1;
 }
 
 void click_tag(int x, unsigned int *click, Arg *arg, Monitor *m,
