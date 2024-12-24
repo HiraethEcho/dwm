@@ -3021,7 +3021,7 @@ void spawn(const Arg *arg) {
   }
 }
 void launchf(const Arg *arg) {
-  char cmd[16] = "dwmlauncher a b";
+  char cmd[16] = "dwmLauncher a b";
   cmd[14] = '0'+arg->i;
   cmd[12] = '0'+arg->ui;
   char* shcmd[] = {"/bin/sh", "-c", cmd, NULL};
